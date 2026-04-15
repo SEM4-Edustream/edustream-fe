@@ -12,10 +12,15 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let lastScrolled = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== lastScrolled) {
+        setIsScrolled(isScrolled);
+        lastScrolled = isScrolled;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -26,6 +31,7 @@ const Navbar = () => {
           ? 'bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm' 
           : 'bg-transparent'
       }`}
+      style={{ transform: 'translateZ(0)' }}
     >
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-20">

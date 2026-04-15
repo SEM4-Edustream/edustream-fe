@@ -13,7 +13,7 @@ interface Course {
   id: string;
   title: string;
   description: string;
-  price: number;
+  price: number | null;
   thumbnailUrl: string;
   averageRating: number | null;
   reviewCount: number;
@@ -47,8 +47,14 @@ export default function HomePage() {
       {/* ----------------- VIBRANT HERO SECTION ----------------- */}
       <section className="relative w-full max-w-[1400px] min-h-[600px] md:min-h-[750px] mx-auto px-4 lg:px-8 mt-12 mb-20 overflow-hidden flex items-center bg-gray-50/50 rounded-3xl">
         {/* Dynamic Abstract Shapes (Glassmorphism & Gradients) */}
-        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-gradient-to-br from-blue-400/30 to-purple-500/30 blur-3xl rounded-full mix-blend-multiply animate-pulse" />
-        <div className="absolute bottom-[-10%] left-[10%] w-[400px] h-[400px] bg-gradient-to-tr from-pink-400/20 to-orange-400/20 blur-3xl rounded-full mix-blend-multiply animate-pulse" style={{ animationDelay: '2s' }} />
+        <div 
+          className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-gradient-to-br from-blue-400/30 to-purple-500/30 blur-2xl rounded-full mix-blend-multiply animate-pulse" 
+          style={{ willChange: 'transform, opacity', transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }}
+        />
+        <div 
+          className="absolute bottom-[-10%] left-[10%] w-[400px] h-[400px] bg-gradient-to-tr from-pink-400/20 to-orange-400/20 blur-2xl rounded-full mix-blend-multiply animate-pulse" 
+          style={{ animationDelay: '2s', willChange: 'transform, opacity', transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }} 
+        />
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full relative z-10 z-[1] py-16">
           {/* Left Text Column */}
@@ -107,11 +113,16 @@ export default function HomePage() {
                 src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
                 alt="Students learning" 
                 className="w-full h-full object-cover"
+                loading="eager"
+                decoding="async"
               />
             </div>
             
             {/* Floating Badges / Micro-animations */}
-            <Card className="absolute top-[15%] left-0 z-20 w-48 shadow-2xl xl:scale-110 lg:scale-100 animate-bounce duration-[3000ms]">
+            <Card 
+              className="absolute top-[15%] left-0 z-20 w-48 shadow-2xl xl:scale-110 lg:scale-100 animate-bounce duration-[3000ms]"
+              style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }}
+            >
               <CardContent className="p-4 flex items-center gap-4">
                 <div className="bg-green-100 p-2 rounded-full">
                   <CheckCircle2 className="h-6 w-6 text-green-600" />
@@ -123,7 +134,10 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="absolute bottom-[20%] right-[-5%] z-20 w-56 shadow-2xl xl:scale-110 lg:scale-100 animate-bounce duration-[4000ms]">
+            <Card 
+              className="absolute bottom-[20%] right-[-5%] z-20 w-56 shadow-2xl xl:scale-110 lg:scale-100 animate-bounce duration-[4000ms]"
+              style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }}
+            >
               <CardContent className="p-4 flex items-center gap-4">
                 <div className="bg-blue-100 p-2 rounded-full">
                   <TrendingUp className="h-6 w-6 text-blue-600" />
@@ -135,7 +149,10 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="absolute bottom-[5%] left-[10%] z-20 w-40 shadow-2xl xl:scale-110 lg:scale-100 animate-bounce duration-[5000ms]">
+            <Card 
+              className="absolute bottom-[5%] left-[10%] z-20 w-40 shadow-2xl xl:scale-110 lg:scale-100 animate-bounce duration-[5000ms]"
+              style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }}
+            >
               <CardContent className="p-4 flex flex-col items-center gap-2 text-center">
                 <div className="bg-yellow-100 p-2 rounded-full">
                   <Users className="h-6 w-6 text-yellow-600" />
@@ -214,7 +231,7 @@ export default function HomePage() {
                         
                         <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
                           <span className="text-2xl font-black text-gray-900">
-                            ${course.price.toLocaleString()}
+                            ${course.price?.toLocaleString() || '0'}
                           </span>
                           <span className="text-sm font-bold text-blue-600 group-hover:underline">View Course</span>
                         </div>

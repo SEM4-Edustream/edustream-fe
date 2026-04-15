@@ -23,7 +23,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await axiosInstance.post('/api/auth/token', {
+      const response = await axiosInstance.post('/auth/login', {
         username,
         password
       });
@@ -61,10 +61,19 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen pt-20 bg-gray-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" />
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div 
+          className="absolute top-0 -left-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" 
+          style={{ willChange: 'transform, opacity', transform: 'translate3d(0,0,0)' }}
+        />
+        <div 
+          className="absolute top-0 -right-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" 
+          style={{ willChange: 'transform, opacity', transform: 'translate3d(0,0,0)' }}
+        />
+        <div 
+          className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" 
+          style={{ willChange: 'transform, opacity', transform: 'translate3d(0,0,0)' }}
+        />
       </div>
 
       <Card className="w-full max-w-[420px] z-10 shadow-2xl border-none">

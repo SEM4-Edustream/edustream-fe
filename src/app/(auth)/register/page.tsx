@@ -39,7 +39,14 @@ export default function RegisterPage() {
 
     try {
       // API call to User registration endpoint
-      const response = await axiosInstance.post('/api/users', formData);
+      const registerData = {
+        username: formData.username,
+        password: formData.password,
+        email: formData.email,
+        fullName: `${formData.firstName} ${formData.lastName}`.trim()
+      };
+      
+      const response = await axiosInstance.post('/auth/register', registerData);
       
       if (response.result) {
         setSuccess('Registration successful! Redirecting to login...');
@@ -58,8 +65,14 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen pt-20 pb-12 bg-gray-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute top-10 right-10 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob" />
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000" />
+        <div 
+          className="absolute top-10 right-10 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob" 
+          style={{ willChange: 'transform, opacity', transform: 'translate3d(0,0,0)' }}
+        />
+        <div 
+          className="absolute bottom-10 left-10 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000" 
+          style={{ willChange: 'transform, opacity', transform: 'translate3d(0,0,0)' }}
+        />
       </div>
 
       <Card className="w-full max-w-[500px] z-10 shadow-2xl border-none">
