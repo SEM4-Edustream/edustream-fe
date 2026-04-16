@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 import { Toaster } from "sonner";
@@ -7,7 +7,12 @@ import { AuthProvider } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] });
+// Optimize Google Fonts: Subsets vietnamese to prevent missing accents (FOUT)
+const inter = Inter({ 
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-inter",
+  display: "swap"
+});
 
 export const metadata: Metadata = {
   title: "EduStream - Platform Study Online",
@@ -20,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={plusJakartaSans.className}>
+    <html lang="vi" suppressHydrationWarning>
+      <body className={`${inter.variable} font-sans antialiased text-slate-700 bg-slate-50`}>
         <AuthProvider>
           <Navbar />
 
