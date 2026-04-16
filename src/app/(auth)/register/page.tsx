@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import axiosInstance from '@/lib/axios';
+import { useRegister } from '@/hooks/useAuthLogic';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,55 +10,20 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { GraduationCap, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function RegisterPage() {
-  const router = useRouter();
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    email: '',
-    firstName: '',
-    lastName: ''
-  });
-  
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const { submitRegistration, isPending, success, error } = useRegister();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value
-    });
-  };
-
-  const handleRegister = async (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-    setLoading(true);
-
-    try {
-      // API call to User registration endpoint
-      const registerData = {
-        username: formData.username,
-        password: formData.password,
-        email: formData.email,
-        fullName: `${formData.firstName} ${formData.lastName}`.trim()
-      };
-      
-      const response = await axiosInstance.post('/auth/register', registerData);
-      
-      if (response.result) {
-        setSuccess('Registration successful! Redirecting to login...');
-        setTimeout(() => {
-          router.push('/login');
-        }, 2000);
-      }
-    } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    const form = new FormData(e.currentTarget);
+    const firstName = form.get('firstName') as string;
+    const lastName = form.get('lastName') as string;
+    
+    submitRegistration({
+      username: form.get('username') as string,
+      email: form.get('email') as string,
+      password: form.get('password') as string,
+      fullName: `${firstName} ${lastName}`.trim()
+    });
   };
 
   return (
@@ -88,7 +52,7 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
 
-        <form onSubmit={handleRegister}>
+        <form onSubmit={onSubmit}>
           <CardContent className="space-y-5">
             {error && (
               <div className="bg-destructive/10 text-destructive text-sm font-medium px-4 py-3 rounded-lg flex items-start gap-3">
@@ -111,8 +75,7 @@ export default function RegisterPage() {
                   id="firstName" 
                   type="text" 
                   placeholder="John" 
-                  value={formData.firstName}
-                  onChange={handleChange}
+                  name="firstName"
                   required
                   className="h-11 border-gray-200 shadow-sm"
                 />
@@ -123,8 +86,7 @@ export default function RegisterPage() {
                   id="lastName" 
                   type="text" 
                   placeholder="Doe" 
-                  value={formData.lastName}
-                  onChange={handleChange}
+                  name="lastName"
                   required
                   className="h-11 border-gray-200 shadow-sm"
                 />
@@ -137,8 +99,7 @@ export default function RegisterPage() {
                 id="username" 
                 type="text" 
                 placeholder="johndoe123" 
-                value={formData.username}
-                onChange={handleChange}
+                name="username"
                 required
                 className="h-11 border-gray-200 shadow-sm"
               />
@@ -150,8 +111,7 @@ export default function RegisterPage() {
                 id="email" 
                 type="email" 
                 placeholder="john@example.com" 
-                value={formData.email}
-                onChange={handleChange}
+                name="email"
                 required
                 className="h-11 border-gray-200 shadow-sm"
               />
@@ -163,8 +123,7 @@ export default function RegisterPage() {
                 id="password" 
                 type="password" 
                 placeholder="••••••••" 
-                value={formData.password}
-                onChange={handleChange}
+                name="password"
                 required
                 className="h-11 border-gray-200 shadow-sm"
               />
@@ -175,9 +134,9 @@ export default function RegisterPage() {
             <Button 
               type="submit" 
               className="w-full h-12 text-base font-semibold shadow-lg hover:shadow-primary/25 transition-all"
-              disabled={loading || !!success}
+              disabled={isPending || !!success}
             >
-              {loading ? (
+              {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   Creating account...

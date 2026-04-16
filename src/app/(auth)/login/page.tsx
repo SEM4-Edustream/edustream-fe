@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import axiosInstance from '@/lib/axios';
+import { useLogin } from '@/hooks/useAuthLogic';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,50 +12,13 @@ import { GraduationCap, Loader2, AlertCircle } from 'lucide-react';
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const { login } = useAuth();
+  
+  // Use extracted highly-cohesive hook
+  const { handleLogin, loading, error } = useLogin();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      const response = await axiosInstance.post('/auth/login', {
-        username,
-        password
-      });
-
-      if (response.result && response.result.token) {
-        // Introspect token payload simply by decoding JWT (or getting from backend endpoint optionally)
-        // Since backend doesn't return full user object in `/api/auth/token` (only string token & auth status)
-        // We can do a quick decode or hit `/api/users/my-info` (Need to implement that, or decode JWT in local).
-        
-        // Let's decode very quickly to extract role and username (JWT Payload)
-        const base64Url = response.result.token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        
-        const decoded = JSON.parse(jsonPayload);
-        const userScope = decoded.scope || 'USER';
-
-        login(response.result.token, {
-          id: decoded.sub, 
-          username: decoded.sub,
-          role: userScope
-        });
-      } else {
-        throw new Error('Invalid credentials');
-      }
-    } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
-    } finally {
-      setLoading(false);
-    }
+    handleLogin(username, password);
   };
 
   return (
@@ -89,7 +51,7 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={onSubmit}>
           <CardContent className="space-y-6">
             {error && (
               <div className="bg-destructive/10 text-destructive text-sm font-medium px-4 py-3 rounded-lg flex items-start gap-3">
