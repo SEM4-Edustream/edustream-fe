@@ -2,34 +2,65 @@ import axiosInstance from '@/lib/axios';
 
 export interface LoginResponse {
   token: string;
+  authenticated?: boolean;
 }
 
 export interface RegisterDTO {
   username: string;
-  password?: string;
+  password: string;
   email: string;
-  fullName: string;
+  fullName?: string;
+}
+
+type ApiResponse<T> = {
+  code?: number;
+  message?: string;
+  result?: T;
+};
+
+function unwrapResult<T>(payload: T | ApiResponse<T>) {
+  if (payload && typeof payload === 'object') {
+    const result = payload as ApiResponse<T>;
+    if (result.result !== undefined) {
+      return result.result;
+    }
+  }
+
+  return payload as T;
 }
 
 export const authService = {
   login: async (username: string, password: string): Promise<LoginResponse> => {
-    // Note: Ensuring we hit exactly the Spring Boot Auth endpoint
-    // Standard OAuth2/JWT setup generally uses /api/auth/token
-    const response = await axiosInstance.post('/api/auth/token', {
+    const response = await axiosInstance.post<ApiResponse<LoginResponse> | LoginResponse>('/auth/login', {
       username,
-      password
+      password,
     });
-    
-    if (!response.result || !response.result.token) {
-       throw new Error('Invalid credentials');
+
+    const payload = unwrapResult(response);
+    if (!payload?.token) {
+      throw new Error('Invalid credentials');
     }
-    
-    return response.result;
+
+    return payload;
   },
 
   register: async (data: RegisterDTO) => {
-    // Note: User registration usually creates an entity in /api/users
-    const response = await axiosInstance.post('/api/users', data);
-    return response.result;
-  }
+    const response = await axiosInstance.post<ApiResponse<unknown> | unknown>('/auth/register', data);
+    return unwrapResult(response);
+  },
+
+  refresh: async (token: string) => {
+    const response = await axiosInstance.post<ApiResponse<LoginResponse> | LoginResponse>('/auth/refresh', { token });
+    return unwrapResult(response);
+  },
+
+  logout: async (token: string) => {
+    const response = await axiosInstance.post<ApiResponse<unknown> | unknown>('/auth/logout', { token });
+    return unwrapResult(response);
+  },
+
+  introspect: async (token: string) => {
+    const response = await axiosInstance.post<ApiResponse<{ valid: boolean }> | { valid: boolean }>('/auth/introspect', { token });
+    return unwrapResult(response);
+  },
 };

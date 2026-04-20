@@ -6,114 +6,132 @@ import { useLogin } from '@/hooks/useAuthLogic';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, Loader2, AlertCircle } from 'lucide-react';
+import { 
+  Loader2, 
+  AlertCircle
+} from 'lucide-react';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  
-  // Use extracted highly-cohesive hook
   const { handleLogin, loading, error } = useLogin();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleLogin(username, password);
   };
 
   return (
-    <div className="min-h-screen pt-20 bg-gray-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <div 
-          className="absolute top-0 -left-4 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" 
-          style={{ willChange: 'transform, opacity', transform: 'translate3d(0,0,0)' }}
-        />
-        <div 
-          className="absolute top-0 -right-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000" 
-          style={{ willChange: 'transform, opacity', transform: 'translate3d(0,0,0)' }}
-        />
-        <div 
-          className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" 
-          style={{ willChange: 'transform, opacity', transform: 'translate3d(0,0,0)' }}
-        />
-      </div>
-
-      <Card className="w-full max-w-[420px] z-10 shadow-2xl border-none">
-        <CardHeader className="space-y-2 text-center pb-8 pt-8">
-          <div className="flex justify-center mb-4">
-            <div className="bg-primary/10 p-3 rounded-full">
-              <GraduationCap className="w-8 h-8 text-primary" />
-            </div>
+    <div className="min-h-screen bg-white font-sans pt-20 lg:pt-0 flex items-center justify-center">
+      
+      <div className="max-w-[1200px] w-full flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-24 px-8 sm:px-12">
+        
+        {/* LEFT: ILLUSTRATION SECTION - Hidden on Mobile */}
+        <div className="hidden lg:flex flex-1 items-center justify-end">
+          <div className="max-w-[480px] w-full">
+            <img 
+              src="https://frontends.udemycdn.com/components/auth/desktop-illustration-step-1-x1.webp" 
+              alt="Login Illustration" 
+              className="w-full h-auto object-contain transition-transform duration-700 hover:scale-[1.02]"
+            />
           </div>
-          <CardTitle className="text-3xl font-extrabold tracking-tight">Welcome back</CardTitle>
-          <CardDescription className="text-base text-muted-foreground">
-            Enter your credentials to access your account
-          </CardDescription>
-        </CardHeader>
+        </div>
 
-        <form onSubmit={onSubmit}>
-          <CardContent className="space-y-6">
+        {/* RIGHT: LOGIN FORM SECTION */}
+        <div className="flex-1 flex flex-col items-center lg:items-start justify-center py-12">
+          <div className="w-full max-w-[400px] space-y-8">
+            
+            <div className="space-y-2">
+               <h2 className="text-2xl font-bold text-[#1c1d1f] tracking-tight">Log in to your account</h2>
+            </div>
+
+          <form onSubmit={onSubmit} className="space-y-4">
             {error && (
-              <div className="bg-destructive/10 text-destructive text-sm font-medium px-4 py-3 rounded-lg flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <div className="bg-red-50 text-red-600 text-sm font-bold px-4 py-3 border border-red-100 flex items-start gap-3 rounded-lg">
+                <AlertCircle className="w-5 h-5 shrink-0" />
                 <p>{error}</p>
               </div>
             )}
             
-            <div className="space-y-2">
-              <Label htmlFor="username" className="text-sm font-semibold text-gray-700">Username</Label>
+            <div className="space-y-1">
+              <Label htmlFor="username" className="text-sm font-bold text-[#1c1d1f] ml-1">Email or Username</Label>
               <Input 
                 id="username" 
                 type="text" 
-                placeholder="Ex: student01" 
+                placeholder="email@example.com" 
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="h-12 border-gray-200 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm"
+                className="h-14 border-slate-200 rounded-lg focus-visible:ring-1 focus-visible:ring-[#5624d0]/20 focus-visible:border-[#5624d0] text-base placeholder:text-slate-400 shadow-sm transition-all"
               />
             </div>
             
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-sm font-semibold text-gray-700">Password</Label>
-                <Link href="#" className="text-xs font-semibold text-primary hover:underline">Forgot password?</Link>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between ml-1">
+                <Label htmlFor="password" className="text-sm font-bold text-[#1c1d1f]">Password</Label>
+                <Link href="#" className="text-xs font-bold text-[#5624d0] hover:underline">Forgot password?</Link>
               </div>
               <Input 
                 id="password" 
                 type="password" 
-                placeholder="••••••••" 
+                placeholder="********" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="h-12 border-gray-200 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm"
+                className="h-14 border-slate-200 rounded-lg focus-visible:ring-1 focus-visible:ring-[#5624d0]/20 focus-visible:border-[#5624d0] text-base placeholder:text-slate-400 shadow-sm transition-all"
               />
             </div>
-          </CardContent>
 
-          <CardFooter className="flex flex-col gap-4 pb-8">
             <Button 
               type="submit" 
-              className="w-full h-12 text-base font-semibold shadow-lg hover:shadow-primary/25 transition-all"
+              className="w-full h-12 bg-[#5624d0] hover:bg-[#401b9c] text-white text-base font-bold rounded-lg mt-2 transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50 active:scale-[0.98]"
               disabled={loading}
             >
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Signing in...
+                  Logging in...
                 </>
               ) : (
-                'Sign In'
+                'Log in'
               )}
             </Button>
-            <div className="text-center text-sm font-medium text-gray-500">
-              Don't have an account?{' '}
-              <Link href="/register" className="text-primary hover:underline font-bold">
-                Create one now
-              </Link>
-            </div>
-          </CardFooter>
-        </form>
-      </Card>
+          </form>
+
+          <div className="text-center space-y-6">
+             <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                   <span className="w-full border-t border-slate-200"></span>
+                </div>
+                <div className="relative flex justify-center text-xs">
+                   <span className="bg-white px-2 text-slate-500 font-bold uppercase tracking-wider">Other log in options</span>
+                </div>
+             </div>
+
+             <div className="flex items-center justify-center gap-4">
+                <button className="w-14 h-14 border border-slate-200 rounded-xl flex items-center justify-center hover:bg-slate-50 transition-all shadow-sm">
+                   <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-6 h-6" alt="Google" />
+                </button>
+                <button className="w-14 h-14 border border-slate-200 rounded-xl flex items-center justify-center hover:bg-slate-50 transition-all shadow-sm">
+                   <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" className="w-6 h-6" alt="Facebook" />
+                </button>
+                <button className="w-14 h-14 border border-slate-200 rounded-xl flex items-center justify-center hover:bg-slate-50 transition-all shadow-sm">
+                   <img src="https://www.svgrepo.com/show/475638/apple-color.svg" className="w-6 h-6" alt="Apple" />
+                </button>
+             </div>
+          </div>
+
+          <div className="pt-6 border-t border-slate-100 text-center">
+             <p className="text-sm text-slate-600 font-medium">
+                Don't have an account?{' '}
+                <Link href="/register" className="text-[#5624d0] hover:underline font-bold">
+                   Sign up
+                </Link>
+             </p>
+          </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

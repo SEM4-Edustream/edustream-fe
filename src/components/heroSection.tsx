@@ -8,14 +8,19 @@ interface HeroSectionProps {}
 export const HeroSection: React.FC<HeroSectionProps> = () => {
   return (
     <section 
-      className="py-16 md:py-24 px-4 sm:px-6 relative overflow-hidden"
+      className="relative w-full overflow-x-clip overflow-y-visible py-16 md:py-24"
       aria-label="Hero Section"
     >
-      <div className="container mx-auto max-w-[1140px]">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-12 lg:gap-0 items-center">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-[-12%] left-[-10%] h-[520px] w-[520px] rounded-full bg-gradient-to-br from-blue-400/30 via-indigo-400/20 to-transparent blur-3xl" />
+        <div className="absolute top-[8%] right-[-12%] h-[580px] w-[580px] rounded-full bg-gradient-to-br from-violet-500/25 via-fuchsia-400/20 to-transparent blur-3xl" />
+        <div className="absolute bottom-[-18%] left-[18%] h-[420px] w-[420px] rounded-full bg-gradient-to-tr from-rose-400/20 via-orange-300/15 to-transparent blur-3xl" />
+      </div>
+      <div className="w-full px-0">
+        <div className="grid min-w-0 grid-cols-1 items-center gap-y-12 lg:grid-cols-12 lg:gap-0">
 
           {/* Left Column: Content */}
-          <div className="lg:col-span-5 xl:col-span-5 flex flex-col gap-6 lg:pr-8">
+          <div className="lg:col-span-5 xl:col-span-5 flex flex-col gap-6 px-4 sm:px-6 lg:pl-8 lg:pr-4 xl:pl-12 xl:pr-6">
             <div className="flex items-center gap-2">
               <span className="text-xl" aria-hidden="true">🚀</span>
               <span className="text-[#754FFE] font-semibold">
@@ -65,12 +70,12 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
           </div>
 
           {/* Right Column: Image Collage */}
-          <div className="lg:col-span-7 xl:col-span-6 xl:col-start-7 flex justify-center lg:justify-end relative mt-16 md:mt-10 lg:mt-0">
+          <div className="lg:col-span-7 xl:col-span-7 relative mt-16 md:mt-10 lg:mt-0 lg:-mr-8 xl:-mr-12 lg:-ml-4 xl:-ml-8 flex justify-center lg:justify-end">
             
-            <div className="relative w-full max-w-[340px] lg:max-w-[480px]">
+            <div className="relative w-full max-w-none lg:w-[calc(100%+5rem)] xl:w-[calc(100%+8rem)]">
               {/* Floating Badges */}
-              <div className="absolute -left-6 sm:-left-16 lg:-left-24 top-[15%] flex flex-col gap-4 z-40 items-start">
-                <div className="ml-8 bg-white rounded-full py-3 px-6 shadow-[0_8px_30px_rgb(0,0,0,0.1)] flex items-center gap-3">
+              <div className="absolute -left-2 sm:-left-8 lg:-left-16 top-[15%] flex flex-col gap-4 z-40 items-start max-w-[calc(100vw-2rem)]">
+                <div className="ml-8 bg-white rounded-full py-3 px-6 shadow-[0_8px_30px_rgb(0,0,0,0.1)] flex items-center gap-3 max-w-full">
                   <div className="bg-orange-100 p-2 rounded-full" aria-hidden="true">
                     <BookOpen className="w-5 h-5 text-orange-500" />
                   </div>
@@ -103,7 +108,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
                   <img 
                     src="/images/hero/girl.png" 
                     alt="Student with laptop" 
-                    className="absolute bottom-0 -left-[30%] lg:-left-[40%] w-[160%] max-w-none origin-bottom object-contain z-20 drop-shadow-xl pointer-events-none" 
+                    className="absolute bottom-0 left-1/2 -translate-x-[52%] w-[150%] max-w-none origin-bottom object-contain z-20 drop-shadow-xl pointer-events-none" 
                   />
                 </div>
                 
@@ -112,14 +117,14 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
                   <img 
                     src="/images/hero/boy.png" 
                     alt="Student with bag" 
-                    className="absolute bottom-0 -left-[2%] w-[100%] lg:w-[110%] max-w-none origin-bottom object-contain z-30 drop-shadow-xl pointer-events-none" 
+                    className="absolute bottom-0 left-1/2 -translate-x-[50%] w-[106%] lg:w-[110%] max-w-none origin-bottom object-contain z-30 drop-shadow-xl pointer-events-none" 
                   />
                 </div>
                 
                 {/* 4. Bottom Right Peach Block */}
                 <div className="bg-[#EE8B68] rounded-3xl rounded-br-[80px] lg:rounded-br-[100px] shadow-sm relative h-[160px] sm:h-[200px] lg:h-[260px] w-full lg:mb-4 lg:-ml-2 overflow-visible">
                   {/* Floating Students Card */}
-                  <div className="absolute -bottom-8 lg:-bottom-12 -right-6 lg:-right-16 z-40 bg-white rounded-3xl p-5 lg:p-6 shadow-[0_20px_50px_rgb(0,0,0,0.12)] border border-slate-50 min-w-[220px]">
+                  <div className="absolute -bottom-8 lg:-bottom-12 -right-2 lg:-right-12 z-40 bg-white rounded-3xl p-5 lg:p-6 shadow-[0_20px_50px_rgb(0,0,0,0.12)] border border-slate-50 min-w-[220px] max-w-[calc(100vw-2rem)]">
                     <div className="flex -space-x-3 mb-3">
                       <Avatar className="w-10 h-10 border-2 border-white shadow-sm"><AvatarImage src="/images/hero/ava1.jpg" alt="Student avatar 1" /></Avatar>
                       <Avatar className="w-10 h-10 border-2 border-white shadow-sm"><AvatarImage src="/images/hero/ava2.jpg" alt="Student avatar 2" /></Avatar>

@@ -4,110 +4,187 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Menu, X, BookOpen, GraduationCap } from 'lucide-react';
+import {
+  Menu,
+  X,
+  Search,
+  Heart,
+  ShoppingCart,
+  Bell,
+  ChevronDown,
+  User
+} from 'lucide-react';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
-    let lastScrolled = false;
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      if (isScrolled !== lastScrolled) {
-        setIsScrolled(isScrolled);
-        lastScrolled = isScrolled;
-      }
+      setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <header 
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm' 
-          : 'bg-transparent'
-      }`}
-      style={{ transform: 'translateZ(0)' }}
+    <header
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
+        ? 'bg-white border-b border-gray-200 shadow-sm'
+        : 'bg-white border-b border-gray-100'
+        }`}
     >
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="bg-primary p-2 rounded-lg">
-              <GraduationCap className="h-6 w-6 text-white" />
-            </div>
-            <span className="text-xl font-extrabold tracking-tight text-gray-900">
-              EduStream
-            </span>
-          </Link>
+      <div className="px-4 h-18 lg:px-6 flex items-center h-16 lg:h-[72px] gap-4 lg:gap-8">
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="/courses" className="text-gray-600 hover:text-primary font-medium transition-colors">Courses</Link>
-            <Link href="/about" className="text-gray-600 hover:text-primary font-medium transition-colors">About Us</Link>
-            <Link href="/instructors" className="text-gray-600 hover:text-primary font-medium transition-colors">Instructors</Link>
+        {/* LEFT: LOGO & EXPLORE */}
+        <div className="flex items-center gap-1 lg:gap-6 shrink-0">
+          <Link href="/" className="flex items-center gap-1">
+            <img src="/images/icon.png" alt="EduStream" className="h-14 w-auto" />
+            <span className="hidden sm:block text-xl font-bold tracking-tight text-slate-900">EduStream</span>
+          </Link>
+          <Link href="/courses" className="hidden lg:flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">
+            Explore
+          </Link>
+        </div>
+
+        {/* CENTER: SEARCH BAR */}
+        <div className="flex-1 max-w-[700px] hidden md:block">
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-slate-400 group-focus-within:text-[#5624d0] transition-colors" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search for anything"
+              className="w-full bg-[#f7f9fa] border border-[#1c1d1f]/10 rounded-full py-2.5 pl-11 pr-4 text-sm focus:bg-white focus:border-[#1c1d1f] focus:ring-0 transition-all outline-none"
+            />
+          </div>
+        </div>
+
+        {/* RIGHT: NAVIGATION & AUTH */}
+        <div className="flex items-center gap-1 lg:gap-4 ml-auto shrink-0">
+
+          {/* Roles Links */}
+          <nav className="hidden lg:flex items-center gap-4">
+            {isAuthenticated ? (
+              <>
+                {(user?.role === 'TUTOR' || user?.role === 'ADMIN') ? (
+                  <Link href="/tutor/dashboard" className="text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">Tutor</Link>
+                ) : (
+                  <Link href="/teaching" className="text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">Teach on EduStream</Link>
+                )}
+                {user?.role === 'STUDENT' && (
+                  <Link href="/my-learning" className="text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">My learning</Link>
+                )}
+              </>
+            ) : (
+              <Link href="/teaching" className="text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">Teach on EduStream</Link>
+            )}
           </nav>
 
-          {/* Desktop Auth */}
-          <div className="hidden md:flex items-center gap-4">
-            {isAuthenticated && user ? (
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-semibold text-gray-700">Hi, {user.username}</span>
-                <Button variant="outline" onClick={logout} className="border-gray-300">
-                  Logout
-                </Button>
-                {user.role === 'ADMIN' && (
-                  <Link href="/admin">
-                    <Button variant="default">Dashboard</Button>
-                  </Link>
-                )}
-              </div>
+          {/* Icons & Profile */}
+          <div className="flex items-center gap-0.5 lg:gap-2">
+            {isAuthenticated ? (
+              <>
+                <button className="p-2.5 text-slate-600 hover:text-[#5624d0] transition-colors hidden sm:block">
+                  <Heart className="h-5 w-5" />
+                </button>
+                <Link href="/cart" className="p-2.5 text-slate-600 hover:text-[#5624d0] transition-colors">
+                  <ShoppingCart className="h-5 w-5" />
+                </Link>
+                <button className="p-2.5 text-slate-600 hover:text-[#5624d0] transition-colors relative">
+                  <Bell className="h-5 w-5" />
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-[#a435f0] border-2 border-white rounded-full"></span>
+                </button>
+
+                {/* Profile Avatar with Dropdown */}
+                <div className="relative ml-2">
+                  <button
+                    onClick={() => setProfileOpen(!profileOpen)}
+                    className="w-9 h-9 rounded-full bg-[#1c1d1f] text-white flex items-center justify-center text-sm font-bold relative border-2 border-transparent hover:border-slate-200 transition-all"
+                  >
+                    {user?.username?.substring(0, 2).toUpperCase() || 'ES'}
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#a435f0] border-2 border-white rounded-full"></span>
+                  </button>
+
+                  {profileOpen && (
+                    <div className="absolute right-0 mt-3 w-64 bg-white border border-slate-200 shadow-xl rounded-lg py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+                      <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold">
+                          {user?.username?.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-slate-900 truncate">{user?.username}</span>
+                          <span className="text-xs text-slate-500 truncate">{user?.email || 'user@edustream.com'}</span>
+                        </div>
+                      </div>
+                      <div className="py-2">
+                        <Link href="/profile" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Profile</Link>
+                        <Link href="/my-learning" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My learning</Link>
+                        <Link href="/cart" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Cart</Link>
+                        <Link href="/wishlist" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Wishlist</Link>
+                      </div>
+                      <div className="border-t border-slate-100 pt-2">
+                        <button
+                          onClick={logout}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium"
+                        >
+                          Log out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 lg:gap-3">
                 <Link href="/login">
-                  <Button variant="ghost" className="text-gray-600 font-semibold hover:text-primary">Sign In</Button>
+                  <Button variant="ghost" className="text-slate-900 font-bold hover:text-[#5624d0]">Log in</Button>
                 </Link>
                 <Link href="/register">
-                  <Button className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 shadow-md">Get Started</Button>
+                  <Button className="bg-[#1c1d1f] hover:bg-slate-800 text-white font-bold px-5">Sign up</Button>
                 </Link>
               </div>
             )}
-          </div>
 
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden text-gray-600 hover:text-primary p-2"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+            {/* Mobile Nav Button */}
+            <button
+              className="lg:hidden p-2.5 text-slate-600 hover:text-[#5624d0]"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* MOBILE MENU */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full">
-          <div className="flex flex-col px-4 py-6 space-y-4">
-            <Link href="/courses" className="text-gray-700 font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Courses</Link>
-            <Link href="/about" className="text-gray-700 font-medium py-2" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
-            <hr className="border-gray-100" />
-            {isAuthenticated && user ? (
-              <div className="flex flex-col gap-3">
-                <span className="text-gray-500 text-sm">Signed in as <span className="font-bold text-gray-900">{user.username}</span></span>
-                <Button variant="outline" onClick={() => { logout(); setMobileMenuOpen(false); }} className="w-full justify-center">Logout</Button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3 pt-2">
-                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full justify-center">Sign In</Button>
-                </Link>
-                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full justify-center">Get Started</Button>
-                </Link>
+        <div className="lg:hidden bg-white border-t border-slate-100 w-full animate-in slide-in-from-top duration-300 shadow-xl overflow-y-auto max-h-[calc(100vh-72px)]">
+          <div className="px-6 py-6 space-y-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input type="text" placeholder="Search for anything" className="w-full bg-slate-50 border border-slate-200 rounded-lg py-3 pl-10 pr-4 text-sm" />
+            </div>
+
+            <nav className="flex flex-col gap-4">
+              <Link href="/courses" className="text-slate-900 font-bold text-lg border-b border-slate-100 pb-2">Browse Courses</Link>
+              {isAuthenticated ? (
+                <>
+                  <Link href="/my-learning" className="text-slate-600 font-medium">My learning</Link>
+                  <Link href="/tutor/dashboard" className="text-slate-600 font-medium">Tutor Dashboard</Link>
+                </>
+              ) : (
+                <Link href="/teaching" className="text-slate-600 font-medium">Teach on EduStream</Link>
+              )}
+            </nav>
+
+            {!isAuthenticated && (
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                <Link href="/login" className="w-full"><Button variant="outline" className="w-full font-bold">Log in</Button></Link>
+                <Link href="/register" className="w-full"><Button className="w-full bg-[#1c1d1f] font-bold">Sign up</Button></Link>
               </div>
             )}
           </div>

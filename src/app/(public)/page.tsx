@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import HeroSection from '@/components/home/HeroSection';
 import CourseList from '@/components/home/CourseList';
-import { Play } from 'lucide-react';
 
 function CourseListSkeleton() {
   return (

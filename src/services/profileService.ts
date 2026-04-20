@@ -1,35 +1,46 @@
-import api from "@/lib/api";
+import api from '@/lib/api';
 
 export interface UserProfile {
   id: string;
-  name: string;
-  bio: string;
-  avatarUrl: string;
-  createdAt: string;
+  username: string;
+  email?: string;
+  fullName?: string;
+  dob?: string;
+  status?: string;
+  roleName?: string;
+}
+
+type ApiResponse<T> = {
+  code?: number;
+  message?: string;
+  result?: T;
+};
+
+function unwrapResult<T>(payload: T | ApiResponse<T>) {
+  if (payload && typeof payload === 'object' && 'result' in payload) {
+    return (payload as ApiResponse<T>).result;
+  }
+  return payload as T;
 }
 
 export const profileService = {
-  getProfile: async (): Promise<UserProfile> => {
-    const { data } = await api.get("/api/profile/me");
-    return {
-      id: data.id || "",
-      name: data.fullName || "",
-      bio: data.bio || "",
-      avatarUrl: data.avatarUrl || "",
-      createdAt: data.createdAt || "",
-    };
+  getProfile: async (): Promise<UserProfile | null> => {
+    const response = await api.get<ApiResponse<UserProfile> | UserProfile>('/users/my-info');
+    return unwrapResult(response) ?? null;
   },
 
-  updateProfile: async (name: string, bio: string) => {
-    return await api.put("/api/profile/me", { fullName: name, bio });
+  getTutorProfile: async () => {
+    const response = await api.get<ApiResponse<unknown> | unknown>('/api/tutor-profiles/my-profile');
+    return unwrapResult(response);
   },
 
-  updateAvatar: async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    const { data } = await api.put("/api/profile/me/avatar", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return data.avatar_url || data.avatarUrl;
-  }
+  updateTutorProfile: async (payload: { headline?: string; bio?: string; videoIntroduction?: string }) => {
+    const response = await api.put<ApiResponse<unknown> | unknown>('/api/tutor-profiles/me', payload);
+    return unwrapResult(response);
+  },
+
+  createTutorProfile: async (payload: { headline: string; bio: string; videoIntroduction?: string }) => {
+    const response = await api.post<ApiResponse<unknown> | unknown>('/api/tutor-profiles', payload);
+    return unwrapResult(response);
+  },
 };

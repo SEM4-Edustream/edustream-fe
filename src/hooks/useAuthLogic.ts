@@ -3,37 +3,51 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { authService, RegisterDTO } from '@/services/authService';
 
+function decodeJwtPayload(token: string) {
+  const base64Url = token.split('.')[1];
+  if (!base64Url) return null;
+
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  try {
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
+        .join('')
+    );
+
+    return JSON.parse(jsonPayload);
+  } catch {
+    return null;
+  }
+}
+
 export function useLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuth();
-  
+
   const handleLogin = async (username: string, password: string) => {
     setError('');
     setLoading(true);
-    
+
     try {
       const result = await authService.login(username, password);
-      
-      // Decode JWT Payload to introspect user info
-      const base64Url = result.token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      
-      const decoded = JSON.parse(jsonPayload);
-      const userScope = decoded.scope || 'USER';
+      const decoded = decodeJwtPayload(result.token);
+
+      if (!decoded?.sub) {
+        throw new Error('Đăng nhập thành công nhưng token không hợp lệ.');
+      }
 
       login(result.token, {
-        id: decoded.sub, 
+        id: decoded.sub,
         username: decoded.sub,
-        role: userScope
+        role: decoded.scope || 'USER'
       });
-      
     } catch (err: any) {
       console.error(err);
-      setError(err.response?.data?.message || err.message || 'Login failed. Please check your credentials.');
+      const message = err?.response?.data?.message || err?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -51,18 +65,18 @@ export function useRegister() {
   const submitRegistration = (data: RegisterDTO) => {
     setError('');
     setSuccess('');
-    
+
     startTransition(async () => {
       try {
         await authService.register(data);
-        setSuccess('Registration successful! Redirecting to login...');
-        
+        setSuccess('Đăng ký thành công… chuyển đến trang đăng nhập.');
+
         setTimeout(() => {
           router.push('/login');
         }, 2000);
       } catch (err: any) {
         console.error(err);
-        setError(err.response?.data?.message || 'Registration failed. Please try again.');
+        setError(err?.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.');
       }
     });
   };
