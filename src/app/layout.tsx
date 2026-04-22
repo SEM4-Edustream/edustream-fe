@@ -1,5 +1,4 @@
-import type { Metadata } from "next";
-import { Inter, Lora } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 import { Toaster } from "sonner";
@@ -12,12 +11,6 @@ import { ViewTransitions } from 'next-view-transitions';
 const inter = Inter({ 
   subsets: ["latin", "vietnamese"],
   variable: "--font-inter",
-  display: "swap"
-});
-
-const lora = Lora({
-  subsets: ["latin", "vietnamese"],
-  variable: "--font-lora",
   display: "swap"
 });
 
@@ -37,7 +30,7 @@ export default function RootLayout({
   return (
     <ViewTransitions>
       <html lang="vi" suppressHydrationWarning>
-        <body className={`${inter.variable} ${lora.variable} font-sans antialiased text-slate-700 bg-slate-50`}>
+        <body className={`${inter.variable} font-sans antialiased text-slate-700 bg-slate-50`}>
           <AuthProvider>
             {children}
             <Toaster richColors position="top-right" closeButton />

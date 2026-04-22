@@ -1,130 +1,155 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { Play, CheckCircle2, TrendingUp, Users, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, PlayCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const slides = [
+  {
+    id: 1,
+    title: "Learning that gets you",
+    description: "Skills for your present (and your future). Get started with us today and master relevant tech skills.",
+    buttonText: "Explore Courses",
+    buttonLink: "/courses",
+    image: "/images/hero/Gemini_Generated_Image_lu6g2wlu6g2wlu6g.png",
+    badge: "Limited Time Offer"
+  },
+  {
+    id: 2,
+    title: "Become a Tutor",
+    description: "Tutors from around the world teach millions of learners on EduStream. We provide the tools and platform to teach what you love.",
+    buttonText: "Become a Tutor",
+    buttonLink: "/teaching",
+    image: "/images/hero/Gemini_Generated_Image_lu6g2wlu6g2wlu6g.png",
+    badge: "Teach the World"
+  }
+];
 
 export default function HeroSection() {
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  const nextSlide = () => {
+    setDirection(1);
+    setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setDirection(-1);
+    setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
+
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const variants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0
+    })
+  };
+
   return (
-    <section className="relative w-full max-w-[1400px] min-h-[600px] md:min-h-[750px] mx-auto px-4 lg:px-8 mt-12 mb-20 overflow-hidden flex items-center bg-gray-50/50 rounded-3xl">
-      {/* Dynamic Abstract Shapes (Glassmorphism & Gradients) */}
-      <div 
-        className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-gradient-to-br from-blue-400/30 to-purple-500/30 blur-2xl rounded-full mix-blend-multiply animate-pulse" 
-        style={{ willChange: 'transform, opacity', transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }}
-      />
-      <div 
-        className="absolute bottom-[-10%] left-[10%] w-[400px] h-[400px] bg-gradient-to-tr from-pink-400/20 to-orange-400/20 blur-2xl rounded-full mix-blend-multiply animate-pulse" 
-        style={{ animationDelay: '2s', willChange: 'transform, opacity', transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }} 
-      />
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full relative z-10 py-16">
-        {/* Left Text Column */}
-        <div className="flex flex-col gap-8 justify-center max-w-xl">
-          <div className="inline-flex">
-            <Badge variant="secondary" className="px-3 py-1 font-semibold text-sm bg-blue-100 text-blue-700 hover:bg-blue-200 cursor-default border-none">
-              #1 Premium Learning Platform
-            </Badge>
-          </div>
-          
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-foreground leading-[1.1] tracking-tight">
-            Master the Skills to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Drive your Career</span>
-          </h1>
-          
-          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Get certified, master modern tech skills, and level up your career — whether you’re starting out or a seasoned pro. Over 1,200+ online courses available.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 mt-2">
-            <Link href="/courses">
-              <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-base font-bold bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-600/20 hover:scale-105 transition-transform">
-                Explore Courses
-              </Button>
-            </Link>
-            <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 text-base font-semibold border-2 border-gray-200 hover:bg-gray-50 flex gap-2">
-              <Play className="h-4 w-4 text-blue-600 fill-current" /> Watch Video
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-6 mt-6">
-            <div className="flex -space-x-4">
-              <Image className="w-12 h-12 rounded-full border-4 border-white" src="https://i.pravatar.cc/100?img=1" alt="Student" width={48} height={48} />
-              <Image className="w-12 h-12 rounded-full border-4 border-white" src="https://i.pravatar.cc/100?img=2" alt="Student" width={48} height={48} />
-              <Image className="w-12 h-12 rounded-full border-4 border-white" src="https://i.pravatar.cc/100?img=3" alt="Student" width={48} height={48} />
-              <Image className="w-12 h-12 rounded-full border-4 border-white" src="https://i.pravatar.cc/100?img=4" alt="Student" width={48} height={48} />
-              <div className="w-12 h-12 rounded-full border-4 border-white bg-gray-100 flex items-center justify-center text-sm font-bold text-gray-500 z-10">1M+</div>
+    <section className="relative w-full h-[450px] md:h-[550px] lg:h-[650px] mb-12 overflow-hidden bg-[#f7f9fa]">
+      <div className="relative w-full h-full overflow-hidden">
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.div
+            key={current}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.4 }
+            }}
+            className="absolute inset-0 w-full h-full"
+          >
+            {/* Background Image */}
+            <div className="relative w-full h-full">
+              <Image
+                src={slides[current].image}
+                alt={slides[current].title}
+                fill
+                priority
+                className="object-cover"
+                sizes="100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent" />
             </div>
-            <div className="flex flex-col">
-              <div className="flex text-yellow-400">
-                <Star className="fill-current w-4 h-4"/>
-                <Star className="fill-current w-4 h-4"/>
-                <Star className="fill-current w-4 h-4"/>
-                <Star className="fill-current w-4 h-4"/>
-                <Star className="fill-current w-4 h-4"/>
-              </div>
-              <span className="text-sm font-semibold text-gray-600 mt-1">4.9/5 from 1M+ learners</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Right Geometric Collage */}
-        <div className="relative hidden lg:block h-[600px] w-full">
-          <div className="absolute top-[10%] right-[5%] w-[80%] h-[80%] rounded-[3rem] overflow-hidden shadow-2xl z-10 border-8 border-white/50 backdrop-blur-sm relative">
-            <Image 
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-              alt="Students learning" 
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
-              loading="eager"
+            {/* Content Box */}
+            <div className="absolute inset-0 flex items-center px-4 md:px-16 lg:px-24">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="max-w-[440px] bg-white p-8 md:p-10 shadow-xl"
+              >
+                <div className="flex flex-col gap-4">
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-slate-900 leading-tight">
+                    {slides[current].title}
+                  </h2>
+                  <p className="text-base md:text-lg text-slate-700 leading-relaxed font-medium">
+                    {slides[current].description}
+                  </p>
+                  <div className="pt-2">
+                    <Link href={slides[current].buttonLink}>
+                      <Button size="lg" className="h-12 px-6 text-base font-bold bg-[#1c1d1f] hover:bg-slate-800 text-white rounded-none transition-all">
+                        {slides[current].buttonText}
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Navigation Arrows */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-slate-900/50 text-white hover:bg-slate-900 transition-all opacity-0 md:opacity-100"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-slate-900/50 text-white hover:bg-slate-900 transition-all opacity-0 md:opacity-100"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+
+        {/* Indicators */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+          {slides.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setDirection(idx > current ? 1 : -1);
+                setCurrent(idx);
+              }}
+              className={`w-3 h-3 rounded-full transition-all ${
+                current === idx ? 'bg-white w-8' : 'bg-white/50'
+              }`}
             />
-          </div>
-          
-          <Card 
-            className="absolute top-[15%] left-0 z-20 w-48 shadow-2xl xl:scale-110 lg:scale-100 animate-bounce duration-[3000ms]"
-            style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }}
-          >
-            <CardContent className="p-4 flex items-center gap-4">
-              <div className="bg-green-100 p-2 rounded-full">
-                <CheckCircle2 className="h-6 w-6 text-green-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold">250+</p>
-                <p className="text-xs text-gray-500 font-semibold">Tutors Available</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className="absolute bottom-[20%] right-[-5%] z-20 w-56 shadow-2xl xl:scale-110 lg:scale-100 animate-bounce duration-[4000ms]"
-            style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }}
-          >
-            <CardContent className="p-4 flex items-center gap-4">
-              <div className="bg-blue-100 p-2 rounded-full">
-                <TrendingUp className="h-6 w-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-xl font-bold">In-Demand</p>
-                <p className="text-xs text-gray-500 font-semibold">Tech Skills 2024</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className="absolute bottom-[5%] left-[10%] z-20 w-40 shadow-2xl xl:scale-110 lg:scale-100 animate-bounce duration-[5000ms]"
-            style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', backfaceVisibility: 'hidden' }}
-          >
-            <CardContent className="p-4 flex flex-col items-center gap-2 text-center">
-              <div className="bg-yellow-100 p-2 rounded-full">
-                <Users className="h-6 w-6 text-yellow-600" />
-              </div>
-              <div>
-                <p className="text-lg font-bold">Community</p>
-                <p className="text-xs text-gray-500 font-semibold">Support 24/7</p>
-              </div>
-            </CardContent>
-          </Card>
+          ))}
         </div>
       </div>
     </section>

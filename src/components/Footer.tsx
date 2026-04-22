@@ -13,11 +13,11 @@ const Footer = () => {
               <div className="bg-primary p-2 rounded-lg">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl font-extrabold tracking-tight text-gray-900">
+              <span className="text-xl font-semibold tracking-tight text-gray-900">
                 EduStream
               </span>
             </Link>
-            <p className="text-gray-500 mb-6 font-medium leading-relaxed">
+            <p className="text-gray-700 mb-6 font-medium leading-relaxed">
               Empowering learners globally with world-class education, anytime, anywhere.
             </p>
             <div className="flex items-center gap-4 text-gray-400">
@@ -38,17 +38,17 @@ const Footer = () => {
 
           {/* Links */}
           <div>
-            <h4 className="font-bold text-gray-900 mb-6">Company</h4>
+            <h4 className="font-semibold text-gray-900 mb-6">Company</h4>
             <ul className="space-y-4">
-              <li><Link href="/about" className="text-gray-500 hover:text-primary font-medium transition-colors">About Us</Link></li>
-              <li><Link href="/careers" className="text-gray-500 hover:text-primary font-medium transition-colors">Careers</Link></li>
-              <li><Link href="/contact" className="text-gray-500 hover:text-primary font-medium transition-colors">Contact</Link></li>
-              <li><Link href="/blog" className="text-gray-500 hover:text-primary font-medium transition-colors">Blog</Link></li>
+              <li><Link href="/about" className="text-gray-700 hover:text-primary font-medium transition-colors">About Us</Link></li>
+              <li><Link href="/careers" className="text-gray-700 hover:text-primary font-medium transition-colors">Careers</Link></li>
+              <li><Link href="/contact" className="text-gray-700 hover:text-primary font-medium transition-colors">Contact</Link></li>
+              <li><Link href="/blog" className="text-gray-700 hover:text-primary font-medium transition-colors">Blog</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-gray-900 mb-6">Product</h4>
+            <h4 className="font-semibold text-gray-900 mb-6">Product</h4>
             <ul className="space-y-4">
               <li><Link href="/courses" className="text-gray-500 hover:text-primary font-medium transition-colors">Courses</Link></li>
               <li><Link href="/pricing" className="text-gray-500 hover:text-primary font-medium transition-colors">Pricing</Link></li>
@@ -58,7 +58,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-gray-900 mb-6">Support</h4>
+            <h4 className="font-semibold text-gray-900 mb-6">Support</h4>
             <ul className="space-y-4">
               <li><Link href="/help" className="text-gray-500 hover:text-primary font-medium transition-colors">Help Center</Link></li>
               <li><Link href="/terms" className="text-gray-500 hover:text-primary font-medium transition-colors">Terms of Service</Link></li>

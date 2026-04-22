@@ -39,7 +39,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
               <ul className="flex flex-col gap-3 mt-2" aria-label="Feature list">
                 <li className="flex items-center gap-3">
                   <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" fill="currentColor" stroke="white" aria-hidden="true" />
-                  <span className="text-slate-800 font-medium">Expert Instructors</span>
+                  <span className="text-slate-800 font-medium">Expert Tutors</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" fill="currentColor" stroke="white" aria-hidden="true" />
@@ -79,14 +79,14 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
                   <div className="bg-orange-100 p-2 rounded-full" aria-hidden="true">
                     <BookOpen className="w-5 h-5 text-orange-500" />
                   </div>
-                  <span className="text-slate-900 font-bold text-sm lg:text-[15px]">50+ Courses</span>
+                  <span className="text-slate-900 font-semibold text-sm lg:text-[15px]">50+ Courses</span>
                 </div>
 
                 <div className="ml-0 bg-white rounded-full py-3 px-6 shadow-[0_8px_30px_rgb(0,0,0,0.1)] flex items-center gap-3">
                   <div className="bg-emerald-100 p-2 rounded-full" aria-hidden="true">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                   </div>
-                  <span className="text-slate-900 font-bold text-sm lg:text-[15px]">Certified Courses</span>
+                  <span className="text-slate-900 font-semibold text-sm lg:text-[15px]">Certified Courses</span>
                 </div>
 
                 <div className="ml-8 bg-white rounded-full py-3 px-6 shadow-[0_8px_30px_rgb(0,0,0,0.1)] flex items-center gap-3">
@@ -131,8 +131,8 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
                       <Avatar className="w-10 h-10 border-2 border-white shadow-sm"><AvatarImage src="/images/hero/ava3.jpg" alt="Student avatar 3" /></Avatar>
                       <Avatar className="w-10 h-10 border-2 border-white shadow-sm"><AvatarImage src="/images/hero/ava4.jpg" alt="Student avatar 4" /></Avatar>
                     </div>
-                    <div className="text-slate-900 font-black text-2xl tracking-tight mb-0.5">70,324+</div>
-                    <div className="text-slate-500 text-[13.5px] font-medium leading-tight">Students Preparing<br/>with us</div>
+                    <div className="text-slate-900 font-bold text-2xl tracking-tight mb-0.5">70,324+</div>
+                    <div className="text-slate-600 text-[13.5px] font-medium leading-tight">Students Preparing<br/>with us</div>
                   </div>
                 </div>
 
