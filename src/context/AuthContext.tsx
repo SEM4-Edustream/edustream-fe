@@ -9,8 +9,9 @@ interface User {
   id: string;
   username: string;
   role: string;
-  avatarUrl?: string; // Bổ sung avatarUrl
+  avatarUrl?: string;
   email?: string;
+  fullName?: string;
 }
 
 export type TutorStatus = 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'BANNED' | 'NOT_STARTED';

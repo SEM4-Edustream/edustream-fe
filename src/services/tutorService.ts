@@ -26,6 +26,8 @@ export interface TutorProfileResponse {
   bio: string;
   videoIntroduction: string;
   status: string;
+  verificationStartDate?: string;
+  verifiedAt?: string;
   documents: TutorDocumentResponse[];
 }
 

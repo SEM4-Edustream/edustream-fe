@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { PlayCircle, ShieldCheck, Monitor, Smartphone, Award, Infinity, RefreshCcw, Heart, Lock } from 'lucide-react';
+import { PlayCircle, ShieldCheck, Monitor, Smartphone, Award, Infinity, RefreshCcw, Heart, Lock, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CourseSummary } from '@/services/courseService';
 import { useRouter } from 'next/navigation';

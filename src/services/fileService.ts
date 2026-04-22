@@ -2,6 +2,11 @@
 import axiosInstance from "@/lib/axios";
 import axios from "axios"; // Still needed for the direct S3 PUT request to avoid interceptors
 
+export interface FileUploadResponse {
+  uploadUrl: string;
+  fileUrl: string;
+}
+
 const fileService = {
   // Step 1: Get presigned URL from backend
   getPresignedUrl: async (fileName: string, contentType: string, type: "VIDEO" | "DOCUMENT" = "VIDEO"): Promise<FileUploadResponse> => {

@@ -71,7 +71,7 @@ export default function CourseListTable({ courses }: CourseListTableProps) {
                           {course.title}
                         </h4>
                         <p className="text-xs text-slate-400 font-medium truncate italic">
-                          {course.category} • Updated 3 days ago
+                          {course.category?.name || 'Uncategorized'} • Updated recently
                         </p>
                       </div>
                     </div>

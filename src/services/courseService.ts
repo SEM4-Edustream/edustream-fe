@@ -72,12 +72,9 @@ function unwrapResult<T>(payload: T | ApiResponse<T>) {
 }
 
 export const courseService = {
-  getPublishedCourses: async (params?: { keyword?: string; page?: number; size?: number; sort?: string[] }) => {
-    const response = await api.get<ApiResponse<PageMeta<CourseSummary>> | PageMeta<CourseSummary>>('/api/courses', {
-      params,
-    });
-
-    return unwrapResult(response) ?? {
+  getPublishedCourses: async (params?: { keyword?: string; page?: number; size?: number; sort?: string[] }): Promise<PageMeta<CourseSummary>> => {
+    const response = await api.get<any>('/api/courses', { params });
+    return (unwrapResult(response) as any) ?? {
       totalElements: 0,
       totalPages: 0,
       number: 0,
@@ -89,10 +86,10 @@ export const courseService = {
     };
   },
 
-  getPublishedCourseDetail: async (id: string) => {
+  getPublishedCourseDetail: async (id: string): Promise<CourseSummary | null> => {
     try {
-      const response = await api.get<ApiResponse<CourseSummary> | CourseSummary>(`/api/courses/${id}`);
-      return unwrapResult(response);
+      const response = await api.get<any>(`/api/courses/${id}`);
+      return unwrapResult(response) as any;
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
         return null;
@@ -101,54 +98,54 @@ export const courseService = {
     }
   },
 
-  getMyTutorCourses: async (params?: { status?: string; page?: number; size?: number; sort?: string }) => {
-    const response = await api.get<ApiResponse<PageMeta<CourseSummary>> | PageMeta<CourseSummary>>('/api/tutor-courses', { params });
-    return unwrapResult(response);
+  getMyTutorCourses: async (params?: { status?: string; page?: number; size?: number; sort?: string }): Promise<PageMeta<CourseSummary>> => {
+    const response = await api.get<any>('/api/tutor-courses', { params });
+    return unwrapResult(response) as any;
   },
 
-  getCourseDetail: async (id: string) => {
-    const response = await api.get<ApiResponse<CourseSummary> | CourseSummary>(`/api/tutor-courses/${id}`);
-    return unwrapResult(response);
+  getCourseDetail: async (id: string): Promise<CourseSummary> => {
+    const response = await api.get<any>(`/api/tutor-courses/${id}`);
+    return unwrapResult(response) as any;
   },
 
-  getCategories: async () => {
-    const response = await api.get<ApiResponse<CategoryResponse[]> | CategoryResponse[]>('/api/categories');
-    return unwrapResult(response) ?? [];
+  getCategories: async (): Promise<CategoryResponse[]> => {
+    const response = await api.get<any>('/api/categories');
+    return (unwrapResult(response) as any) ?? [];
   },
 
-  createCourse: async (payload: any) => {
-    const response = await api.post<ApiResponse<CourseSummary> | CourseSummary>('/api/tutor-courses', payload);
-    return unwrapResult(response);
+  createCourse: async (payload: any): Promise<CourseSummary> => {
+    const response = await api.post<any>('/api/tutor-courses', payload);
+    return unwrapResult(response) as any;
   },
 
-  updateCourse: async (id: string, payload: any) => {
-    const response = await api.put<ApiResponse<CourseSummary> | CourseSummary>(`/api/tutor-courses/${id}`, payload);
-    return unwrapResult(response);
+  updateCourse: async (id: string, payload: any): Promise<CourseSummary> => {
+    const response = await api.put<any>(`/api/tutor-courses/${id}`, payload);
+    return unwrapResult(response) as any;
   },
 
-  addModule: async (courseId: string, payload: { title: string; orderIndex: number }) => {
-    const response = await api.post<ApiResponse<CourseModuleResponse> | CourseModuleResponse>(`/api/tutor-courses/${courseId}/modules`, payload);
-    return unwrapResult(response);
+  addModule: async (courseId: string, payload: { title: string; orderIndex: number }): Promise<CourseModuleResponse> => {
+    const response = await api.post<any>(`/api/tutor-courses/${courseId}/modules`, payload);
+    return unwrapResult(response) as any;
   },
 
-  addLesson: async (moduleId: string, payload: any) => {
-    const response = await api.post<ApiResponse<LessonResponse> | LessonResponse>(`/api/tutor-courses/modules/${moduleId}/lessons`, payload);
-    return unwrapResult(response);
+  addLesson: async (moduleId: string, payload: any): Promise<LessonResponse> => {
+    const response = await api.post<any>(`/api/tutor-courses/modules/${moduleId}/lessons`, payload);
+    return unwrapResult(response) as any;
   },
 
-  updateLesson: async (moduleId: string, lessonId: string, payload: any) => {
-    const response = await api.put<ApiResponse<LessonResponse> | LessonResponse>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`, payload);
-    return unwrapResult(response);
+  updateLesson: async (moduleId: string, lessonId: string, payload: any): Promise<LessonResponse> => {
+    const response = await api.put<any>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`, payload);
+    return unwrapResult(response) as any;
   },
 
-  deleteLesson: async (moduleId: string, lessonId: string) => {
-    const response = await api.delete<ApiResponse<void> | void>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`);
-    return unwrapResult(response);
+  deleteLesson: async (moduleId: string, lessonId: string): Promise<void | any> => {
+    const response = await api.delete<any>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`);
+    return unwrapResult(response) as any;
   },
 
-  submitCourse: async (id: string) => {
-    const response = await api.post<ApiResponse<CourseSummary> | CourseSummary>(`/api/tutor-courses/${id}/submit`);
-    return unwrapResult(response);
+  submitCourse: async (id: string): Promise<CourseSummary> => {
+    const response = await api.post<any>(`/api/tutor-courses/${id}/submit`);
+    return unwrapResult(response) as any;
   },
 };
 

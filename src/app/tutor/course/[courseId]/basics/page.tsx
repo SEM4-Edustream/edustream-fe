@@ -33,7 +33,7 @@ import { cn } from '@/lib/utils';
 
 const basicsSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100),
-  description: z.string().max(2000, 'Description is too long').optional(),
+  description: z.string().max(2000, 'Description is too long').optional().or(z.literal('')),
   categoryId: z.string().min(1, 'Category is required'),
   price: z.coerce.number().min(0, 'Price must be positive'),
 });
@@ -49,7 +49,7 @@ export default function CourseBasicsPage() {
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
   const form = useForm<BasicsFormValues>({
-    resolver: zodResolver(basicsSchema),
+    resolver: zodResolver(basicsSchema) as any,
     defaultValues: {
       title: '',
       description: '',

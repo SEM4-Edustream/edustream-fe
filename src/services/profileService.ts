@@ -12,6 +12,7 @@ export interface UserProfile {
   headline?: string;
   bio?: string;
   avatarUrl?: string;
+  createdAt?: string;
 }
 
 type ApiResponse<T> = {
@@ -29,12 +30,12 @@ function unwrapResult<T>(payload: T | ApiResponse<T>) {
 
 export const profileService = {
   getProfile: async (): Promise<UserProfile | null> => {
-    const response = await api.get<ApiResponse<UserProfile> | UserProfile>('/users/my-info');
+    const response: any = await api.get<ApiResponse<UserProfile> | UserProfile>('/users/my-info');
     const baseInfo = unwrapResult(response);
     
     // Merge with tutor info to get headline and bio if they exist
     try {
-      const tutorResponse = await api.get<ApiResponse<any>>('/api/tutor-profiles/my-profile');
+      const tutorResponse: any = await api.get<ApiResponse<any>>('/api/tutor-profiles/my-profile');
       const tutorInfo = unwrapResult(tutorResponse);
       return { 
         ...baseInfo, 
@@ -48,7 +49,7 @@ export const profileService = {
   },
 
   getTutorProfile: async () => {
-    const response = await api.get<ApiResponse<unknown> | unknown>('/api/tutor-profiles/my-profile');
+    const response: any = await api.get<ApiResponse<unknown> | unknown>('/api/tutor-profiles/my-profile');
     return unwrapResult(response);
   },
 
@@ -73,7 +74,7 @@ export const profileService = {
   },
 
   updateTutorProfile: async (payload: { headline?: string; bio?: string; videoIntroduction?: string }) => {
-    const response = await api.put<ApiResponse<unknown> | unknown>('/api/tutor-profiles/me', payload);
+    const response: any = await api.put<ApiResponse<unknown> | unknown>('/api/tutor-profiles/me', payload);
     return unwrapResult(response);
   },
 
@@ -96,7 +97,7 @@ export const profileService = {
   },
 
   createTutorProfile: async (payload: { headline: string; bio: string; videoIntroduction?: string }) => {
-    const response = await api.post<ApiResponse<unknown> | unknown>('/api/tutor-profiles', payload);
+    const response: any = await api.post<ApiResponse<unknown> | unknown>('/api/tutor-profiles', payload);
     return unwrapResult(response);
   },
 };

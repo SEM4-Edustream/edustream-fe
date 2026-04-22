@@ -5,7 +5,7 @@ import { CourseSummary } from '@/services/courseService';
 import Link from 'next/link';
 
 interface CourseHeroProps {
-  course: Course;
+  course: CourseSummary;
 }
 
 export default function CourseHero({ course }: CourseHeroProps) {

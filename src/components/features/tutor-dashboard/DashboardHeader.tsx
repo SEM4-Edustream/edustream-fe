@@ -55,7 +55,7 @@ export default function DashboardHeader() {
         <Avatar className="w-8 h-8 cursor-pointer ring-1 ring-slate-200">
            <AvatarImage src="" />
            <AvatarFallback className="bg-[#1c1d1f] text-white font-bold text-[10px] tracking-tighter uppercase">
-             {user?.fullname?.split(" ").map(n => n[0]).join("").substring(0, 2) || "LB"}
+             {user?.fullName?.split(" ").map(n => n[0]).join("").substring(0, 2) || "LB"}
            </AvatarFallback>
         </Avatar>
       </div>
