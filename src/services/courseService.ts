@@ -101,9 +101,9 @@ export const courseService = {
     }
   },
 
-  getMyTutorCourses: async () => {
-    const response = await api.get<ApiResponse<CourseSummary[]> | CourseSummary[]>('/api/tutor-courses');
-    return unwrapResult(response) ?? [];
+  getMyTutorCourses: async (params?: { status?: string; page?: number; size?: number; sort?: string }) => {
+    const response = await api.get<ApiResponse<PageMeta<CourseSummary>> | PageMeta<CourseSummary>>('/api/tutor-courses', { params });
+    return unwrapResult(response);
   },
 
   getCourseDetail: async (id: string) => {
@@ -133,6 +133,16 @@ export const courseService = {
 
   addLesson: async (moduleId: string, payload: any) => {
     const response = await api.post<ApiResponse<LessonResponse> | LessonResponse>(`/api/tutor-courses/modules/${moduleId}/lessons`, payload);
+    return unwrapResult(response);
+  },
+
+  updateLesson: async (moduleId: string, lessonId: string, payload: any) => {
+    const response = await api.put<ApiResponse<LessonResponse> | LessonResponse>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`, payload);
+    return unwrapResult(response);
+  },
+
+  deleteLesson: async (moduleId: string, lessonId: string) => {
+    const response = await api.delete<ApiResponse<void> | void>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`);
     return unwrapResult(response);
   },
 

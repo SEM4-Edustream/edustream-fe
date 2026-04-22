@@ -16,7 +16,7 @@ export function CourseCard({ href, children, className, ...props }: CourseCardPr
     <Link href={href} className="group block h-full">
       <Card 
         className={cn(
-          "overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 rounded-2xl cursor-pointer h-full flex flex-col",
+          "overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 rounded-2xl cursor-pointer h-full flex flex-col",
           className
         )}
         {...props}
@@ -30,7 +30,7 @@ export function CourseCard({ href, children, className, ...props }: CourseCardPr
 // 2. Thumbnail Component
 export function CourseCardThumbnail({ src, alt = "Thumbnail", isBestSeller = false }: { src: string, alt?: string, isBestSeller?: boolean }) {
   return (
-    <div className="relative h-[220px] w-full overflow-hidden">
+    <div className="relative h-[170px] w-full overflow-hidden">
       <Image 
         src={src || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"} 
         alt={alt}
@@ -50,7 +50,7 @@ export function CourseCardThumbnail({ src, alt = "Thumbnail", isBestSeller = fal
 // 3. Content Wrapper
 export function CourseCardContent({ children, className, ...props }: React.ComponentPropsWithoutRef<typeof CardContent>) {
   return (
-    <CardContent className={cn("p-6 flex-1 flex flex-col", className)} {...props}>
+    <CardContent className={cn("p-4 flex-1 flex flex-col", className)} {...props}>
       {children}
     </CardContent>
   );
@@ -59,7 +59,7 @@ export function CourseCardContent({ children, className, ...props }: React.Compo
 // 4. Title
 export function CourseCardTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="font-semibold text-xl line-clamp-2 leading-tight mb-2 group-hover:text-blue-600 transition-colors">
+    <h3 className="font-semibold text-lg line-clamp-2 leading-tight mb-1.5 group-hover:text-indigo-600 transition-colors">
       {children}
     </h3>
   );
@@ -77,9 +77,9 @@ export function CourseCardDescription({ children }: { children: React.ReactNode 
 // 6. Author
 export function CourseCardAuthor({ name }: { name: string }) {
   return (
-    <div className="flex items-center gap-2 mb-3 mt-auto">
-      <span className="text-sm font-medium text-gray-700">By</span>
-      <span className="text-sm font-semibold text-gray-900">{name || 'EduStream Tutor'}</span>
+    <div className="flex items-center gap-2 mb-2 mt-auto">
+      <span className="text-xs font-medium text-gray-500">By</span>
+      <span className="text-xs font-semibold text-gray-900">{name || 'EduStream Tutor'}</span>
     </div>
   );
 }
@@ -96,14 +96,14 @@ export function CourseCardFooter({ children }: { children: React.ReactNode }) {
 // 8. Rating Component
 export function CourseCardRating({ value, count }: { value: number | null, count: number }) {
   return (
-    <div className="flex items-center gap-2 mb-4">
+    <div className="flex items-center gap-2 mb-3">
       <div className="flex text-yellow-400">
         {[1, 2, 3, 4, 5].map((star) => (
-          <Star key={star} className={`w-4 h-4 ${(value || 0) >= star ? 'fill-current' : 'text-gray-300'}`} />
+          <Star key={star} className={`w-3.5 h-3.5 ${(value || 0) >= star ? 'fill-current' : 'text-gray-200'}`} />
         ))}
       </div>
-      <span className="text-sm font-bold text-gray-900">{value ? value.toFixed(1) : 'New'}</span>
-      <span className="text-sm text-gray-600">({count || 0} reviews)</span>
+      <span className="text-xs font-bold text-gray-900">{value ? value.toFixed(1) : 'New'}</span>
+      <span className="text-xs text-gray-500">({count || 0})</span>
     </div>
   );
 }
@@ -111,11 +111,11 @@ export function CourseCardRating({ value, count }: { value: number | null, count
 // 9. Price Component
 export function CourseCardPrice({ value }: { value: number | null }) {
   return (
-    <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
-      <span className="text-2xl font-bold text-gray-900">
-        ${value?.toLocaleString() || '0'}
+    <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
+      <span className="text-xl font-bold text-gray-900">
+        {value === null ? 'Free' : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)}
       </span>
-      <span className="text-sm font-bold text-blue-600 group-hover:underline">View Course</span>
+      <span className="text-xs font-bold text-indigo-600 group-hover:underline">View Details</span>
     </div>
   );
 }

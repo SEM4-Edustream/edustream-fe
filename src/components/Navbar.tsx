@@ -13,14 +13,21 @@ import {
   Bell,
   ChevronDown,
   User,
-  Globe
+  Globe,
+  LayoutGrid
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { courseService, CategoryResponse } from '@/services/courseService';
+import { cn } from '@/lib/utils';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout, tutorStatus } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [exploreOpen, setExploreOpen] = useState(false);
+  const [mobileCatsOpen, setMobileCatsOpen] = useState(false);
+  const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -28,6 +35,18 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
+    
+    // Fetch categories for Explore menu
+    const fetchCats = async () => {
+      try {
+        const data = await courseService.getCategories();
+        setCategories(data);
+      } catch (err) {
+        console.error("Failed to fetch categories", err);
+      }
+    };
+
+    fetchCats();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -45,11 +64,57 @@ const Navbar = () => {
         <div className="flex items-center gap-1 lg:gap-6 shrink-0">
           <Link href="/" className="flex items-center gap-1">
             <img src="/images/icon.png" alt="EduStream" className="h-14 w-auto" />
-            <span className="hidden sm:block text-xl font-semibold tracking-tight text-slate-900">EduStream</span>
+            <span className="hidden sm:block text-xl font-bold tracking-tight text-slate-900">EduStream</span>
           </Link>
-          <Link href="/courses" className="hidden lg:flex items-center gap-1 text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">
-            Explore
-          </Link>
+          
+          {/* Explore Dropdown */}
+          <div 
+            className="relative hidden lg:block"
+            onMouseEnter={() => setExploreOpen(true)}
+            onMouseLeave={() => setExploreOpen(false)}
+          >
+            <button className="flex items-center gap-1 text-[14px] font-medium text-slate-600 hover:text-[#5624d0] transition-colors py-4">
+              Explore
+              <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", exploreOpen && "rotate-180")} />
+            </button>
+
+            <AnimatePresence>
+              {exploreOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute left-0 top-full w-64 bg-white border border-slate-200 shadow-2xl rounded-xl py-3 z-50"
+                >
+                  <div className="px-4 py-2 border-b border-slate-50 mb-2">
+                    <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">Categories</span>
+                  </div>
+                  <div className="max-h-[70vh] overflow-y-auto custom-scrollbar">
+                    {categories.length > 0 ? (
+                      categories.map((cat) => (
+                        <Link 
+                          key={cat.id}
+                          href={`/courses?category=${cat.slug}`}
+                          className="flex items-center justify-between px-4 py-2.5 text-[14px] text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-all group"
+                        >
+                          <div className="flex items-center gap-3">
+                            <LayoutGrid className="w-4 h-4 text-slate-300 group-hover:text-indigo-400" />
+                            <span className="font-medium">{cat.name}</span>
+                          </div>
+                        </Link>
+                      ))
+                    ) : (
+                      <div className="px-4 py-4 text-center">
+                        <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                        <span className="text-xs text-slate-400">Loading...</span>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* CENTER: SEARCH BAR - Expanded to fill space */}
@@ -202,7 +267,41 @@ const Navbar = () => {
             </div>
 
             <nav className="flex flex-col gap-4">
-              <Link href="/courses" className="text-slate-900 font-bold text-lg border-b border-slate-100 pb-2">Browse Courses</Link>
+              <button 
+                onClick={() => setMobileCatsOpen(!mobileCatsOpen)}
+                className="flex items-center justify-between text-slate-900 font-bold text-lg border-b border-slate-100 pb-2 text-left"
+              >
+                <span>Categories</span>
+                <ChevronDown className={cn("w-5 h-5 transition-transform", mobileCatsOpen && "rotate-180")} />
+              </button>
+              
+              <AnimatePresence>
+                {mobileCatsOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden space-y-3 pl-2"
+                  >
+                    {categories.length > 0 ? (
+                      categories.map(cat => (
+                        <Link 
+                          key={cat.id} 
+                          href={`/courses?category=${cat.slug}`}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block text-slate-600 font-medium py-1"
+                        >
+                          {cat.name}
+                        </Link>
+                      ))
+                    ) : (
+                      <span className="text-xs text-slate-400">Loading...</span>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <Link href="/courses" className="text-slate-600 font-medium pt-2">Browse All Courses</Link>
               {isAuthenticated ? (
                 <>
                   <Link href="/my-learning" className="text-slate-600 font-medium">My learning</Link>
