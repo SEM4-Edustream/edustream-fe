@@ -1,5 +1,7 @@
 import React from "react";
 import { UserCircle, Settings, Shield, Bell } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export function ProfileSidebar() {
   return (
@@ -28,7 +30,9 @@ export function ProfileSidebar() {
 
 export function ProfileLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-6 font-[sans-serif]">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-slate-50/50 pt-28 pb-20 px-4 sm:px-6 font-[sans-serif]">
       <div className="container mx-auto max-w-[1140px]">
         {/* Header Section */}
         <div className="mb-8">
@@ -45,5 +49,7 @@ export function ProfileLayout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
     </div>
+    <Footer />
+  </>
   );
 }

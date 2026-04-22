@@ -39,7 +39,7 @@ export function ProfileAvatar({ user, isUploading, onUpload }: ProfileAvatarProp
           <Avatar className="w-24 h-24 border-4 border-white shadow-md">
             <AvatarImage src={user.avatarUrl || ""} className="object-cover" />
             <AvatarFallback className="text-xl bg-blue-100 text-blue-600 font-bold">
-              {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+              {user.fullName ? user.fullName.charAt(0).toUpperCase() : "U"}
             </AvatarFallback>
           </Avatar>
           
@@ -58,7 +58,7 @@ export function ProfileAvatar({ user, isUploading, onUpload }: ProfileAvatarProp
 
         {/* User Info Area */}
         <div className="flex-1 text-center sm:text-left">
-          <h2 className="text-2xl font-bold text-slate-900">{user.name || "User"}</h2>
+          <h2 className="text-2xl font-bold text-slate-900">{user.fullName || "User"}</h2>
           <p className="text-slate-500 mt-1 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4">
               <span className="flex items-center gap-1"><Calendar className="w-4 h-4" /> Joined {joinDate}</span>
           </p>

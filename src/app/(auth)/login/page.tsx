@@ -42,7 +42,7 @@ export default function LoginPage() {
           <div className="w-full max-w-[400px] space-y-8">
             
             <div className="space-y-2">
-               <h2 className="text-2xl font-bold text-[#1c1d1f] tracking-tight">Log in to your account</h2>
+               <h2 className="text-2xl font-semibold text-[#1c1d1f] tracking-tight">Log in to your account</h2>
             </div>
 
           <form onSubmit={onSubmit} className="space-y-4">
@@ -54,7 +54,7 @@ export default function LoginPage() {
             )}
             
             <div className="space-y-1">
-              <Label htmlFor="username" className="text-sm font-bold text-[#1c1d1f] ml-1">Email or Username</Label>
+              <Label htmlFor="username" className="text-sm font-semibold text-[#1c1d1f] ml-1">Email or Username</Label>
               <Input 
                 id="username" 
                 type="text" 
@@ -68,8 +68,8 @@ export default function LoginPage() {
             
             <div className="space-y-1">
               <div className="flex items-center justify-between ml-1">
-                <Label htmlFor="password" className="text-sm font-bold text-[#1c1d1f]">Password</Label>
-                <Link href="#" className="text-xs font-bold text-[#5624d0] hover:underline">Forgot password?</Link>
+                <Label htmlFor="password" className="text-sm font-semibold text-[#1c1d1f]">Password</Label>
+                <Link href="#" className="text-xs font-semibold text-[#5624d0] hover:underline">Forgot password?</Link>
               </div>
               <Input 
                 id="password" 
@@ -84,7 +84,7 @@ export default function LoginPage() {
 
             <Button 
               type="submit" 
-              className="w-full h-12 bg-[#5624d0] hover:bg-[#401b9c] text-white text-base font-bold rounded-lg mt-2 transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50 active:scale-[0.98]"
+              className="w-full h-12 bg-[#5624d0] hover:bg-[#401b9c] text-white text-base font-semibold rounded-lg mt-2 transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50 active:scale-[0.98]"
               disabled={loading}
             >
               {loading ? (
@@ -124,7 +124,7 @@ export default function LoginPage() {
           <div className="pt-6 border-t border-slate-100 text-center">
              <p className="text-sm text-slate-600 font-medium">
                 Don't have an account?{' '}
-                <Link href="/register" className="text-[#5624d0] hover:underline font-bold">
+                <Link href="/register" className="text-[#5624d0] hover:underline font-semibold">
                    Sign up
                 </Link>
              </p>

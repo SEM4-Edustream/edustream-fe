@@ -50,7 +50,7 @@ export default function RegisterPage() {
           <div className="w-full max-w-[440px] space-y-8 py-12">
             
             <div className="space-y-2">
-               <h2 className="text-2xl font-bold text-[#1c1d1f] tracking-tight">Sign up and start learning</h2>
+               <h2 className="text-2xl font-semibold text-[#1c1d1f] tracking-tight">Sign up and start learning</h2>
             </div>
 
           <form onSubmit={onSubmit} className="space-y-4">
@@ -133,7 +133,7 @@ export default function RegisterPage() {
 
             <Button 
               type="submit" 
-              className="w-full h-12 bg-[#5624d0] hover:bg-[#401b9c] text-white text-base font-bold rounded-lg transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50 active:scale-[0.98]"
+              className="w-full h-12 bg-[#5624d0] hover:bg-[#401b9c] text-white text-base font-semibold rounded-lg transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50 active:scale-[0.98]"
               disabled={isPending || !!success}
             >
               {isPending ? (
@@ -146,7 +146,7 @@ export default function RegisterPage() {
               )}
             </Button>
             
-            <p className="text-[10px] text-slate-500 text-center px-4 leading-relaxed">
+            <p className="text-[10px] text-slate-600 text-center px-4 leading-relaxed">
                By signing up, you agree to our <Link href="#" className="underline">Terms of Use</Link> and <Link href="#" className="underline">Privacy Policy</Link>.
             </p>
           </form>
@@ -154,7 +154,7 @@ export default function RegisterPage() {
           <div className="pt-6 border-t border-slate-100 text-center">
              <p className="text-sm text-slate-600 font-medium">
                 Already have an account?{' '}
-                <Link href="/login" className="text-[#5624d0] hover:underline font-bold">
+                <Link href="/login" className="text-[#5624d0] hover:underline font-semibold">
                    Log in
                 </Link>
              </p>

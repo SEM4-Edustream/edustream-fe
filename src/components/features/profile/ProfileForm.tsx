@@ -23,12 +23,12 @@ export function ProfileForm({ user, isSaving, onChange, onSave }: ProfileFormPro
       
       <div className="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="col-span-1 md:col-span-2 space-y-2">
-          <Label htmlFor="name" className="text-slate-700 font-medium">Full Name</Label>
+          <Label htmlFor="fullName" className="text-slate-700 font-medium">Full Name</Label>
           <Input 
-            id="name" 
-            name="name" 
-            value={user.name} 
-            onChange={(e) => onChange("name", e.target.value)} 
+            id="fullName" 
+            name="fullName" 
+            value={user.fullName || ""} 
+            onChange={(e) => onChange("fullName", e.target.value)} 
             className="h-11 border-slate-300 focus:border-[#754FFE] focus:ring-[#754FFE] max-w-md" 
             placeholder="Enter your full name" 
           />
@@ -40,7 +40,7 @@ export function ProfileForm({ user, isSaving, onChange, onSave }: ProfileFormPro
             id="bio" 
             name="bio" 
             rows={4} 
-            value={user.bio} 
+            value={user.bio || ""} 
             onChange={(e) => onChange("bio", e.target.value)} 
             placeholder="Tell us about yourself"
             className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#754FFE] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
