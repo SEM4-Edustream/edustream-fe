@@ -7,7 +7,7 @@ function CourseListSkeleton() {
     <section className="w-full max-w-[1400px] mx-auto px-4 lg:px-8 py-16">
       <div className="flex flex-col md:flex-row justify-between items-end mb-10">
         <div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4">Most Popular Courses</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Most Popular Courses</h2>
           <p className="text-muted-foreground text-lg max-w-2xl">
             These are the most popular courses among EduStream learners. Start learning today and unlock your potential.
           </p>

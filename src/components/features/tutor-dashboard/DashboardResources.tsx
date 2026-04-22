@@ -30,7 +30,7 @@ const mainResources = [
 
 const smallResources = [
   { title: "Test Video", description: "Send us a sample video and get expert feedback.", icon: PlayCircle, href: "#" },
-  { title: "Instructor Community", description: "Connect with experienced instructors. Ask questions, browse discussions, and more.", icon: MessageSquare, href: "#" },
+  { title: "Tutor Community", description: "Connect with experienced tutors. Ask questions, browse discussions, and more.", icon: MessageSquare, href: "#" },
   { title: "Teaching Center", description: "Learn about best practices for teaching on EduStream.", icon: GraduationCap, href: "#" },
   { title: "Marketplace Insights", description: "Validate your course topic by exploring our marketplace supply and demand.", icon: BarChart, href: "#" },
   { title: "Help and Support", description: "Browse our Help Center or contact our support team.", icon: HelpCircle, href: "#" },
@@ -71,7 +71,7 @@ export default function DashboardResources() {
       {/* 2. Smaller Resource Units */}
       <section className="bg-slate-50/50 py-16 px-8 rounded-3xl">
         <h2 className="text-2xl font-bold text-[#1c1d1f] mb-12 text-center">
-          Have questions? Here are our most popular instructor resources.
+          Have questions? Here are our most popular tutor resources.
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12">
           {smallResources.map((unit, index) => (
