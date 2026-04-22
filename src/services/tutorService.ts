@@ -1,50 +1,57 @@
 // src/services/tutorService.ts
-import axios from "axios";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+import axiosInstance from "@/lib/axios";
 
 export interface TutorProfileRequest {
+  headline: string;
   bio: string;
-  specialization: string;
-  experienceYears: number;
+  videoIntroduction?: string;
 }
 
 export interface TutorDocumentRequest {
-  documentType: "ID_CARD" | "DEGREE" | "CERTIFICATE";
+  type: "ID_CARD" | "DEGREE" | "CERTIFICATE";
+  fileUrl: string;
+}
+
+export interface TutorDocumentResponse {
+  id: string;
+  documentType: string;
   documentUrl: string;
+  isVerified: boolean;
+}
+
+export interface TutorProfileResponse {
+  id: string;
+  tutorName: string;
+  headline: string;
+  bio: string;
+  videoIntroduction: string;
+  status: string;
+  documents: TutorDocumentResponse[];
 }
 
 const tutorService = {
   // Step 1: Create initial profile
   createProfile: async (data: TutorProfileRequest) => {
-    const response = await axios.post(`${API_URL}/api/tutor-profiles`, data, {
-      withCredentials: true,
-    });
-    return response.data;
+    const response: any = await axiosInstance.post(`/api/tutor-profiles`, data);
+    return response;
   },
 
   // Step 2: Add essential documents
   addDocument: async (data: TutorDocumentRequest) => {
-    const response = await axios.post(`${API_URL}/api/tutor-profiles/documents`, data, {
-      withCredentials: true,
-    });
-    return response.data;
+    const response: any = await axiosInstance.post(`/api/tutor-profiles/documents`, data);
+    return response;
   },
 
   // Step 3: Trigger verification process
   submitForVerification: async () => {
-    const response = await axios.post(`${API_URL}/api/tutor-profiles/submit`, {}, {
-      withCredentials: true,
-    });
-    return response.data;
+    const response: any = await axiosInstance.post(`/api/tutor-profiles/submit-verification`, {});
+    return response;
   },
 
   // Fetch current status
   getMyProfileStatus: async () => {
-    const response = await axios.get(`${API_URL}/api/tutor-profiles/my-profile`, {
-      withCredentials: true,
-    });
-    return response.data;
+    const response: any = await axiosInstance.get(`/api/tutor-profiles/my-profile`);
+    return response;
   }
 };
 
