@@ -72,8 +72,8 @@ export default function CreateCoursePage() {
 
       if (newCourse && newCourse.id) {
         toast.success('Course created successfully!');
-        // Redirect to the main editor page
-        router.push(`/tutor/dashboard/manage/${newCourse.id}`);
+        // Redirect to the new full-screen editor page
+        router.push(`/tutor/course/${newCourse.id}/curriculum`);
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to create course');

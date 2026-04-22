@@ -61,7 +61,7 @@ export default function CourseItem({ course }: CourseItemProps) {
       {/* 3. Lớp phủ EDIT / MANAGE COURSE (HIỆN RA GIỮA KHI HOVER) */}
       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 pointer-events-none group-hover:pointer-events-auto">
         <Link
-          href={`/tutor/dashboard/courses/${course.id}/manage`}
+          href={`/tutor/course/${course.id}`}
           className="text-xl font-bold text-[#5624d0] hover:text-[#401b9c] transition-colors"
         >
           Edit / manage course
