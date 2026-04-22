@@ -55,7 +55,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
               <div className="flex items-center gap-2">
                  <span className="text-slate-500">Created by</span>
                  <span className="text-indigo-400 font-bold underline cursor-pointer hover:text-indigo-300 transition-colors">
-                    {course.tutorName || "Expert Instructor"}
+                    {course.tutorName || "Expert Tutor"}
                  </span>
               </div>
               <span>Last updated April 2026</span>

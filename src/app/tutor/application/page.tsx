@@ -23,8 +23,8 @@ export default function TutorApplicationStatusPage() {
               Application Under Review
             </h1>
             
-            <p className="text-slate-600 text-lg mb-10 leading-relaxed font-medium">
-              We've received your instructor application! Our team is currently verifying your credentials. This usually takes <span className="text-indigo-600 font-bold">2-3 business days</span>.
+            <p className="text-slate-700 text-lg mb-10 leading-relaxed font-medium">
+              We've received your tutor application! Our team is currently verifying your credentials. This usually takes <span className="text-indigo-600 font-bold">2-3 business days</span>.
             </p>
 
             <div className="space-y-4 mb-10">
@@ -49,17 +49,17 @@ export default function TutorApplicationStatusPage() {
             </div>
 
             <div className="flex flex-col gap-4">
-               <Link href="/profile">
-                 <Button className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold text-lg">
-                    Go to My Profile
-                 </Button>
-               </Link>
-               <Link href="/help">
-                 <Button variant="ghost" className="w-full text-slate-500 font-bold hover:text-indigo-600">
-                    Need help? Contact support
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                 </Button>
-               </Link>
+                <Link href="/profile">
+                  <Button className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-semibold text-lg">
+                     Go to My Profile
+                  </Button>
+                </Link>
+                <Link href="/help">
+                  <Button variant="ghost" className="w-full text-slate-600 font-semibold hover:text-indigo-600">
+                     Need help? Contact support
+                     <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
             </div>
           </div>
         </div>
@@ -76,10 +76,10 @@ function StatusCard({ icon, title, description, status }: { icon: React.ReactNod
           <h4 className="font-bold text-slate-900 text-sm">{title}</h4>
           <p className="text-slate-500 text-xs mt-0.5">{description}</p>
        </div>
-       <div className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${
+       <div className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-md ${
          status === "Completed" ? "bg-emerald-100 text-emerald-700" :
          status === "In Progress" ? "bg-amber-100 text-amber-700 animate-pulse" :
-         "bg-slate-100 text-slate-400"
+         "bg-slate-100 text-slate-500"
        }`}>
           {status}
        </div>

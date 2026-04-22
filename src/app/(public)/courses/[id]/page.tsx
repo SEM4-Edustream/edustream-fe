@@ -42,16 +42,16 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
           <div className="lg:col-span-2 space-y-16">
             <CourseContent course={course} />
             
-            {/* Instructor Bio Section (Simplified for now) */}
+            {/* Tutor Bio Section (Simplified for now) */}
             <div className="space-y-6 pt-12 border-t border-slate-100">
-               <h2 className="text-2xl font-bold font-serif tracking-tight">Instructor</h2>
+               <h2 className="text-2xl font-bold font-serif tracking-tight">Tutor</h2>
                <div className="flex items-start gap-6">
                   <div className="w-20 h-20 rounded-full bg-slate-200 shrink-0" />
                   <div className="space-y-2">
                      <h3 className="text-xl font-bold text-indigo-600 underline cursor-pointer">{course.tutorName}</h3>
                      <p className="text-sm text-slate-500 font-bold uppercase tracking-wider italic">Expert Educator</p>
                      <p className="text-slate-600 leading-relaxed font-medium">
-                        Professional instructor with years of expertise in the industry. Dedicated to helping students achieve their goals through high-quality video content and practical assignments.
+                        Professional tutor with years of expertise in the industry. Dedicated to helping students achieve their goals through high-quality video content and practical assignments.
                      </p>
                   </div>
                </div>

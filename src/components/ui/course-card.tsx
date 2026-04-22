@@ -59,7 +59,7 @@ export function CourseCardContent({ children, className, ...props }: React.Compo
 // 4. Title
 export function CourseCardTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="font-bold text-xl line-clamp-2 leading-tight mb-2 group-hover:text-blue-600 transition-colors">
+    <h3 className="font-semibold text-xl line-clamp-2 leading-tight mb-2 group-hover:text-blue-600 transition-colors">
       {children}
     </h3>
   );
@@ -68,7 +68,7 @@ export function CourseCardTitle({ children }: { children: React.ReactNode }) {
 // 5. Description
 export function CourseCardDescription({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-sm text-gray-500 mb-4 line-clamp-2">
+    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
       {children}
     </p>
   );
@@ -103,7 +103,7 @@ export function CourseCardRating({ value, count }: { value: number | null, count
         ))}
       </div>
       <span className="text-sm font-bold text-gray-900">{value ? value.toFixed(1) : 'New'}</span>
-      <span className="text-sm text-gray-500">({count || 0} reviews)</span>
+      <span className="text-sm text-gray-600">({count || 0} reviews)</span>
     </div>
   );
 }
@@ -112,7 +112,7 @@ export function CourseCardRating({ value, count }: { value: number | null, count
 export function CourseCardPrice({ value }: { value: number | null }) {
   return (
     <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
-      <span className="text-2xl font-black text-gray-900">
+      <span className="text-2xl font-bold text-gray-900">
         ${value?.toLocaleString() || '0'}
       </span>
       <span className="text-sm font-bold text-blue-600 group-hover:underline">View Course</span>

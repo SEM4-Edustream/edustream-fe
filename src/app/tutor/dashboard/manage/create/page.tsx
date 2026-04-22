@@ -167,7 +167,7 @@ export default function CreateCoursePage() {
            <div className="space-y-1">
               <h4 className="font-bold text-[#1c1d1f]">Not sure where to start?</h4>
               <p className="text-sm text-slate-600 leading-relaxed">
-                 Check out our <Link href="#" className="text-[#5624d0] underline font-medium">Instructor Guide</Link> for tips on how to create a high-quality course that students will love.
+                 Check out our <Link href="#" className="text-[#5624d0] underline font-medium">Tutor Guide</Link> for tips on how to create a high-quality course that students will love.
               </p>
            </div>
         </div>
