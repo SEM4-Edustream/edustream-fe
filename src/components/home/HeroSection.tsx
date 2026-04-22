@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, PlayCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { useAuth } from '@/context/AuthContext';
+
 const slides = [
   {
     id: 1,
@@ -22,15 +24,23 @@ const slides = [
     title: "Become a Tutor",
     description: "Tutors from around the world teach millions of learners on EduStream. We provide the tools and platform to teach what you love.",
     buttonText: "Become a Tutor",
-    buttonLink: "/teaching",
+    buttonLink: "/tutor/register", // Fallback
     image: "/images/hero/Gemini_Generated_Image_lu6g2wlu6g2wlu6g.png",
     badge: "Teach the World"
   }
 ];
 
 export default function HeroSection() {
+  const { user, isAuthenticated } = useAuth();
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
+
+  // Dynamic redirection logic for tutor slide
+  const getTutorHref = () => {
+    if (!isAuthenticated) return '/register';
+    if (user?.role === 'TUTOR') return '/tutor/dashboard';
+    return '/tutor/onboarding';
+  };
 
   const nextSlide = () => {
     setDirection(1);
@@ -64,8 +74,11 @@ export default function HeroSection() {
     })
   };
 
+  // Determine current button link
+  const currentButtonLink = current === 1 ? getTutorHref() : slides[current].buttonLink;
+
   return (
-    <section className="relative w-full h-[450px] md:h-[550px] lg:h-[650px] mb-12 overflow-hidden bg-[#f7f9fa]">
+    <section className="relative w-full h-[450px] md:h-[550px] lg:h-[650px] overflow-hidden bg-white">
       <div className="relative w-full h-full overflow-hidden">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
@@ -103,15 +116,15 @@ export default function HeroSection() {
                 className="max-w-[440px] bg-white p-8 md:p-10 shadow-xl"
               >
                 <div className="flex flex-col gap-4">
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-slate-900 leading-tight">
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-800 leading-tight tracking-tight">
                     {slides[current].title}
                   </h2>
                   <p className="text-base md:text-lg text-slate-700 leading-relaxed font-medium">
                     {slides[current].description}
                   </p>
                   <div className="pt-2">
-                    <Link href={slides[current].buttonLink}>
-                      <Button size="lg" className="h-12 px-6 text-base font-bold bg-[#1c1d1f] hover:bg-slate-800 text-white rounded-none transition-all">
+                    <Link href={currentButtonLink}>
+                      <Button size="lg" className="h-12 px-6 text-base font-bold bg-[#1c1d1f] hover:bg-slate-800 text-white rounded-lg transition-all">
                         {slides[current].buttonText}
                       </Button>
                     </Link>

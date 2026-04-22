@@ -10,12 +10,12 @@ export default async function CourseList() {
   const items = courses.content ?? [];
 
   return (
-    <section className="w-full max-w-[1400px] mx-auto px-4 lg:px-8 py-16">
+    <section className="w-full max-w-[1600px] mx-auto px-4 lg:px-12 pt-4 pb-16 bg-white">
       <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
         <div>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-wrap-balance">Most Popular Courses</h2>
-          <p className="text-muted-foreground text-lg max-w-2xl">
-            These are the most popular courses among EduStream learners. Start learning today and unlock your potential.
+          <h2 className="text-2xl md:text-3xl font-semibold text-slate-800 mb-2 text-wrap-balance">Most Popular Courses</h2>
+          <p className="text-muted-foreground text-base max-w-xl">
+            Explore our top-rated courses and start your learning journey today.
           </p>
         </div>
         <Link href="/courses">
@@ -25,7 +25,7 @@ export default async function CourseList() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {items.length > 0 ? (
           items.map((course) => (
             <CourseCard key={course.id} href={`/courses/${course.id}`}>
