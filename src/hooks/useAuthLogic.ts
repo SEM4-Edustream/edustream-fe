@@ -46,7 +46,17 @@ export function useLogin() {
       });
     } catch (err: any) {
       console.error(err);
-      const message = err?.response?.data?.message || err?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.';
+      let message = 'Login failed. Please try again later.';
+      
+      const status = err?.response?.status;
+      const backendMessage = err?.response?.data?.message;
+
+      if (status === 401 || backendMessage?.includes('identities')) {
+        message = 'Invalid username or password. Please check your credentials.';
+      } else if (backendMessage) {
+        message = backendMessage;
+      }
+      
       setError(message);
     } finally {
       setLoading(false);
@@ -69,14 +79,14 @@ export function useRegister() {
     startTransition(async () => {
       try {
         await authService.register(data);
-        setSuccess('Đăng ký thành công… chuyển đến trang đăng nhập.');
+        setSuccess('Registration successful! Redirecting to login...');
 
         setTimeout(() => {
           router.push('/login');
         }, 2000);
       } catch (err: any) {
         console.error(err);
-        setError(err?.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.');
+        setError(err?.response?.data?.message || 'Registration failed. Please try again.');
       }
     });
   };
