@@ -32,8 +32,8 @@ const courseSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title is too long'),
   subtitle: z.string().max(160, 'Subtitle is too long').optional().or(z.literal('')),
   categoryId: z.string().min(1, 'Please select a category'),
-  level: z.enum(['BEGINNER', 'INTERMEDIATE', 'EXPERT', 'ALL_LEVELS'], {
-    errorMap: () => ({ message: 'Please select a level' }),
+  level: z.enum(['BEGINNER', 'INTERMEDIATE', 'EXPERT', 'ALL_LEVELS'] as const, {
+    message: 'Please select a level',
   }),
 });
 

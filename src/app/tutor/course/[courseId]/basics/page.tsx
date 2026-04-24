@@ -34,11 +34,11 @@ import { cn } from '@/lib/utils';
 const basicsSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100),
   subtitle: z.string().max(160, 'Subtitle is too long').optional().or(z.literal('')),
-  description: z.string().max(2000, 'Description is too long').optional().nullable().or(z.literal('')),
+  description: z.string().max(2000, 'Description is too long').optional().or(z.literal('')),
   categoryId: z.string().min(1, 'Category is required'),
   price: z.coerce.number().min(0, 'Price must be positive'),
-  level: z.enum(['BEGINNER', 'INTERMEDIATE', 'EXPERT', 'ALL_LEVELS'], {
-    errorMap: () => ({ message: 'Please select a level' }),
+  level: z.enum(['BEGINNER', 'INTERMEDIATE', 'EXPERT', 'ALL_LEVELS'] as const, {
+    message: 'Please select a level',
   }).optional().nullable(),
 });
 

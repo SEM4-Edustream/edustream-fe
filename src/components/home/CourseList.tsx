@@ -32,7 +32,6 @@ export default async function CourseList() {
               <CourseCard.Thumbnail 
                 src={course.thumbnailUrl || ''} 
                 alt={course.title}
-                isBestSeller={(course.averageRating ?? 0) > 4.5} 
               />
               
               <CourseCard.Content>
