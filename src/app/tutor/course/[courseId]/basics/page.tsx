@@ -33,9 +33,13 @@ import { cn } from '@/lib/utils';
 
 const basicsSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100),
-  description: z.string().max(2000, 'Description is too long').optional().or(z.literal('')),
+  subtitle: z.string().max(160, 'Subtitle is too long').optional().or(z.literal('')),
+  description: z.string().max(2000, 'Description is too long').optional().nullable().or(z.literal('')),
   categoryId: z.string().min(1, 'Category is required'),
   price: z.coerce.number().min(0, 'Price must be positive'),
+  level: z.enum(['BEGINNER', 'INTERMEDIATE', 'EXPERT', 'ALL_LEVELS'], {
+    errorMap: () => ({ message: 'Please select a level' }),
+  }).optional().nullable(),
 });
 
 type BasicsFormValues = z.infer<typeof basicsSchema>;
@@ -52,9 +56,11 @@ export default function CourseBasicsPage() {
     resolver: zodResolver(basicsSchema) as any,
     defaultValues: {
       title: '',
+      subtitle: '',
       description: '',
       categoryId: '',
       price: 0,
+      level: 'BEGINNER',
     },
   });
 
@@ -72,9 +78,11 @@ export default function CourseBasicsPage() {
         
         form.reset({
           title: courseData.title || '',
+          subtitle: courseData.subtitle || '',
           description: courseData.description || '',
           categoryId: courseData.category?.id || '',
           price: courseData.price || 0,
+          level: (courseData.level as 'BEGINNER' | 'INTERMEDIATE' | 'EXPERT' | 'ALL_LEVELS') || 'BEGINNER',
         });
       } catch (error) {
         console.error('Failed to fetch data', error);
@@ -113,8 +121,10 @@ export default function CourseBasicsPage() {
         // Cập nhật ngầm ngay vào DB để tránh mất dữ liệu nếu user lỡ tải lại trang mà chưa Save
         await courseService.updateCourse(courseId, {
           title: form.getValues().title || 'Untitled Course',
+          subtitle: form.getValues().subtitle || undefined,
           categoryId: form.getValues().categoryId || undefined,
           price: form.getValues().price,
+          level: form.getValues().level || undefined,
           description: form.getValues().description,
           thumbnailUrl: presigned.fileUrl,
         });
@@ -134,6 +144,7 @@ export default function CourseBasicsPage() {
       setIsSaving(true);
       await courseService.updateCourse(courseId, {
         ...values,
+        level: values.level || undefined,
         thumbnailUrl: thumbnailPreview || undefined,
       });
       window.dispatchEvent(new Event('course-updated'));
@@ -181,6 +192,24 @@ export default function CourseBasicsPage() {
             <h3 className="text-lg font-bold text-[#1c1d1f]">Course Description</h3>
             <FormField
               control={form.control}
+              name="subtitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      className="h-12 border-slate-300 focus-visible:ring-[#1c1d1f]"
+                      placeholder="Short subtitle shown below course title"
+                    />
+                  </FormControl>
+                  <FormDescription>Use a short subtitle so students can quickly understand your course.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
@@ -224,6 +253,33 @@ export default function CourseBasicsPage() {
                                  {cat.name}
                                </SelectItem>
                              ))}
+                           </SelectContent>
+                         </Select>
+                         <FormMessage />
+                       </FormItem>
+                     )}
+                   />
+
+                   <FormField
+                     control={form.control}
+                     name="level"
+                     render={({ field }) => (
+                       <FormItem>
+                         <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Target Student Level</FormLabel>
+                         <Select 
+                           onValueChange={field.onChange} 
+                           value={field.value || undefined}
+                         >
+                           <FormControl>
+                             <SelectTrigger className="h-12 border-slate-300 focus:ring-[#1c1d1f]">
+                               <SelectValue placeholder="Select a level" />
+                             </SelectTrigger>
+                           </FormControl>
+                           <SelectContent>
+                             <SelectItem value="BEGINNER">Beginner</SelectItem>
+                             <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
+                             <SelectItem value="EXPERT">Expert</SelectItem>
+                             <SelectItem value="ALL_LEVELS">All Levels</SelectItem>
                            </SelectContent>
                          </Select>
                          <FormMessage />

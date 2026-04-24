@@ -30,7 +30,11 @@ import { toast } from 'sonner';
 
 const courseSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title is too long'),
+  subtitle: z.string().max(160, 'Subtitle is too long').optional().or(z.literal('')),
   categoryId: z.string().min(1, 'Please select a category'),
+  level: z.enum(['BEGINNER', 'INTERMEDIATE', 'EXPERT', 'ALL_LEVELS'], {
+    errorMap: () => ({ message: 'Please select a level' }),
+  }),
 });
 
 type CourseFormValues = z.infer<typeof courseSchema>;
@@ -44,7 +48,9 @@ export default function CreateCoursePage() {
     resolver: zodResolver(courseSchema),
     defaultValues: {
       title: '',
+      subtitle: '',
       categoryId: '',
+      level: 'BEGINNER',
     },
   });
 
@@ -65,7 +71,9 @@ export default function CreateCoursePage() {
       setIsSubmitting(true);
       const newCourse = await courseService.createCourse({
         title: values.title,
+        subtitle: values.subtitle,
         categoryId: values.categoryId,
+        level: values.level,
         price: 0, // Default price
         description: '', // Initial empty description
       });
@@ -124,6 +132,27 @@ export default function CreateCoursePage() {
 
             <FormField
               control={form.control}
+              name="subtitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-bold">Course Subtitle</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="e.g. Build production-ready apps with React and Next.js"
+                      className="h-14 text-lg border-slate-400 focus:border-black rounded-none transition-all placeholder:text-slate-300"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="text-xs text-slate-500">
+                    Short summary shown below your course title in listings.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="categoryId"
               render={({ field }) => (
                 <FormItem>
@@ -144,6 +173,33 @@ export default function CreateCoursePage() {
                   </Select>
                   <FormDescription className="text-xs text-slate-500">
                     If you're not sure, you can change it later.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="level"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-bold">Target student level</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="h-14 text-lg border-slate-400 focus:border-black rounded-none transition-all">
+                        <SelectValue placeholder="Choose a level" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="BEGINNER">Beginner</SelectItem>
+                      <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
+                      <SelectItem value="EXPERT">Expert</SelectItem>
+                      <SelectItem value="ALL_LEVELS">All Levels</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription className="text-xs text-slate-500">
+                    Who is this course for?
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
