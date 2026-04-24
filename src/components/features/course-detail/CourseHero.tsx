@@ -29,7 +29,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
             </h1>
 
             <p className="text-lg md:text-xl text-slate-300 max-w-2xl font-normal leading-relaxed">
-              {course.subtitle || course.description?.substring(0, 160) + "..."}
+              {course.subtitle || "No subtitle available for this course yet."}
             </p>
 
             <div className="flex flex-wrap items-center gap-6">

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: CourseDetailPageProps): Promi
   
   return {
     title: `${course.title} | EduStream`,
-    description: course.description,
+    description: course.subtitle || 'Explore this course on EduStream.',
   };
 }
 
@@ -62,9 +62,9 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
 
             {/* 3. Description */}
             <div className="space-y-6 pt-10 border-t border-slate-100">
-               <h2 className="text-2xl font-bold text-slate-900 uppercase tracking-tight">Description</h2>
+              <h2 className="text-2xl font-bold text-slate-900 uppercase tracking-tight">Description</h2>
                <div className="prose prose-slate max-w-none text-slate-700 font-normal leading-loose whitespace-pre-wrap">
-                  {course.description}
+                {course.description || 'No description available for this course yet.'}
                </div>
             </div>
 

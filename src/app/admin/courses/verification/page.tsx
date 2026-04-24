@@ -234,7 +234,7 @@ export default function AdminCourseVerificationPage() {
                        <section className="space-y-4">
                           <label className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600">Overview</label>
                           <h1 className="text-4xl font-bold text-slate-900 tracking-tight leading-tight">{courseDetail.title}</h1>
-                          <p className="text-slate-600 leading-relaxed font-medium">{courseDetail.description}</p>
+                          <p className="text-slate-600 leading-relaxed font-medium">{courseDetail.subtitle || 'No subtitle available for this course yet.'}</p>
                        </section>
 
                        <div className="grid grid-cols-2 gap-8 py-8 border-y border-slate-100">
