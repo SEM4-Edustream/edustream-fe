@@ -13,10 +13,10 @@ interface CourseCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
 }
 export function CourseCard({ href, children, className, ...props }: CourseCardProps) {
   return (
-    <Link href={href} className="group block h-full">
+    <Link href={href} className="group block h-full focus:outline-none focus-visible:ring-0 outline-none focus:ring-0">
       <Card 
         className={cn(
-          "overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 rounded-2xl cursor-pointer h-full flex flex-col",
+          "overflow-hidden transition-opacity duration-200 border-none bg-transparent shadow-none rounded-none cursor-pointer h-full flex flex-col group-hover:opacity-95 ring-0 outline-none focus:ring-0 focus-visible:ring-0",
           className
         )}
         {...props}
@@ -28,21 +28,16 @@ export function CourseCard({ href, children, className, ...props }: CourseCardPr
 }
 
 // 2. Thumbnail Component
-export function CourseCardThumbnail({ src, alt = "Thumbnail", isBestSeller = false }: { src: string, alt?: string, isBestSeller?: boolean }) {
+export function CourseCardThumbnail({ src, alt = "Thumbnail" }: { src: string, alt?: string }) {
   return (
-    <div className="relative h-[170px] w-full overflow-hidden">
+    <div className="relative h-[135px] w-full overflow-hidden border border-gray-200 bg-gray-50">
       <Image 
         src={src || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"} 
         alt={alt}
         fill
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        className="object-cover group-hover:scale-105 transition-transform duration-500"
+        className="object-cover"
       />
-      {isBestSeller && (
-        <Badge className="absolute top-4 left-4 bg-white/90 text-black shadow-sm font-semibold hover:bg-white backdrop-blur-sm z-10">
-          Best Seller
-        </Badge>
-      )}
     </div>
   );
 }
@@ -50,7 +45,7 @@ export function CourseCardThumbnail({ src, alt = "Thumbnail", isBestSeller = fal
 // 3. Content Wrapper
 export function CourseCardContent({ children, className, ...props }: React.ComponentPropsWithoutRef<typeof CardContent>) {
   return (
-    <CardContent className={cn("p-4 flex-1 flex flex-col", className)} {...props}>
+    <CardContent className={cn("p-0 pt-2 flex-1 flex flex-col", className)} {...props}>
       {children}
     </CardContent>
   );
@@ -58,17 +53,19 @@ export function CourseCardContent({ children, className, ...props }: React.Compo
 
 // 4. Title
 export function CourseCardTitle({ children }: { children: React.ReactNode }) {
+  // Ẩn vì list mode có hiển thị title tự do phía trên
+  if (!children) return null;
   return (
-    <h3 className="font-semibold text-lg line-clamp-2 leading-tight mb-1.5 group-hover:text-indigo-600 transition-colors">
+    <h3 className="font-bold text-[16px] leading-[1.2] text-[#1c1d1f] line-clamp-2 mb-1">
       {children}
     </h3>
   );
 }
 
-// 5. Description
+// 5. Description (Keep for compatibility if used elsewhere, but maybe hide or style it small)
 export function CourseCardDescription({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+    <p className="text-sm text-gray-600 mb-4 line-clamp-2 hidden">
       {children}
     </p>
   );
@@ -77,9 +74,8 @@ export function CourseCardDescription({ children }: { children: React.ReactNode 
 // 6. Author
 export function CourseCardAuthor({ name }: { name: string }) {
   return (
-    <div className="flex items-center gap-2 mb-2 mt-auto">
-      <span className="text-xs font-medium text-gray-500">By</span>
-      <span className="text-xs font-semibold text-gray-900">{name || 'EduStream Tutor'}</span>
+    <div className="text-[12px] text-[#6a6f73] truncate mb-1">
+      {name || 'EduStream Tutor'}
     </div>
   );
 }
@@ -96,26 +92,51 @@ export function CourseCardFooter({ children }: { children: React.ReactNode }) {
 // 8. Rating Component
 export function CourseCardRating({ value, count }: { value: number | null, count: number }) {
   return (
-    <div className="flex items-center gap-2 mb-3">
-      <div className="flex text-yellow-400">
+    <div className="flex items-center gap-1 mb-1">
+      <span className="text-[14px] font-bold text-[#b4690e]">{value ? value.toFixed(1) : 'New'}</span>
+      <div className="flex text-[#b4690e]">
         {[1, 2, 3, 4, 5].map((star) => (
-          <Star key={star} className={`w-3.5 h-3.5 ${(value || 0) >= star ? 'fill-current' : 'text-gray-200'}`} />
+          <Star 
+            key={star} 
+            className={`w-3.5 h-3.5 ${(value || 0) >= star ? 'fill-[#b4690e] text-[#b4690e]' : 'fill-transparent text-[#b4690e]'}`} 
+            strokeWidth={1.5} 
+          />
         ))}
       </div>
-      <span className="text-xs font-bold text-gray-900">{value ? value.toFixed(1) : 'New'}</span>
-      <span className="text-xs text-gray-500">({count || 0})</span>
+      <span className="text-[12px] text-[#6a6f73] ml-1">({count ? count.toLocaleString() : 0})</span>
     </div>
   );
 }
 
 // 9. Price Component
 export function CourseCardPrice({ value }: { value: number | null }) {
+  // Mock lại giá trị gốc cho hợp lý với ảnh (không quá cao)
+  const originalPrice = value ? value * 1.48 : null;
+
+  const formatPrice = (v: number) => '₫' + v.toLocaleString('en-US');
+
   return (
-    <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-      <span className="text-xl font-bold text-gray-900">
-        {value === null ? 'Free' : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)}
+    <div className="flex items-center gap-1.5 mt-1">
+      <span className="text-[16px] font-bold text-[#1c1d1f]">
+        {value === null ? 'Free' : formatPrice(value)}
       </span>
-      <span className="text-xs font-bold text-indigo-600 group-hover:underline">View Details</span>
+      {originalPrice && (
+        <span className="text-[14px] text-[#6a6f73] line-through">
+          {formatPrice(originalPrice)}
+        </span>
+      )}
+    </div>
+  );
+}
+
+// 10. Badges
+export function CourseCardBadges({ isBestSeller }: { isBestSeller?: boolean }) {
+  if (!isBestSeller) return null;
+  return (
+    <div className="mt-1 flex gap-1">
+      <div className="inline-block bg-[#c0e5e4] text-[#1e6055] text-[12px] font-bold px-2 py-0.5 rounded-sm">
+        Bestseller
+      </div>
     </div>
   );
 }
@@ -129,3 +150,4 @@ CourseCard.Author = CourseCardAuthor;
 CourseCard.Footer = CourseCardFooter;
 CourseCard.Rating = CourseCardRating;
 CourseCard.Price = CourseCardPrice;
+CourseCard.Badges = CourseCardBadges;

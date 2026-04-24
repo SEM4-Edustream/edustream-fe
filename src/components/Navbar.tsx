@@ -95,7 +95,7 @@ const Navbar = () => {
                       categories.map((cat) => (
                         <Link 
                           key={cat.id}
-                          href={`/courses?category=${cat.slug}`}
+                          href={`/courses/category/${cat.slug}`}
                           className="flex items-center justify-between px-4 py-2.5 text-[14px] text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-all group"
                         >
                           <div className="flex items-center gap-3">
@@ -255,6 +255,15 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* SECONDARY CATEGORY BAR (Desktop Only) - Udemy Style */}
+      <div className="hidden lg:flex items-center justify-center gap-8 px-6 py-3 border-t border-slate-200 bg-white w-full shadow-sm overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        {categories.slice(0, 10).map((cat) => (
+           <Link key={cat.id} href={`/courses/category/${cat.slug}`} className="text-[14px] text-[#2d2f31] hover:text-[#5624d0] font-normal whitespace-nowrap transition-colors">
+             {cat.name}
+           </Link>
+        ))}
       </div>
 
       {/* MOBILE MENU */}

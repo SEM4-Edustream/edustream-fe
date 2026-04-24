@@ -6,6 +6,7 @@ import CourseList from '@/components/home/CourseList';
 import Testimonials from '@/components/home/Testimonials';
 import TutorBanner from '@/components/home/TutorBanner';
 import FAQ from '@/components/home/FAQ';
+import AuthRouterWrapper from '@/components/home/AuthRouterWrapper';
 
 function CourseListSkeleton() {
   return (
@@ -29,19 +30,21 @@ function CourseListSkeleton() {
 
 export default function HomePage() {
   return (
-    <main className="flex-1 w-full flex flex-col items-center bg-white">
-      <HeroSection />
-      <PartnerLogos />
-      
-      <CategoryShowcase />
+    <AuthRouterWrapper>
+      <main className="flex-1 w-full flex flex-col items-center bg-white">
+        <HeroSection />
+        <PartnerLogos />
+        
+        <CategoryShowcase />
 
-      <Suspense fallback={<CourseListSkeleton />}>
-        <CourseList />
-      </Suspense>
+        <Suspense fallback={<CourseListSkeleton />}>
+          <CourseList />
+        </Suspense>
 
-      <Testimonials />
-      <TutorBanner />
-      <FAQ />
-    </main>
+        <Testimonials />
+        <TutorBanner />
+        <FAQ />
+      </main>
+    </AuthRouterWrapper>
   );
 }
