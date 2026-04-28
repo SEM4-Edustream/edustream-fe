@@ -147,6 +147,16 @@ export const courseService = {
     const response = await api.post<any>(`/api/tutor-courses/${id}/submit`);
     return unwrapResult(response) as any;
   },
+
+  checkEnrollment: async (courseId: string): Promise<boolean> => {
+    try {
+      const response = await api.get<any>('/api/student/enrollments/my-courses');
+      const enrollments = unwrapResult(response) as any[];
+      return enrollments.some(e => e.courseId === courseId);
+    } catch (error) {
+      return false;
+    }
+  },
 };
 
 export async function getPublicCourses(size = 6): Promise<CourseSummary[]> {

@@ -1,9 +1,9 @@
 "use client";
 
-import React from 'react';
-import { PlayCircle, ShieldCheck, Monitor, Smartphone, Award, Infinity, RefreshCcw, Heart, Lock, FileText } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { PlayCircle, ShieldCheck, Monitor, Smartphone, Award, Infinity, RefreshCcw, Heart, Lock, FileText, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { CourseSummary } from '@/services/courseService';
+import { CourseSummary, courseService } from '@/services/courseService';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
@@ -15,6 +15,19 @@ interface CourseCheckoutCardProps {
 export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      if (isAuthenticated) {
+        const enrolled = await courseService.checkEnrollment(course.id);
+        setIsEnrolled(enrolled);
+      }
+      setIsLoading(false);
+    };
+    checkStatus();
+  }, [isAuthenticated, course.id]);
 
   // --- Dynamic Calculation Logic ---
   const allLessons = course.modules?.flatMap(m => m.lessons || []) || [];
@@ -33,6 +46,11 @@ export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) 
     if (!isAuthenticated) {
       toast.info('Please log in to enroll in this course');
       router.push(`/login?redirect=/courses/${course.id}`);
+      return;
+    }
+    
+    if (isEnrolled) {
+      router.push(`/learning/${course.id}`);
       return;
     }
     
@@ -86,22 +104,29 @@ export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) 
         <div className="flex flex-col gap-3">
           <Button 
             onClick={handleBuyNow}
-            className="w-full h-14 text-base font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-none shadow-lg shadow-indigo-100 transition-all active:scale-95"
+            disabled={isLoading}
+            className={`w-full h-14 text-base font-bold text-white rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200`}
           >
-            Buy now
+            {isLoading ? 'Checking status...' : isEnrolled ? (
+              <>Go to Course <ArrowRight className="w-4 h-4 ml-2" /></>
+            ) : (
+              'Buy now'
+            )}
           </Button>
-          <div className="flex gap-2">
-            <Button 
-              onClick={handleAddToCart}
-              variant="outline" 
-              className="flex-1 h-12 text-sm font-bold border-2 border-slate-900 hover:bg-slate-900 hover:text-white rounded-none transition-all"
-            >
-               Add to cart
-            </Button>
-            <Button variant="outline" className="w-12 h-12 p-0 border-2 border-slate-900 rounded-none hover:bg-pink-50 hover:text-pink-600 transition-all group">
-               <Heart className="w-5 h-5 group-hover:fill-current" />
-            </Button>
-          </div>
+          {!isEnrolled && (
+            <div className="flex gap-2">
+              <Button 
+                onClick={handleAddToCart}
+                variant="outline" 
+                className="flex-1 h-12 text-sm font-bold border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl transition-all"
+              >
+                 Add to cart
+              </Button>
+              <Button variant="outline" className="w-12 h-12 p-0 border-2 border-indigo-600 text-indigo-600 rounded-xl hover:bg-pink-50 hover:text-pink-600 transition-all group">
+                 <Heart className="w-5 h-5 group-hover:fill-current" />
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="text-center">
