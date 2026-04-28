@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { paymentService } from '@/services/paymentService';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
-export default function PaymentCancelPage() {
+function CancelLogic() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const called = useRef(false);
@@ -44,5 +44,18 @@ export default function PaymentCancelPage() {
       <h1 className="text-xl font-bold text-slate-900 mb-2">Cancelling Payment</h1>
       <p className="text-slate-500">Please wait while we clear your pending transaction...</p>
     </div>
+  );
+}
+
+export default function PaymentCancelPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4 text-center">
+        <Loader2 className="h-10 w-10 text-indigo-600 animate-spin mb-4" />
+        <h1 className="text-xl font-bold text-slate-900 mb-2">Loading...</h1>
+      </div>
+    }>
+      <CancelLogic />
+    </Suspense>
   );
 }
