@@ -151,7 +151,7 @@ export const courseService = {
   checkEnrollment: async (courseId: string): Promise<boolean> => {
     try {
       const response = await api.get<any>('/api/student/enrollments/my-courses');
-      const enrollments = unwrapResult(response) as any[];
+      const enrollments = unwrapResult(response) as unknown as any[];
       return enrollments.some(e => e.courseId === courseId);
     } catch (error) {
       return false;
