@@ -35,6 +35,7 @@ export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) 
       router.push(`/login?redirect=/courses/${course.id}`);
       return;
     }
+    
     router.push(`/checkout/${course.id}`);
   };
 
