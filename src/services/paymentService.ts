@@ -41,12 +41,12 @@ function unwrapResult<T>(payload: T | ApiResponse<T>) {
 export const paymentService = {
   createBooking: async (data: BookingRequest): Promise<BookingResponse> => {
     const response = await api.post<any>('/api/student/bookings', data);
-    return unwrapResult(response) as BookingResponse;
+    return unwrapResult(response) as unknown as BookingResponse;
   },
 
   createPaymentLink: async (bookingId: string): Promise<PaymentLinkResponse> => {
     const response = await api.post<any>(`/api/student/payments/create-link/${bookingId}`);
-    return unwrapResult(response) as PaymentLinkResponse;
+    return unwrapResult(response) as unknown as PaymentLinkResponse;
   },
 
   cancelBooking: async (bookingId: string): Promise<void> => {
