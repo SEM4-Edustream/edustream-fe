@@ -71,10 +71,32 @@ function unwrapResult<T>(payload: T | ApiResponse<T>) {
   return payload as T;
 }
 
+function normalizeCourse(course: CourseSummary): CourseSummary {
+  if (!course) return course;
+  
+  const DEFAULT_THUMBNAIL = "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80";
+  const INVALID_DEMO_URL = "https://link-anh-bia-demo.com";
+
+  return {
+    ...course,
+    thumbnailUrl: (course.thumbnailUrl === INVALID_DEMO_URL || !course.thumbnailUrl) 
+      ? DEFAULT_THUMBNAIL 
+      : course.thumbnailUrl
+  };
+}
+
+function normalizePage(page: PageMeta<CourseSummary>): PageMeta<CourseSummary> {
+  if (!page || !page.content) return page;
+  return {
+    ...page,
+    content: page.content.map(normalizeCourse)
+  };
+}
+
 export const courseService = {
   getPublishedCourses: async (params?: { keyword?: string; page?: number; size?: number; sort?: string[] }): Promise<PageMeta<CourseSummary>> => {
     const response = await api.get<any>('/api/courses', { params });
-    return (unwrapResult(response) as any) ?? {
+    const data = (unwrapResult(response) as any) ?? {
       totalElements: 0,
       totalPages: 0,
       number: 0,
@@ -84,12 +106,14 @@ export const courseService = {
       empty: true,
       content: [],
     };
+    return normalizePage(data);
   },
 
   getPublishedCourseDetail: async (id: string): Promise<CourseSummary | null> => {
     try {
       const response = await api.get<any>(`/api/courses/${id}`);
-      return unwrapResult(response) as any;
+      const course = unwrapResult(response) as any;
+      return course ? normalizeCourse(course) : null;
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
         return null;
@@ -100,12 +124,12 @@ export const courseService = {
 
   getMyTutorCourses: async (params?: { status?: string; page?: number; size?: number; sort?: string }): Promise<PageMeta<CourseSummary>> => {
     const response = await api.get<any>('/api/tutor-courses', { params });
-    return unwrapResult(response) as any;
+    return normalizePage(unwrapResult(response) as any);
   },
 
   getCourseDetail: async (id: string): Promise<CourseSummary> => {
     const response = await api.get<any>(`/api/tutor-courses/${id}`);
-    return unwrapResult(response) as any;
+    return normalizeCourse(unwrapResult(response) as any);
   },
 
   getCategories: async (): Promise<CategoryResponse[]> => {

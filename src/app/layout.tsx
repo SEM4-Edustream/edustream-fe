@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
+import ProgressProvider from "@/components/providers/ProgressProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ViewTransitions } from 'next-view-transitions';
@@ -33,8 +34,10 @@ export default function RootLayout({
       <html lang="vi" suppressHydrationWarning>
         <body className={`${inter.variable} font-sans antialiased text-slate-700 bg-slate-50`}>
           <AuthProvider>
-            {children}
-            <Toaster richColors position="top-right" closeButton />
+            <ProgressProvider>
+              {children}
+              <Toaster richColors position="top-right" closeButton />
+            </ProgressProvider>
           </AuthProvider>
         </body>
       </html>
