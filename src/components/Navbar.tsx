@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,6 +30,11 @@ const Navbar = () => {
   const [mobileCatsOpen, setMobileCatsOpen] = useState(false);
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
+  const isCheckoutPage = pathname?.startsWith('/checkout') || pathname?.startsWith('/payment');
+  
+  const courseIdMatch = pathname?.match(/\/checkout\/([^/]+)/);
+  const checkoutCancelUrl = courseIdMatch ? `/courses/${courseIdMatch[1]}` : "/";
 
   useEffect(() => {
     setMounted(true);
@@ -50,6 +56,22 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  if (isCheckoutPage) {
+    return (
+      <header className="fixed top-0 w-full z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-1">
+            <img src="/images/icon.png" alt="EduStream" className="h-14 w-auto" />
+            <span className="hidden sm:block text-xl font-bold tracking-tight text-slate-900">EduStream</span>
+          </Link>
+          <Link href={checkoutCancelUrl} className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">
+            Cancel
+          </Link>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header

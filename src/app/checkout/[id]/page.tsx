@@ -28,16 +28,6 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="border-b border-slate-200 bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-          <a href="/" className="font-extrabold text-2xl tracking-tighter text-indigo-600">
-            Edu<span className="text-slate-900">Stream</span>
-          </a>
-          <a href={`/courses/${course.id}`} className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">
-            Cancel
-          </a>
-        </div>
-      </div>
       <CheckoutForm course={course} />
     </div>
   );
