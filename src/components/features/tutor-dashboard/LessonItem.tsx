@@ -13,7 +13,7 @@ import {
   X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { courseService, LessonResponse } from '@/services/courseService';
 import fileService from '@/services/fileService';
 import { toast } from 'sonner';
@@ -76,8 +76,8 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
         type: 'READING',
         content: textContent,
         orderIndex: lesson.orderIndex,
-        videoUrl: lesson.videoUrl, 
-        durationSeconds: lesson.durationSeconds
+        videoUrl: undefined, // Clear video when switching to article
+        durationSeconds: 0
       });
       window.dispatchEvent(new Event('course-updated'));
       toast.success('Article saved successfully');
@@ -289,14 +289,12 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
           {/* ARTICLE TEXT UI */}
           {activeTab === 'READING' && (
             <div className="space-y-4">
-              <div className="bg-slate-50 border border-slate-200 rounded-md p-1">
-                <Textarea 
-                   value={textContent}
-                   onChange={(e) => setTextContent(e.target.value)}
-                   placeholder="Enter article text here..."
-                   className="min-h-[250px] border-none focus-visible:ring-0 bg-transparent text-sm resize-y"
-                />
-              </div>
+              <RichTextEditor 
+                 value={textContent}
+                 onChange={setTextContent}
+                 placeholder="Enter article text here..."
+                 className="min-h-[300px]"
+              />
               <div className="flex justify-end pt-2">
                  <Button 
                     onClick={handleSaveText}
