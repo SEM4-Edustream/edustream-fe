@@ -32,8 +32,8 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
   const [isDeleting, setIsDeleting] = useState(false);
   
   // Content Management States
-  const [activeTab, setActiveTab] = useState<'VIDEO' | 'READING'>(
-    lesson.type === 'QUIZ' ? 'READING' : lesson.type
+  const [activeTab, setActiveTab] = useState<'VIDEO' | 'TEXT'>(
+    lesson.type === 'QUIZ' ? 'TEXT' : lesson.type
   );
   const [textContent, setTextContent] = useState(lesson.content || '');
   const [isSavingText, setIsSavingText] = useState(false);
@@ -73,7 +73,7 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
       setIsSavingText(true);
       await courseService.updateLesson(moduleId, lesson.id, {
         title: lesson.title,
-        type: 'READING',
+        type: 'TEXT',
         content: textContent,
         orderIndex: lesson.orderIndex,
         videoUrl: undefined, // Clear video when switching to article
@@ -213,8 +213,8 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
             <Button 
                variant="ghost" 
                size="sm" 
-               className={cn("h-8 px-4 rounded-full text-xs font-bold gap-2", activeTab === 'READING' ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}
-               onClick={() => setActiveTab('READING')}
+               className={cn("h-8 px-4 rounded-full text-xs font-bold gap-2", activeTab === 'TEXT' ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}
+               onClick={() => setActiveTab('TEXT')}
             >
                <FileText className="w-3.5 h-3.5" /> Article
             </Button>
@@ -287,7 +287,7 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
           )}
 
           {/* ARTICLE TEXT UI */}
-          {activeTab === 'READING' && (
+          {activeTab === 'TEXT' && (
             <div className="space-y-4">
               <RichTextEditor 
                  value={textContent}

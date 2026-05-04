@@ -20,7 +20,7 @@ export interface LessonResponse {
   id: string;
   title: string;
   content?: string;
-  type: 'VIDEO' | 'READING' | 'QUIZ';
+  type: 'VIDEO' | 'TEXT' | 'QUIZ';
   videoUrl?: string;
   durationSeconds?: number;
   orderIndex: number;

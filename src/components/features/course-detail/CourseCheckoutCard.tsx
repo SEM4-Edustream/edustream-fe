@@ -37,7 +37,7 @@ export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) 
     .reduce((acc, l) => acc + (l.durationSeconds || 0), 0);
   
   const totalHours = (totalVideoSeconds / 3600).toFixed(1);
-  const totalArticles = allLessons.filter(l => l.type === 'READING').length;
+  const totalArticles = allLessons.filter(l => l.type === 'TEXT').length;
   const totalQuizzes = allLessons.filter(l => l.type === 'QUIZ').length;
   // Placeholder for resources until schema is updated
   const totalResources = Math.floor(allLessons.length / 3); 
