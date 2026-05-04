@@ -9,7 +9,7 @@ export default function CheckoutLayout({
   return (
     <>
       <Navbar />
-      <div className="flex flex-col min-h-screen pt-16">
+      <div className="flex flex-col min-h-screen">
         {children}
       </div>
       <Footer />

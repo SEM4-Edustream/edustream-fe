@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import ProgressProvider from "@/components/providers/ProgressProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 import { ViewTransitions } from 'next-view-transitions';
 
 // Optimize Google Fonts: Subsets vietnamese to prevent missing accents (FOUT)
@@ -36,6 +37,7 @@ export default function RootLayout({
           <AuthProvider>
             <ProgressProvider>
               {children}
+              <ScrollToTop />
               <Toaster richColors position="top-right" closeButton />
             </ProgressProvider>
           </AuthProvider>
