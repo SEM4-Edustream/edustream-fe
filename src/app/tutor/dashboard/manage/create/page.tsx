@@ -157,7 +157,7 @@ export default function CreateCoursePage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-lg font-bold">What category best fits the knowledge you'll share?</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="h-14 text-lg border-slate-400 focus:border-black rounded-none transition-all">
                         <SelectValue placeholder="Choose a category" />
