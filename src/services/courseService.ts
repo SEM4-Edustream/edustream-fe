@@ -200,6 +200,16 @@ export const courseService = {
     const data = unwrapResult(response) as unknown as any[];
     return (data || []).map(normalizeEnrollment);
   },
+
+  completeLesson: async (lessonId: string): Promise<void> => {
+    const response = await api.post<any>(`/api/progress/lessons/${lessonId}/complete`);
+    return unwrapResult(response) as any;
+  },
+
+  getCompletedLessons: async (courseId: string): Promise<string[]> => {
+    const response = await api.get<any>(`/api/progress/courses/${courseId}`);
+    return unwrapResult(response) as unknown as string[];
+  },
 };
 
 export async function getPublicCourses(size = 6): Promise<CourseSummary[]> {

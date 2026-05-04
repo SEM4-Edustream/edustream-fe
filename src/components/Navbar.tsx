@@ -34,6 +34,7 @@ const Navbar = () => {
   const isCheckoutPage = pathname?.startsWith('/checkout') || pathname?.startsWith('/payment');
   const isAuthPage = pathname?.startsWith('/login') || pathname?.startsWith('/register');
   const isMyLearningPage = pathname?.startsWith('/my-learning');
+  const isLearningPage = pathname?.startsWith('/learning');
   
   const courseIdMatch = pathname?.match(/\/checkout\/([^/]+)/);
   const checkoutCancelUrl = courseIdMatch ? `/courses/${courseIdMatch[1]}` : "/";
@@ -58,6 +59,8 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  if (isLearningPage) return null;
 
   if (isCheckoutPage) {
     return (
