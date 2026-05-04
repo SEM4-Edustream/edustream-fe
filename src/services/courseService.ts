@@ -93,6 +93,19 @@ function normalizePage(page: PageMeta<CourseSummary>): PageMeta<CourseSummary> {
   };
 }
 
+function normalizeEnrollment(enrollment: any): any {
+  if (!enrollment) return enrollment;
+  const DEFAULT_THUMBNAIL = "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80";
+  const INVALID_DEMO_URL = "https://link-anh-bia-demo.com";
+  
+  return {
+    ...enrollment,
+    courseThumbnail: (enrollment.courseThumbnail === INVALID_DEMO_URL || !enrollment.courseThumbnail)
+      ? DEFAULT_THUMBNAIL
+      : enrollment.courseThumbnail
+  };
+}
+
 export const courseService = {
   getPublishedCourses: async (params?: { keyword?: string; page?: number; size?: number; sort?: string[] }): Promise<PageMeta<CourseSummary>> => {
     const response = await api.get<any>('/api/courses', { params });
@@ -180,6 +193,12 @@ export const courseService = {
     } catch (error) {
       return false;
     }
+  },
+
+  getMyEnrollments: async (): Promise<any[]> => {
+    const response = await api.get<any>('/api/student/enrollments/my-courses');
+    const data = unwrapResult(response) as any[];
+    return (data || []).map(normalizeEnrollment);
   },
 };
 

@@ -33,6 +33,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const isCheckoutPage = pathname?.startsWith('/checkout') || pathname?.startsWith('/payment');
   const isAuthPage = pathname?.startsWith('/login') || pathname?.startsWith('/register');
+  const isMyLearningPage = pathname?.startsWith('/my-learning');
   
   const courseIdMatch = pathname?.match(/\/checkout\/([^/]+)/);
   const checkoutCancelUrl = courseIdMatch ? `/courses/${courseIdMatch[1]}` : "/";
@@ -284,7 +285,7 @@ const Navbar = () => {
     </header>
 
     {/* SECONDARY CATEGORY BAR (Desktop Only) - Udemy Style */}
-    {!isAuthPage && (
+    {!isAuthPage && !isMyLearningPage && (
       <div className="hidden lg:flex items-center justify-center gap-8 px-6 py-3 border-b border-slate-200 bg-white w-full shadow-sm overflow-x-auto relative z-40" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {categories.slice(0, 10).map((cat) => (
            <Link key={cat.id} href={`/courses/category/${cat.slug}`} className="text-[14px] text-[#2d2f31] hover:text-[#5624d0] font-normal whitespace-nowrap transition-colors">
