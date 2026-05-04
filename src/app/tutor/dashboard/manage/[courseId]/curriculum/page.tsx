@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { courseService, CourseSummary, CourseModuleResponse } from '@/services/courseService';
 import { toast } from 'sonner';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import LessonItem from '@/components/features/tutor-dashboard/LessonItem';
 
 export default function CurriculumPage() {
   const { courseId } = useParams() as { courseId: string };
@@ -29,19 +30,20 @@ export default function CurriculumPage() {
   const [addingLessonToModule, setAddingLessonToModule] = useState<string | null>(null);
   const [newLessonTitle, setNewLessonTitle] = useState('');
 
+  const fetchCourse = async () => {
+    try {
+      setLoading(true);
+      const data = await courseService.getCourseDetail(courseId);
+      setCourse(data);
+    } catch (error) {
+      console.error('Failed to fetch course details', error);
+      toast.error('Failed to load course curriculum');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchCourse = async () => {
-      try {
-        setLoading(true);
-        const data = await courseService.getCourseDetail(courseId);
-        setCourse(data);
-      } catch (error) {
-        console.error('Failed to fetch course details', error);
-        toast.error('Failed to load course curriculum');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchCourse();
   }, [courseId]);
 
@@ -158,30 +160,13 @@ export default function CurriculumPage() {
                            {module.lessons && module.lessons.length > 0 ? (
                              <div className="space-y-3">
                                {module.lessons.map((lesson, lIndex) => (
-                                 <div key={lesson.id} className="flex items-center justify-between bg-white p-3 border border-slate-200 group/lesson ml-8 rounded-sm shadow-sm hover:border-slate-300 transition-all">
-                                    <div className="flex items-center gap-3">
-                                       <div className="flex items-center gap-2">
-                                          {lesson.type === 'VIDEO' ? (
-                                            <div className="w-6 h-6 rounded bg-slate-100 flex items-center justify-center">
-                                               <Video className="w-3.5 h-3.5 text-slate-600" />
-                                            </div>
-                                          ) : (
-                                            <div className="w-6 h-6 rounded bg-slate-100 flex items-center justify-center">
-                                               <FileText className="w-3.5 h-3.5 text-slate-600" />
-                                            </div>
-                                          )}
-                                          <span className="text-sm font-medium text-slate-700">Lecture {lIndex + 1}: {lesson.title}</span>
-                                       </div>
-                                    </div>
-                                    <div className="flex items-center gap-1 opacity-0 group-hover/lesson:opacity-100 transition-opacity">
-                                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-slate-400 hover:text-slate-900"><Pencil className="w-3.5 h-3.5" /></Button>
-                                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-slate-400 hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></Button>
-                                       <div className="h-4 w-px bg-slate-200 mx-1" />
-                                       <div className="cursor-grab active:cursor-grabbing">
-                                          <GripVertical className="w-3.5 h-3.5 text-slate-300" />
-                                       </div>
-                                    </div>
-                                 </div>
+                                 <LessonItem 
+                                   key={lesson.id}
+                                   lesson={lesson}
+                                   moduleId={module.id}
+                                   index={lIndex}
+                                   onRefresh={fetchCourse}
+                                 />
                                ))}
                              </div>
                            ) : (
