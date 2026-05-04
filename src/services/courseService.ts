@@ -197,7 +197,7 @@ export const courseService = {
 
   getMyEnrollments: async (): Promise<any[]> => {
     const response = await api.get<any>('/api/student/enrollments/my-courses');
-    const data = unwrapResult(response) as any[];
+    const data = unwrapResult(response) as unknown as any[];
     return (data || []).map(normalizeEnrollment);
   },
 };
