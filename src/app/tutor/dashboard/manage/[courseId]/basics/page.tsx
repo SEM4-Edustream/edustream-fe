@@ -68,6 +68,9 @@ export default function CourseBasicsPage() {
         setCategories(catData);
         setThumbnailPreview(courseData.thumbnailUrl || null);
         
+        console.log('Loaded course data:', courseData);
+        console.log('Category ID to set:', courseData.category?.id);
+        
         form.reset({
           title: courseData.title || '',
           description: courseData.description || '',
@@ -194,7 +197,7 @@ export default function CourseBasicsPage() {
                          <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Category</FormLabel>
                          <Select 
                            onValueChange={field.onChange} 
-                           value={field.value}
+                           value={field.value || undefined}
                          >
                            <FormControl>
                              <SelectTrigger className="h-12 border-slate-300 focus:ring-[#1c1d1f]">

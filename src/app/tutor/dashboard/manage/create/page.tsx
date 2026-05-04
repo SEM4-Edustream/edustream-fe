@@ -69,6 +69,7 @@ export default function CreateCoursePage() {
   const onSubmit = async (values: CourseFormValues) => {
     try {
       setIsSubmitting(true);
+      console.log('Creating course with payload:', values);
       const newCourse = await courseService.createCourse({
         title: values.title,
         subtitle: values.subtitle,
@@ -157,7 +158,7 @@ export default function CreateCoursePage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-lg font-bold">What category best fits the knowledge you'll share?</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value || undefined}>
                     <FormControl>
                       <SelectTrigger className="h-14 text-lg border-slate-400 focus:border-black rounded-none transition-all">
                         <SelectValue placeholder="Choose a category" />
