@@ -59,7 +59,7 @@ const Navbar = () => {
 
   if (isCheckoutPage) {
     return (
-      <header className="fixed top-0 w-full z-50 bg-white border-b border-gray-200 shadow-sm">
+      <header className="w-full z-50 bg-white border-b border-gray-200 shadow-sm relative">
         <div className="max-w-6xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-1">
             <img src="/images/icon.png" alt="EduStream" className="h-14 w-auto" />
@@ -74,8 +74,9 @@ const Navbar = () => {
   }
 
   return (
+    <>
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
+      className={`w-full z-50 transition-all duration-300 relative ${isScrolled
         ? 'bg-white border-b border-gray-200 shadow-sm'
         : 'bg-white border-b border-gray-100'
         }`}
@@ -279,14 +280,16 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* SECONDARY CATEGORY BAR (Desktop Only) - Udemy Style */}
-      <div className="hidden lg:flex items-center justify-center gap-8 px-6 py-3 border-t border-slate-200 bg-white w-full shadow-sm overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        {categories.slice(0, 10).map((cat) => (
-           <Link key={cat.id} href={`/courses/category/${cat.slug}`} className="text-[14px] text-[#2d2f31] hover:text-[#5624d0] font-normal whitespace-nowrap transition-colors">
-             {cat.name}
-           </Link>
-        ))}
-      </div>
+    </header>
+
+    {/* SECONDARY CATEGORY BAR (Desktop Only) - Udemy Style */}
+    <div className="hidden lg:flex items-center justify-center gap-8 px-6 py-3 border-b border-slate-200 bg-white w-full shadow-sm overflow-x-auto relative z-40" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      {categories.slice(0, 10).map((cat) => (
+         <Link key={cat.id} href={`/courses/category/${cat.slug}`} className="text-[14px] text-[#2d2f31] hover:text-[#5624d0] font-normal whitespace-nowrap transition-colors">
+           {cat.name}
+         </Link>
+      ))}
+    </div>
 
       {/* MOBILE MENU */}
       {mobileMenuOpen && (
@@ -361,7 +364,7 @@ const Navbar = () => {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 };
 
