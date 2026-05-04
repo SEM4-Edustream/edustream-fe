@@ -225,7 +225,7 @@ export default function LearningPage() {
                 <div className="flex items-center gap-3">
                    <Button 
                      onClick={handleComplete}
-                     disabled={isCompleting || (activeLesson && completedLessons.has(activeLesson.id))}
+                     disabled={isCompleting || !!(activeLesson && completedLessons.has(activeLesson.id))}
                      className={cn(
                        "h-12 px-8 font-bold rounded-none transition-all",
                        activeLesson && completedLessons.has(activeLesson.id) 
