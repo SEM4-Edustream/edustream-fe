@@ -1,8 +1,10 @@
-import React from 'react';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
 import { GraduationCap } from 'lucide-react';
 
 const Footer = () => {
+  const t = useTranslations('Footer');
+  const locale = useLocale();
   return (
     <footer className="bg-gray-50 border-t border-gray-200 pt-16 pb-8">
       <div className="container mx-auto px-4 lg:px-8">
@@ -18,7 +20,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-gray-700 mb-6 font-medium leading-relaxed">
-              Empowering learners globally with world-class education, anytime, anywhere.
+              {t('slogan')}
             </p>
             <div className="flex items-center gap-4 text-gray-400">
               <a href="#" className="hover:text-primary transition-colors">
@@ -38,43 +40,43 @@ const Footer = () => {
 
           {/* Links */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-6">Company</h4>
+            <h4 className="font-semibold text-gray-900 mb-6">{t('company')}</h4>
             <ul className="space-y-4">
-              <li><Link href="/about" className="text-gray-700 hover:text-primary font-medium transition-colors">About Us</Link></li>
-              <li><Link href="/careers" className="text-gray-700 hover:text-primary font-medium transition-colors">Careers</Link></li>
-              <li><Link href="/contact" className="text-gray-700 hover:text-primary font-medium transition-colors">Contact</Link></li>
-              <li><Link href="/blog" className="text-gray-700 hover:text-primary font-medium transition-colors">Blog</Link></li>
+              <li><Link href="/about" className="text-gray-700 hover:text-primary font-medium transition-colors">{t('about')}</Link></li>
+              <li><Link href="/careers" className="text-gray-700 hover:text-primary font-medium transition-colors">{t('careers')}</Link></li>
+              <li><Link href="/contact" className="text-gray-700 hover:text-primary font-medium transition-colors">{t('contact')}</Link></li>
+              <li><Link href="/blog" className="text-gray-700 hover:text-primary font-medium transition-colors">{t('blog')}</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-6">Product</h4>
+            <h4 className="font-semibold text-gray-900 mb-6">{t('product')}</h4>
             <ul className="space-y-4">
-              <li><Link href="/courses" className="text-gray-500 hover:text-primary font-medium transition-colors">Courses</Link></li>
-              <li><Link href="/pricing" className="text-gray-500 hover:text-primary font-medium transition-colors">Pricing</Link></li>
-              <li><Link href="/features" className="text-gray-500 hover:text-primary font-medium transition-colors">Features</Link></li>
-              <li><Link href="/integrations" className="text-gray-500 hover:text-primary font-medium transition-colors">Integrations</Link></li>
+              <li><Link href="/courses" className="text-gray-500 hover:text-primary font-medium transition-colors">{t('courses')}</Link></li>
+              <li><Link href="/pricing" className="text-gray-500 hover:text-primary font-medium transition-colors">{t('pricing')}</Link></li>
+              <li><Link href="/features" className="text-gray-500 hover:text-primary font-medium transition-colors">{t('features')}</Link></li>
+              <li><Link href="/integrations" className="text-gray-500 hover:text-primary font-medium transition-colors">{t('integrations')}</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold text-gray-900 mb-6">Support</h4>
+            <h4 className="font-semibold text-gray-900 mb-6">{t('support')}</h4>
             <ul className="space-y-4">
-              <li><Link href="/help" className="text-gray-500 hover:text-primary font-medium transition-colors">Help Center</Link></li>
-              <li><Link href="/terms" className="text-gray-500 hover:text-primary font-medium transition-colors">Terms of Service</Link></li>
-              <li><Link href="/privacy" className="text-gray-500 hover:text-primary font-medium transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/status" className="text-gray-500 hover:text-primary font-medium transition-colors">System Status</Link></li>
+              <li><Link href="/help" className="text-gray-500 hover:text-primary font-medium transition-colors">{t('help')}</Link></li>
+              <li><Link href="/terms" className="text-gray-500 hover:text-primary font-medium transition-colors">{t('terms')}</Link></li>
+              <li><Link href="/privacy" className="text-gray-500 hover:text-primary font-medium transition-colors">{t('privacy')}</Link></li>
+              <li><Link href="/status" className="text-gray-500 hover:text-primary font-medium transition-colors">{t('status')}</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between">
           <p className="text-gray-400 font-medium text-sm text-center md:text-left">
-            &copy; {new Date().getFullYear()} EduStream Inc. All rights reserved.
+            &copy; {new Date().getFullYear()} EduStream Inc. {t('rights')}.
           </p>
           <div className="flex gap-6 mt-4 md:mt-0">
-            <span className="text-gray-400 text-sm">English (US)</span>
-            <span className="text-gray-400 text-sm">USD</span>
+            <span className="text-gray-400 text-sm">{locale === 'vi' ? 'Tiếng Việt' : 'English (US)'}</span>
+            <span className="text-gray-400 text-sm">{locale === 'vi' ? 'VND' : 'USD'}</span>
           </div>
         </div>
       </div>

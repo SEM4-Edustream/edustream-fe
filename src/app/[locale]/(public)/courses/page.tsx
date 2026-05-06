@@ -14,9 +14,11 @@ import { CourseSort } from '@/components/features/course/CourseSort';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useRouter } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 function CoursePageContent() {
+  const t = useTranslations('CourseListing');
   const router = useRouter();
   const searchParams = useSearchParams();
   const [courses, setCourses] = useState<CourseSummary[]>([]);
@@ -93,29 +95,29 @@ function CoursePageContent() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl">
             <nav className="flex mb-4 text-sm font-medium text-slate-500 gap-2">
-              <span className="hover:text-indigo-600 cursor-pointer">Home</span>
+              <Link href="/" className="hover:text-indigo-600 cursor-pointer">{t('home')}</Link>
               <span>/</span>
-              <span className="text-slate-900">Courses</span>
+              <span className="text-slate-900">{t('courses')}</span>
             </nav>
             <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
-              Duyệt qua các <span className="text-indigo-600">Khóa học</span> của chúng tôi
+              {t('title_start')} <span className="text-indigo-600">{t('title_highlight')}</span> {t('title_end')}
             </h1>
             <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-              Khám phá hàng ngàn khóa học chất lượng từ các chuyên gia hàng đầu. Bắt đầu hành trình học tập của bạn ngay hôm nay.
+              {t('subtitle')}
             </p>
 
             <form onSubmit={handleSearch} className="flex gap-2 max-w-xl">
               <div className="relative flex-1">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <Input 
-                  placeholder="Tìm kiếm khóa học..." 
+                  placeholder={t('search_placeholder')} 
                   className="pl-12 h-14 bg-white border-slate-200 rounded-2xl text-base shadow-sm focus:ring-indigo-500/20"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <Button type="submit" className="h-14 px-8 bg-indigo-600 hover:bg-indigo-700 rounded-2xl text-base font-bold shadow-lg shadow-indigo-200 transition-all active:scale-95">
-                Tìm kiếm
+                {t('search_btn')}
               </Button>
             </form>
           </div>
@@ -130,7 +132,7 @@ function CoursePageContent() {
             <div className="sticky top-24">
               <div className="flex items-center gap-3 mb-6">
                 <SlidersHorizontal className="w-5 h-5 text-indigo-600" />
-                <h3 className="text-lg font-bold text-slate-900">Filters</h3>
+                <h3 className="text-lg font-bold text-slate-900">{t('filters')}</h3>
               </div>
               <CourseFilters categories={categories} />
             </div>
@@ -141,7 +143,7 @@ function CoursePageContent() {
             {/* Toolbar */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
               <div className="text-slate-600 font-medium">
-                Showing <span className="text-slate-900 font-bold">{courses.length}</span> results
+                {t('showing')} <span className="text-slate-900 font-bold">{courses.length}</span> {t('results')}
               </div>
               
               <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -151,7 +153,7 @@ function CoursePageContent() {
                   onClick={() => setShowMobileFilters(true)}
                 >
                   <SlidersHorizontal className="w-4 h-4" />
-                  Filters
+                  {t('filters')}
                 </Button>
                 <CourseSort />
               </div>
@@ -169,14 +171,14 @@ function CoursePageContent() {
           <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setShowMobileFilters(false)}></div>
           <div className="absolute right-0 top-0 bottom-0 w-80 bg-white shadow-2xl p-6 overflow-y-auto animate-in slide-in-from-right duration-300">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold text-slate-900">Filters</h3>
+              <h3 className="text-xl font-bold text-slate-900">{t('filters')}</h3>
               <Button variant="ghost" size="icon" onClick={() => setShowMobileFilters(false)}>
                 <X className="w-6 h-6" />
               </Button>
             </div>
             <CourseFilters categories={categories} />
             <Button className="w-full mt-8 h-12 bg-indigo-600" onClick={() => setShowMobileFilters(false)}>
-              Show Results
+              {t('show_results')}
             </Button>
           </div>
         </div>

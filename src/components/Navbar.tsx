@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, usePathname, useRouter } from '@/i18n/routing';
+import { useTranslations, useLocale } from 'next-intl';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,8 +23,12 @@ import { cartService } from '@/services/cartService';
 import { wishlistService } from '@/services/wishlistService';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
+  const t = useTranslations('Navbar');
+  const locale = useLocale();
+  const router = useRouter();
   const { user, isAuthenticated, logout, tutorStatus } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -137,7 +141,7 @@ const Navbar = () => {
             onMouseLeave={() => setExploreOpen(false)}
           >
             <button className="flex items-center gap-1 text-[14px] font-medium text-slate-600 hover:text-[#5624d0] transition-colors py-4">
-              Explore
+              {t('courses')}
               <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", exploreOpen && "rotate-180")} />
             </button>
 
@@ -188,7 +192,7 @@ const Navbar = () => {
             </div>
             <input
               type="text"
-              placeholder="Search for anything"
+              placeholder={t('search')}
               className="w-full bg-[#f7f9fa] border-[1.5px] border-[#1c1d1f]/20 rounded-full py-[10px] pl-12 pr-4 text-[15px] focus:bg-white focus:border-[#1c1d1f] focus:ring-0 transition-all outline-none placeholder:text-slate-500 shadow-sm"
             />
           </div>
@@ -214,11 +218,11 @@ const Navbar = () => {
                   <Link href="/teaching" className="text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">Teach on Edustream</Link>
                 )}
                 {user?.role === 'STUDENT' && (
-                  <Link href="/my-learning" className="text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">My learning</Link>
+                  <Link href="/my-learning" className="text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">{t('myLearning')}</Link>
                 )}
               </>
             ) : (
-              <Link href="/teaching" className="text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">Teach on EduStream</Link>
+              <Link href="/teaching" className="text-sm font-medium text-slate-600 hover:text-[#5624d0] transition-colors">{t('teaching')}</Link>
             )}
           </nav>
 
@@ -289,8 +293,8 @@ const Navbar = () => {
                             </div>
                           ) : (
                             <div className="p-8 text-center">
-                              <p className="text-slate-500 text-sm font-medium mb-4">Your wishlist is empty.</p>
-                              <Link href="/courses" className="text-[#5624d0] font-bold text-sm hover:underline">Explore courses</Link>
+                              <p className="text-slate-500 text-sm font-medium mb-4">{t('empty_wishlist')}</p>
+                              <Link href="/courses" className="text-[#5624d0] font-bold text-sm hover:underline">{t('explore')}</Link>
                             </div>
                           )}
                         </div>
@@ -298,7 +302,7 @@ const Navbar = () => {
                           <div className="p-3">
                             <Link href="/my-learning/wishlist">
                               <Button className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold rounded-xl h-11">
-                                Go to wishlist
+                                {t('go_to_wishlist')}
                               </Button>
                             </Link>
                           </div>
@@ -352,24 +356,24 @@ const Navbar = () => {
                             </div>
                           ) : (
                             <div className="p-8 text-center">
-                              <p className="text-slate-500 text-sm font-medium mb-4">Your cart is empty.</p>
-                              <Link href="/courses" className="text-[#5624d0] font-bold text-sm hover:underline">Keep shopping</Link>
+                              <p className="text-slate-500 text-sm font-medium mb-4">{t('empty_cart')}</p>
+                              <Link href="/courses" className="text-[#5624d0] font-bold text-sm hover:underline">{t('explore')}</Link>
                             </div>
                           )}
                         </div>
                         {cartItems.length > 0 && (
                           <div className="p-4 bg-white">
                             <div className="flex items-center justify-between mb-4">
-                              <span className="text-lg font-bold text-slate-900">Total:</span>
+                              <span className="text-lg font-bold text-slate-900">{t('total')}:</span>
                               <span className="text-lg font-extrabold text-[#1c1d1f]">
-                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+                                {new Intl.NumberFormat(locale === 'vi' ? 'vi-VN' : 'en-US', { style: 'currency', currency: locale === 'vi' ? 'VND' : 'USD' }).format(
                                   cartItems.reduce((acc, item) => acc + (item.coursePrice || 0), 0)
                                 )}
                               </span>
                             </div>
                             <Link href="/cart">
                               <Button className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold rounded-xl h-11">
-                                Go to cart
+                                {t('go_to_cart')}
                               </Button>
                             </Link>
                           </div>
@@ -413,17 +417,20 @@ const Navbar = () => {
                       </div>
                       <div className="py-2">
                         {user?.role === 'ADMIN' && (
-                          <Link href="/admin" className="block px-4 py-2 text-sm font-semibold text-indigo-600 hover:bg-indigo-50">Admin Panel</Link>
+                          <Link href="/admin" className="block px-4 py-2 text-sm font-semibold text-indigo-600 hover:bg-indigo-50">{t('admin')}</Link>
                         )}
-                        <Link href="/profile" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Profile</Link>
-                        <Link href="/my-learning" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My learning</Link>
-                        <Link href="/cart" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Cart</Link>
-                        <Link href="/my-learning/wishlist" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Wishlist</Link>
-                        <button className="w-full flex items-center justify-between px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
-                          <span>Language</span>
+                        <Link href="/profile" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{t('profile')}</Link>
+                        <Link href="/my-learning" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{t('myLearning')}</Link>
+                        <Link href="/cart" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{t('cart')}</Link>
+                        <Link href="/my-learning/wishlist" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">{t('wishlist')}</Link>
+                        <button 
+                          onClick={() => router.replace(pathname, { locale: locale === 'vi' ? 'en' : 'vi' })}
+                          className="w-full flex items-center justify-between px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                        >
+                          <span>{t('language')}</span>
                           <div className="flex items-center gap-1 text-slate-500">
                              <Globe className="h-4 w-4" />
-                             <span>English</span>
+                             <span>{locale === 'vi' ? 'Tiếng Việt' : 'English'}</span>
                           </div>
                         </button>
                       </div>
@@ -432,7 +439,7 @@ const Navbar = () => {
                           onClick={logout}
                           className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium"
                         >
-                          Log out
+                          {t('logout')}
                         </button>
                       </div>
                     </div>
@@ -442,14 +449,12 @@ const Navbar = () => {
             ) : (
               <div className="flex items-center gap-2 lg:gap-3">
                 <Link href="/login">
-                  <Button variant="ghost" className="text-slate-900 font-semibold hover:text-[#5624d0]">Log in</Button>
+                  <Button variant="ghost" className="text-slate-900 font-semibold hover:text-[#5624d0]">{t('login')}</Button>
                 </Link>
                 <Link href="/register">
-                  <Button className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5">Sign up</Button>
+                  <Button className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-5">{t('register')}</Button>
                 </Link>
-                <button className="p-2 border border-slate-300 rounded-md text-slate-700 hover:bg-slate-50 transition-colors hidden sm:flex items-center gap-2">
-                  <Globe className="h-5 w-5" />
-                </button>
+                <LanguageSwitcher />
               </div>
             )}
 
@@ -483,7 +488,7 @@ const Navbar = () => {
           <div className="px-6 py-6 space-y-6">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input type="text" placeholder="Search for anything" className="w-full bg-slate-50 border border-slate-200 rounded-lg py-3 pl-10 pr-4 text-sm" />
+              <input type="text" placeholder={t('search')} className="w-full bg-slate-50 border border-slate-200 rounded-lg py-3 pl-10 pr-4 text-sm" />
             </div>
 
             <nav className="flex flex-col gap-4">
@@ -491,7 +496,7 @@ const Navbar = () => {
                 onClick={() => setMobileCatsOpen(!mobileCatsOpen)}
                 className="flex items-center justify-between text-slate-900 font-bold text-lg border-b border-slate-100 pb-2 text-left"
               >
-                <span>Categories</span>
+                <span>{t('categories')}</span>
                 <ChevronDown className={cn("w-5 h-5 transition-transform", mobileCatsOpen && "rotate-180")} />
               </button>
               
@@ -534,9 +539,9 @@ const Navbar = () => {
                   ) : (
                     <Link href="/teaching" className="text-slate-600 font-medium">Teach on Edustream</Link>
                   )}
-                  <button className="flex items-center gap-2 text-slate-600 font-medium pt-2">
-                    <Globe className="h-4 w-4" /> Change Language
-                  </button>
+                  <div className="pt-2">
+                    <LanguageSwitcher />
+                  </div>
                 </>
               )}
             </nav>

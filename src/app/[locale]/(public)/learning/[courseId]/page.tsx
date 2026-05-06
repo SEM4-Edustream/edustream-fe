@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -26,6 +27,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function LearningPage() {
+  const t = useTranslations('Learning');
   const { courseId } = useParams() as { courseId: string };
   const router = useRouter();
   
@@ -132,7 +134,7 @@ export default function LearningPage() {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-[#1c1d1f] text-white">
         <Loader2 className="w-10 h-10 animate-spin text-indigo-500 mb-4" />
-        <p className="text-slate-400 font-medium">Preparing your classroom...</p>
+        <p className="text-slate-400 font-medium">{t('preparing')}</p>
       </div>
     );
   }
@@ -156,7 +158,7 @@ export default function LearningPage() {
         <div className="flex items-center gap-2 md:gap-4">
           <div className="hidden lg:flex items-center gap-2 text-xs font-bold text-slate-400">
              <Trophy className="w-4 h-4" />
-             <span>Your Progress: {completedLessons.size} / {(course.modules || []).reduce((acc, m) => acc + (m.lessons?.length || 0), 0)}</span>
+             <span>{t('your_progress')}: {completedLessons.size} / {(course.modules || []).reduce((acc, m) => acc + (m.lessons?.length || 0), 0)}</span>
           </div>
           <Button 
             variant="ghost" 
@@ -165,7 +167,7 @@ export default function LearningPage() {
             className="text-white hover:bg-white/10 border border-white/20"
           >
             {sidebarOpen ? <X className="w-4 h-4 mr-2" /> : <Menu className="w-4 h-4 mr-2" />}
-            <span className="hidden sm:inline">Course Content</span>
+            <span className="hidden sm:inline">{t('course_content')}</span>
           </Button>
         </div>
       </header>
@@ -173,7 +175,7 @@ export default function LearningPage() {
       <main className="flex-1 flex overflow-hidden relative">
         {/* PLAYER AREA (Left) */}
         <div className={cn(
-          "flex-1 flex flex-col overflow-y-auto transition-all duration-300",
+          "flex-1 flex flex-col overflow-y-auto no-scrollbar transition-all duration-300",
           sidebarOpen ? "mr-0" : "mr-0"
         )}>
           {/* Content Viewer */}
@@ -189,14 +191,14 @@ export default function LearningPage() {
                      autoPlay
                    />
                  ) : (
-                   <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 space-y-4">
-                      <PlayCircle className="w-16 h-16 opacity-20" />
-                      <p className="font-medium">No video source provided</p>
-                   </div>
+                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 space-y-4">
+                       <PlayCircle className="w-16 h-16 opacity-20" />
+                       <p className="font-medium">{t('no_video')}</p>
+                    </div>
                  )}
               </div>
             ) : activeLesson?.type === 'TEXT' ? (
-              <div className="w-full h-full bg-white overflow-y-auto p-8 md:p-12 lg:p-20">
+              <div className="w-full h-full bg-white overflow-y-auto no-scrollbar p-8 md:p-12 lg:p-20">
                  <article className="max-w-3xl mx-auto prose prose-slate lg:prose-lg editor-content">
                     <h2 className="text-3xl font-bold mb-8 text-slate-900">{activeLesson.title}</h2>
                     <div 
@@ -206,9 +208,9 @@ export default function LearningPage() {
                  </article>
               </div>
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-slate-500">
-                 <p>Select a lesson to begin</p>
-              </div>
+               <div className="w-full h-full flex items-center justify-center text-slate-500">
+                  <p>{t('select_lesson')}</p>
+               </div>
             )}
           </div>
 
@@ -218,7 +220,7 @@ export default function LearningPage() {
                 <div className="space-y-1 text-center md:text-left">
                    <h2 className="text-lg font-bold text-slate-900">{activeLesson?.title}</h2>
                    <p className="text-sm text-slate-500">
-                      Module: {course.modules?.find(m => m.lessons?.some(l => l.id === activeLesson?.id))?.title}
+                      {t('module')}: {course.modules?.find(m => m.lessons?.some(l => l.id === activeLesson?.id))?.title}
                    </p>
                 </div>
                 
@@ -234,11 +236,11 @@ export default function LearningPage() {
                      )}
                    >
                       {activeLesson && completedLessons.has(activeLesson.id) ? (
-                        <><CheckCircle2 className="w-4 h-4 mr-2" /> Completed</>
+                        <><CheckCircle2 className="w-4 h-4 mr-2" /> {t('completed')}</>
                       ) : isCompleting ? (
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       ) : (
-                        "Mark as Complete"
+                        t('mark_complete')
                       )}
                    </Button>
                 </div>
@@ -248,7 +250,7 @@ export default function LearningPage() {
           {/* Additional Tabs (Overview, Q&A, etc.) */}
           <div className="max-w-4xl mx-auto w-full px-4 md:px-6 py-10 space-y-12 pb-32">
              <div className="border-b border-slate-200 flex gap-8">
-                {['Overview', 'Notes', 'Announcements', 'Reviews'].map((tab, i) => (
+                {[t('tabs.overview'), t('tabs.notes'), t('tabs.announcements'), t('tabs.reviews')].map((tab, i) => (
                   <button key={tab} className={cn("pb-4 text-sm font-bold border-b-2 transition-all", i === 0 ? "border-slate-900 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-900")}>
                     {tab}
                   </button>
@@ -257,17 +259,17 @@ export default function LearningPage() {
              
              <div className="space-y-6">
                 <div className="space-y-4">
-                   <h3 className="text-xl font-bold text-slate-900">About this course</h3>
+                   <h3 className="text-xl font-bold text-slate-900">{t('about_course')}</h3>
                    <p className="text-slate-600 leading-relaxed">{course.subtitle}</p>
                 </div>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6">
                    <div className="space-y-1">
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Skill level</div>
+                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('skill_level')}</div>
                       <div className="text-sm font-medium text-slate-700">{course.level}</div>
                    </div>
                    <div className="space-y-1">
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Lectures</div>
+                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('lectures')}</div>
                       <div className="text-sm font-medium text-slate-700">{(course.modules || []).reduce((acc, m) => acc + (m.lessons?.length || 0), 0)}</div>
                    </div>
                 </div>
@@ -290,13 +292,13 @@ export default function LearningPage() {
               className="w-full md:w-80 lg:w-[350px] border-l border-slate-200 bg-white h-full flex flex-col shrink-0 absolute right-0 md:relative z-40 shadow-2xl md:shadow-none"
             >
               <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                 <h2 className="font-bold text-slate-900">Course Content</h2>
+                 <h2 className="font-bold text-slate-900">{t('course_content')}</h2>
                  <button onClick={() => setSidebarOpen(false)} className="md:hidden p-1 hover:bg-slate-200 rounded">
                     <X className="w-5 h-5" />
                  </button>
               </div>
               
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto no-scrollbar">
                  {(course.modules || []).map((module, mIndex) => (
                    <div key={module.id} className="border-b border-slate-100">
                       <button 
@@ -304,10 +306,10 @@ export default function LearningPage() {
                         className="w-full p-4 flex items-start justify-between hover:bg-slate-50 transition-colors text-left group"
                       >
                          <div className="flex-1 pr-4">
-                            <div className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-1">Section {mIndex + 1}</div>
+                            <div className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-1">{t('section')} {mIndex + 1}</div>
                             <h3 className="text-sm font-bold text-slate-800 leading-snug group-hover:text-indigo-600 transition-colors">{module.title}</h3>
                             <div className="text-[11px] text-slate-500 mt-1 font-medium">
-                               {module.lessons?.length || 0} Lectures
+                               {module.lessons?.length || 0} {t('lectures')}
                             </div>
                          </div>
                          <ChevronDown className={cn("w-4 h-4 text-slate-400 mt-1 transition-transform duration-300", expandedModules.has(module.id) && "rotate-180")} />
@@ -348,12 +350,12 @@ export default function LearningPage() {
                                      </div>
                                      <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
                                         {lesson.type === 'VIDEO' ? (
-                                          <><PlayCircle className="w-3 h-3" /> Video</>
+                                          <><PlayCircle className="w-3 h-3" /> {t('video')}</>
                                         ) : (
-                                          <><FileText className="w-3 h-3" /> Article</>
+                                          <><FileText className="w-3 h-3" /> {t('article')}</>
                                         )}
                                         <span>•</span>
-                                        <span>{Math.floor((lesson.durationSeconds || 0) / 60)} min</span>
+                                        <span>{Math.floor((lesson.durationSeconds || 0) / 60)} {t('min')}</span>
                                      </div>
                                   </div>
                                </button>

@@ -22,6 +22,12 @@ axiosInstance.interceptors.request.use(
           config.headers.Authorization = `Bearer ${token}`;
         }
       }
+      
+      // Inject Language Header
+      const currentLang = document.documentElement.lang || 'vi';
+      if (config.headers) {
+        config.headers['Accept-Language'] = currentLang;
+      }
     }
     return config;
   },

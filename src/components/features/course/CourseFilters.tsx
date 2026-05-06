@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { CategoryResponse } from '@/services/courseService';
@@ -13,6 +14,7 @@ interface CourseFiltersProps {
 }
 
 export function CourseFilters({ categories, className }: CourseFiltersProps) {
+  const t = useTranslations('CourseListing.Filters');
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -32,22 +34,22 @@ export function CourseFilters({ categories, className }: CourseFiltersProps) {
   };
 
   const levels = [
-    { label: 'Beginner', value: 'BEGINNER' },
-    { label: 'Intermediate', value: 'INTERMEDIATE' },
-    { label: 'Expert', value: 'EXPERT' },
-    { label: 'All Levels', value: 'ALL_LEVELS' },
+    { label: t('levels.beginner'), value: 'BEGINNER' },
+    { label: t('levels.intermediate'), value: 'INTERMEDIATE' },
+    { label: t('levels.expert'), value: 'EXPERT' },
+    { label: t('levels.all'), value: 'ALL_LEVELS' },
   ];
 
   const prices = [
-    { label: 'Free', value: 'FREE' },
-    { label: 'Paid', value: 'PAID' },
+    { label: t('prices.free'), value: 'FREE' },
+    { label: t('prices.paid'), value: 'PAID' },
   ];
 
   return (
     <div className={cn("space-y-8", className)}>
       {/* Categories */}
       <div className="space-y-4">
-        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Categories</h4>
+        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">{t('categories')}</h4>
         <div className="space-y-3">
           {categories.map((category) => (
             <div key={category.id} className="flex items-center space-x-3">
@@ -70,7 +72,7 @@ export function CourseFilters({ categories, className }: CourseFiltersProps) {
 
       {/* Level */}
       <div className="space-y-4">
-        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Level</h4>
+        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">{t('level')}</h4>
         <div className="space-y-3">
           {levels.map((level) => (
             <div key={level.value} className="flex items-center space-x-3">
@@ -93,7 +95,7 @@ export function CourseFilters({ categories, className }: CourseFiltersProps) {
 
       {/* Price */}
       <div className="space-y-4">
-        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Price</h4>
+        <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider">{t('price')}</h4>
         <div className="space-y-3">
           {prices.map((price) => (
             <div key={price.value} className="flex items-center space-x-3">
@@ -120,7 +122,7 @@ export function CourseFilters({ categories, className }: CourseFiltersProps) {
           onClick={() => router.push('/courses')}
           className="text-sm font-bold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center"
         >
-          Clear all filters
+          {t('clear')}
         </button>
       )}
     </div>

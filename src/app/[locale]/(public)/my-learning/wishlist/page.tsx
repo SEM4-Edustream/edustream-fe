@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { Heart, Trash2, Star, Loader2, ShoppingCart, HeartOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { wishlistService, WishlistItemResponse } from '@/services/wishlistService';
@@ -11,6 +11,7 @@ import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 
 export default function WishlistPage() {
+  const t = useTranslations('Wishlist');
   const { isAuthenticated } = useAuth();
   const router = useRouter();
   const [items, setItems] = useState<WishlistItemResponse[]>([]);
@@ -71,7 +72,7 @@ export default function WishlistPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center space-y-4">
           <Loader2 className="w-8 h-8 animate-spin text-indigo-600 mx-auto" />
-          <p className="text-slate-500 font-medium">Loading your wishlist...</p>
+          <p className="text-slate-500 font-medium">{t('loading')}</p>
         </div>
       </div>
     );
@@ -82,11 +83,11 @@ export default function WishlistPage() {
         {items.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-16 text-center">
             <HeartOff className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-slate-900 mb-2">Your wishlist is empty</h2>
-            <p className="text-slate-500 mb-6">Explore courses and save your favorites!</p>
+            <h2 className="text-xl font-bold text-slate-900 mb-2">{t('empty_title')}</h2>
+            <p className="text-slate-500 mb-6">{t('empty_subtitle')}</p>
             <Link href="/courses">
               <Button className="bg-[#1c1d1f] hover:bg-slate-800 text-white font-bold px-8 h-12 rounded-none">
-                Explore Courses
+                {t('explore_courses')}
               </Button>
             </Link>
           </div>
@@ -151,7 +152,7 @@ export default function WishlistPage() {
                     ) : (
                       <ShoppingCart className="w-4 h-4 mr-2" />
                     )}
-                    Add to Cart
+                    {t('add_to_cart')}
                   </Button>
                 </div>
               </div>

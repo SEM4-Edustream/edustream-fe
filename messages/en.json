@@ -1,0 +1,202 @@
+{
+  "Navbar": {
+    "home": "Home",
+    "courses": "Courses",
+    "myLearning": "My Learning",
+    "teaching": "Teaching",
+    "cart": "Cart",
+    "wishlist": "Wishlist",
+    "login": "Login",
+    "register": "Register",
+    "search": "Search for courses...",
+    "explore": "Explore",
+    "categories": "Categories",
+    "tutor": "Tutor",
+    "admin": "Admin",
+    "profile": "Profile",
+    "logout": "Logout",
+    "language": "Language",
+    "go_to_cart": "Go to cart",
+    "go_to_wishlist": "Go to wishlist",
+    "empty_cart": "Your cart is empty",
+    "empty_wishlist": "Your wishlist is empty",
+    "total": "Total"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "add_to_cart": "Add to cart",
+    "buy_now": "Buy now",
+    "learn_more": "Learn more",
+    "view_all": "View all",
+    "see_details": "See details"
+  },
+  "Auth": {
+    "login_title": "Login to EduStream",
+    "register_title": "Create new account",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "username_or_email": "Email or Username",
+    "forgot_password": "Forgot password?",
+    "no_account": "Don't have an account?",
+    "have_account": "Already have an account?",
+    "login_btn": "Login",
+    "register_btn": "Sign up",
+    "logging_in": "Logging in...",
+    "other_login": "Other log in options",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "creating_account": "Creating account...",
+    "other_signup": "Other sign up options",
+    "password_requirements": "Password Requirements",
+    "pwd_min_chars": "At least 8 characters",
+    "pwd_upper": "One uppercase letter",
+    "pwd_number": "One number",
+    "pwd_special": "One special character"
+  },
+  "Hero": {
+    "title": "Unlimited Learning with EduStream",
+    "subtitle": "Explore thousands of courses from top experts around the world.",
+    "cta": "Start learning now",
+    "tutor_title": "Become a Tutor",
+    "tutor_subtitle": "Tutors from around the world teach millions of learners on EduStream. We provide the tools and platform to teach what you love.",
+    "tutor_cta": "Become a Tutor",
+    "stats_students": "Students",
+    "stats_courses": "Courses",
+    "stats_tutors": "Tutors"
+  },
+  "Course": {
+    "level": "Level",
+    "duration": "Duration",
+    "lectures": "Lectures",
+    "rating": "Rating",
+    "reviews": "Reviews",
+    "best_seller": "Best Seller",
+    "new": "New",
+    "free": "Free",
+    "course_rating": "Course Rating",
+    "all_levels": "All Levels",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+  },
+  "Home": {
+    "CourseList": {
+      "title": "Most Popular Courses",
+      "subtitle": "Explore our top-rated courses and start your learning journey today.",
+      "view_all": "View all courses",
+      "no_courses": "No courses available yet",
+      "check_back": "Check back later for new premium content!"
+    },
+    "CategoryShowcase": {
+      "title": "Learn essential career and life skills",
+      "subtitle": "EduStream helps you build in-demand skills fast and advance your career."
+    },
+    "TutorBanner": {
+      "title": "Become an instructor",
+      "subtitle": "Instructors from around the world teach millions of learners on EduStream. We provide the tools and platform to share your knowledge and teach what you love.",
+      "cta": "Start teaching today"
+    }
+  },
+  "Footer": {
+    "slogan": "Empowering learners globally with world-class education, anytime, anywhere.",
+    "company": "Company",
+    "about": "About Us",
+    "careers": "Careers",
+    "contact": "Contact",
+    "blog": "Blog",
+    "product": "Product",
+    "courses": "Courses",
+    "pricing": "Pricing",
+    "features": "Features",
+    "integrations": "Integrations",
+    "support": "Support",
+    "help": "Help Center",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "status": "System Status",
+    "rights": "All rights reserved"
+  },
+  "CourseListing": {
+    "home": "Home",
+    "courses": "Courses",
+    "title_start": "Browse our",
+    "title_highlight": "Courses",
+    "title_end": "",
+    "subtitle": "Explore thousands of quality courses from top experts. Start your learning journey today.",
+    "search_placeholder": "Search for courses...",
+    "search_btn": "Search",
+    "filters": "Filters",
+    "showing": "Showing",
+    "results": "results",
+    "show_results": "Show Results",
+    "Filters": {
+      "categories": "Categories",
+      "level": "Level",
+      "price": "Price",
+      "clear": "Clear all filters",
+      "levels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "expert": "Expert",
+        "all": "All Levels"
+      },
+      "prices": {
+        "free": "Free",
+        "paid": "Paid"
+      }
+    }
+  },
+  "Learning": {
+    "preparing": "Preparing your classroom...",
+    "your_progress": "Your Progress",
+    "course_content": "Course Content",
+    "no_video": "No video source provided",
+    "select_lesson": "Select a lesson to begin",
+    "module": "Module",
+    "completed": "Completed",
+    "mark_complete": "Mark as Complete",
+    "about_course": "About this course",
+    "skill_level": "Skill level",
+    "lectures": "Lectures",
+    "section": "Section",
+    "video": "Video",
+    "article": "Article",
+    "min": "min",
+    "tabs": {
+      "overview": "Overview",
+      "notes": "Notes",
+      "announcements": "Announcements",
+      "reviews": "Reviews"
+    }
+  },
+  "MyLearning": {
+    "streak_title": "Start a weekly streak",
+    "streak_subtitle": "Let's chip away at your learning goals.",
+    "weeks": "weeks",
+    "current_streak": "Current streak",
+    "course_min": "course min",
+    "visit": "visit",
+    "schedule_title": "Schedule learning time",
+    "schedule_subtitle": "Learning a little each day adds up. Research shows that students who make learning a habit are more likely to reach their goals. Set time aside to learn and get reminders using your learning scheduler.",
+    "get_started": "Get started",
+    "dismiss": "Dismiss",
+    "complete": "complete",
+    "continue": "Continue",
+    "start_course": "Start course",
+    "empty_title": "Start learning today",
+    "empty_subtitle": "Explore thousands of courses and find the perfect one for you.",
+    "browse_courses": "Browse courses"
+  },
+  "Wishlist": {
+    "loading": "Loading your wishlist...",
+    "empty_title": "Your wishlist is empty",
+    "empty_subtitle": "Explore courses and save your favorites!",
+    "explore_courses": "Explore Courses",
+    "add_to_cart": "Add to Cart"
+  }
+}

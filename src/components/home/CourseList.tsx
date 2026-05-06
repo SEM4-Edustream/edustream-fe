@@ -1,11 +1,12 @@
-import React from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { getTranslations } from 'next-intl/server';
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
 import { courseService } from '@/services/courseService';
 import { CourseCard } from '@/components/ui/course-card';
 
 export default async function CourseList() {
+  const t = await getTranslations('Home.CourseList');
   const courses = await courseService.getPublishedCourses({ size: 6 });
   const items = courses.content ?? [];
 
@@ -13,14 +14,14 @@ export default async function CourseList() {
     <section className="w-full max-w-[1600px] mx-auto px-4 lg:px-12 pt-4 pb-16 bg-white">
       <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
         <div>
-          <h2 className="text-2xl md:text-3xl font-semibold text-slate-800 mb-2 text-wrap-balance">Most Popular Courses</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold text-slate-800 mb-2 text-wrap-balance">{t('title')}</h2>
           <p className="text-muted-foreground text-base max-w-xl">
-            Explore our top-rated courses and start your learning journey today.
+            {t('subtitle')}
           </p>
         </div>
         <Link href="/courses">
           <Button variant="ghost" className="text-blue-600 font-semibold hover:text-blue-700 hover:bg-blue-50">
-            View all courses →
+            {t('view_all')} →
           </Button>
         </Link>
       </div>
@@ -51,8 +52,8 @@ export default async function CourseList() {
             <div className="bg-gray-100 p-6 rounded-full mb-4">
               <Play className="h-10 w-10 text-gray-400" aria-hidden="true" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No courses available yet</h3>
-            <p className="text-gray-500">Check back later for new premium content!</p>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">{t('no_courses')}</h3>
+            <p className="text-gray-500">{t('check_back')}</p>
           </div>
         )}
       </div>

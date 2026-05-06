@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { useLogin } from '@/hooks/useAuthLogic';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 
 export default function LoginPage() {
+  const t = useTranslations('Auth');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { handleLogin, loading, error } = useLogin();
@@ -52,7 +54,7 @@ export default function LoginPage() {
           <div className="w-full max-w-[400px] space-y-8">
             
             <div className="space-y-2">
-               <h2 className="text-2xl font-semibold text-[#1c1d1f] tracking-tight">Log in to your account</h2>
+               <h2 className="text-2xl font-semibold text-[#1c1d1f] tracking-tight">{t('login_title')}</h2>
             </div>
 
           <form onSubmit={onSubmit} className="space-y-4">
@@ -64,7 +66,7 @@ export default function LoginPage() {
             )}
             
             <div className="space-y-1">
-              <Label htmlFor="username" className="text-sm font-semibold text-[#1c1d1f] ml-1">Email or Username</Label>
+              <Label htmlFor="username" className="text-sm font-semibold text-[#1c1d1f] ml-1">{t('username_or_email')}</Label>
               <Input 
                 id="username" 
                 type="text" 
@@ -78,8 +80,8 @@ export default function LoginPage() {
             
             <div className="space-y-1">
               <div className="flex items-center justify-between ml-1">
-                <Label htmlFor="password" className="text-sm font-semibold text-[#1c1d1f]">Password</Label>
-                <Link href="#" className="text-xs font-semibold text-[#5624d0] hover:underline">Forgot password?</Link>
+                <Label htmlFor="password" className="text-sm font-semibold text-[#1c1d1f]">{t('password')}</Label>
+                <Link href="#" className="text-xs font-semibold text-[#5624d0] hover:underline">{t('forgot_password')}</Link>
               </div>
               <Input 
                 id="password" 
@@ -100,10 +102,10 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Logging in...
+                  {t('logging_in')}
                 </>
               ) : (
-                'Log in'
+                t('login_btn')
               )}
             </Button>
           </form>
@@ -114,7 +116,7 @@ export default function LoginPage() {
                    <span className="w-full border-t border-slate-200"></span>
                 </div>
                 <div className="relative flex justify-center text-xs">
-                   <span className="bg-white px-2 text-slate-500 font-bold uppercase tracking-wider">Other log in options</span>
+                   <span className="bg-white px-2 text-slate-500 font-bold uppercase tracking-wider">{t('other_login')}</span>
                 </div>
              </div>
 
@@ -136,9 +138,9 @@ export default function LoginPage() {
 
           <div className="pt-6 border-t border-slate-100 text-center">
              <p className="text-sm text-slate-600 font-medium">
-                Don't have an account?{' '}
+                {t('no_account')}{' '}
                 <Link href="/register" className="text-[#5624d0] hover:underline font-semibold">
-                   Sign up
+                   {t('register_btn')}
                 </Link>
              </p>
           </div>

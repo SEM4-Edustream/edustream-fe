@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, PlayCircle } from 'lucide-react';
@@ -31,6 +32,7 @@ const slides = [
 ];
 
 export default function HeroSection() {
+  const t = useTranslations('Hero');
   const { user, isAuthenticated } = useAuth();
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -117,15 +119,15 @@ export default function HeroSection() {
               >
                 <div className="flex flex-col gap-4">
                   <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-800 leading-tight tracking-tight">
-                    {slides[current].title}
+                    {current === 0 ? t('title') : t('tutor_title')}
                   </h2>
                   <p className="text-base md:text-lg text-slate-700 leading-relaxed font-medium">
-                    {slides[current].description}
+                    {current === 0 ? t('subtitle') : t('tutor_subtitle')}
                   </p>
                   <div className="pt-2">
                     <Link href={currentButtonLink}>
                       <Button size="lg" className="h-12 px-6 text-base font-bold bg-[#1c1d1f] hover:bg-slate-800 text-white rounded-lg transition-all">
-                        {slides[current].buttonText}
+                        {current === 0 ? t('cta') : t('tutor_cta')}
                       </Button>
                     </Link>
                   </div>

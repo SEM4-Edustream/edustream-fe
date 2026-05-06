@@ -2,11 +2,13 @@
 
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 
 export default function TutorBanner() {
+  const t = useTranslations('Home.TutorBanner');
   const { user, isAuthenticated } = useAuth();
     
   // Dynamic redirection logic
@@ -26,16 +28,15 @@ export default function TutorBanner() {
           {/* Text Content */}
           <div className="lg:w-1/2 space-y-6 text-center lg:text-left">
             <h2 className="text-2xl md:text-3xl font-semibold text-slate-800 tracking-tight leading-tight">
-              Become an instructor
+              {t('title')}
             </h2>
             <p className="text-slate-600 text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
-              Instructors from around the world teach millions of learners on EduStream. 
-              We provide the tools and platform to share your knowledge and teach what you love.
+              {t('subtitle')}
             </p>
             <div className="pt-4">
               <Link href={tutorHref}>
                 <Button size="lg" className="h-14 px-8 text-base font-bold bg-[#1c1d1f] hover:bg-slate-800 text-white rounded-lg transition-all">
-                  Start teaching today
+                  {t('cta')}
                 </Button>
               </Link>
             </div>

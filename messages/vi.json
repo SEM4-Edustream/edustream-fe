@@ -1,0 +1,202 @@
+{
+  "Navbar": {
+    "home": "Trang chủ",
+    "courses": "Khóa học",
+    "myLearning": "Học tập",
+    "teaching": "Giảng dạy",
+    "cart": "Giỏ hàng",
+    "wishlist": "Yêu thích",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "search": "Tìm kiếm khóa học...",
+    "explore": "Khám phá",
+    "categories": "Danh mục",
+    "tutor": "Giảng viên",
+    "admin": "Quản trị",
+    "profile": "Cá nhân",
+    "logout": "Đăng xuất",
+    "language": "Ngôn ngữ",
+    "go_to_cart": "Đến giỏ hàng",
+    "go_to_wishlist": "Đến danh sách yêu thích",
+    "empty_cart": "Giỏ hàng trống",
+    "empty_wishlist": "Danh sách yêu thích trống",
+    "total": "Tổng cộng"
+  },
+  "Common": {
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "add_to_cart": "Thêm vào giỏ hàng",
+    "buy_now": "Mua ngay",
+    "learn_more": "Tìm hiểu thêm",
+    "view_all": "Xem tất cả",
+    "see_details": "Xem chi tiết"
+  },
+  "Auth": {
+    "login_title": "Đăng nhập vào EduStream",
+    "register_title": "Tạo tài khoản mới",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "username": "Tên đăng nhập",
+    "username_or_email": "Email hoặc Tên đăng nhập",
+    "forgot_password": "Quên mật khẩu?",
+    "no_account": "Chưa có tài khoản?",
+    "have_account": "Đã có tài khoản?",
+    "login_btn": "Đăng nhập",
+    "register_btn": "Đăng ký",
+    "logging_in": "Đang đăng nhập...",
+    "other_login": "Các tùy chọn đăng nhập khác",
+    "first_name": "Tên",
+    "last_name": "Họ",
+    "creating_account": "Đang tạo tài khoản...",
+    "other_signup": "Các tùy chọn đăng ký khác",
+    "password_requirements": "Yêu cầu mật khẩu",
+    "pwd_min_chars": "Ít nhất 8 ký tự",
+    "pwd_upper": "Một chữ cái viết hoa",
+    "pwd_number": "Một chữ số",
+    "pwd_special": "Một ký tự đặc biệt"
+  },
+  "Hero": {
+    "title": "Học tập không giới hạn cùng EduStream",
+    "subtitle": "Khám phá hàng ngàn khóa học từ các chuyên gia hàng đầu trên thế giới.",
+    "cta": "Bắt đầu học ngay",
+    "tutor_title": "Trở thành Giảng viên",
+    "tutor_subtitle": "Giảng viên từ khắp nơi trên thế giới dạy hàng triệu học viên trên EduStream. Chúng tôi cung cấp các công cụ và nền tảng để bạn dạy những gì mình yêu thích.",
+    "tutor_cta": "Trở thành Giảng viên",
+    "stats_students": "Học viên",
+    "stats_courses": "Khóa học",
+    "stats_tutors": "Giảng viên"
+  },
+  "Course": {
+    "level": "Cấp độ",
+    "duration": "Thời lượng",
+    "lectures": "Bài học",
+    "rating": "Đánh giá",
+    "reviews": "Nhận xét",
+    "best_seller": "Bán chạy nhất",
+    "new": "Mới",
+    "free": "Miễn phí",
+    "course_rating": "Đánh giá khóa học",
+    "all_levels": "Mọi cấp độ",
+    "beginner": "Cơ bản",
+    "intermediate": "Trung cấp",
+    "advanced": "Nâng cao"
+  },
+  "Home": {
+    "CourseList": {
+      "title": "Những khóa học phổ biến nhất",
+      "subtitle": "Khám phá các khóa học hàng đầu của chúng tôi và bắt đầu hành trình học tập của bạn ngay hôm nay.",
+      "view_all": "Xem tất cả khóa học",
+      "no_courses": "Chưa có khóa học nào",
+      "check_back": "Hãy quay lại sau để xem các nội dung mới nhất!"
+    },
+    "CategoryShowcase": {
+      "title": "Học các kỹ năng cần thiết cho sự nghiệp và cuộc sống",
+      "subtitle": "EduStream giúp bạn xây dựng các kỹ năng đang được săn đón một cách nhanh chóng và thăng tiến trong sự nghiệp."
+    },
+    "TutorBanner": {
+      "title": "Trở thành giảng viên",
+      "subtitle": "Giảng viên từ khắp nơi trên thế giới dạy hàng triệu học viên trên EduStream. Chúng tôi cung cấp các công cụ và nền tảng để bạn chia sẻ kiến thức và dạy những gì mình yêu thích.",
+      "cta": "Bắt đầu giảng dạy ngay hôm nay"
+    }
+  },
+  "Footer": {
+    "slogan": "Trao quyền cho người học trên toàn cầu với nền giáo dục đẳng cấp thế giới, mọi lúc, mọi nơi.",
+    "company": "Công ty",
+    "about": "Về chúng tôi",
+    "careers": "Tuyển dụng",
+    "contact": "Liên hệ",
+    "blog": "Blog",
+    "product": "Sản phẩm",
+    "courses": "Khóa học",
+    "pricing": "Bảng giá",
+    "features": "Tính năng",
+    "integrations": "Tích hợp",
+    "support": "Hỗ trợ",
+    "help": "Trung tâm trợ giúp",
+    "terms": "Điều khoản dịch vụ",
+    "privacy": "Chính sách bảo mật",
+    "status": "Trạng thái hệ thống",
+    "rights": "Bảo lưu mọi quyền"
+  },
+  "CourseListing": {
+    "home": "Trang chủ",
+    "courses": "Khóa học",
+    "title_start": "Duyệt qua các",
+    "title_highlight": "Khóa học",
+    "title_end": "của chúng tôi",
+    "subtitle": "Khám phá hàng ngàn khóa học chất lượng từ các chuyên gia hàng đầu. Bắt đầu hành trình học tập của bạn ngay hôm nay.",
+    "search_placeholder": "Tìm kiếm khóa học...",
+    "search_btn": "Tìm kiếm",
+    "filters": "Bộ lọc",
+    "showing": "Đang hiển thị",
+    "results": "kết quả",
+    "show_results": "Xem kết quả",
+    "Filters": {
+      "categories": "Danh mục",
+      "level": "Cấp độ",
+      "price": "Giá",
+      "clear": "Xóa tất cả bộ lọc",
+      "levels": {
+        "beginner": "Cơ bản",
+        "intermediate": "Trung cấp",
+        "expert": "Chuyên gia",
+        "all": "Mọi cấp độ"
+      },
+      "prices": {
+        "free": "Miễn phí",
+        "paid": "Có phí"
+      }
+    }
+  },
+  "Learning": {
+    "preparing": "Đang chuẩn bị lớp học...",
+    "your_progress": "Tiến độ của bạn",
+    "course_content": "Nội dung khóa học",
+    "no_video": "Không có nguồn video",
+    "select_lesson": "Chọn một bài học để bắt đầu",
+    "module": "Chương",
+    "completed": "Đã hoàn thành",
+    "mark_complete": "Đánh dấu hoàn thành",
+    "about_course": "Về khóa học này",
+    "skill_level": "Cấp độ kỹ năng",
+    "lectures": "Bài giảng",
+    "section": "Phần",
+    "video": "Video",
+    "article": "Bài viết",
+    "min": "phút",
+    "tabs": {
+      "overview": "Tổng quan",
+      "notes": "Ghi chú",
+      "announcements": "Thông báo",
+      "reviews": "Đánh giá"
+    }
+  },
+  "MyLearning": {
+    "streak_title": "Bắt đầu chuỗi học tập hàng tuần",
+    "streak_subtitle": "Hãy cùng thực hiện mục tiêu học tập của bạn.",
+    "weeks": "tuần",
+    "current_streak": "Chuỗi hiện tại",
+    "course_min": "phút học",
+    "visit": "lần truy cập",
+    "schedule_title": "Lên lịch thời gian học",
+    "schedule_subtitle": "Học một ít mỗi ngày sẽ tích tiểu thành đại. Nghiên cứu cho thấy những học viên tạo thói quen học tập có nhiều khả năng đạt được mục tiêu hơn. Hãy dành thời gian để học và nhận lời nhắc bằng bộ lập lịch học tập của bạn.",
+    "get_started": "Bắt đầu ngay",
+    "dismiss": "Bỏ qua",
+    "complete": "hoàn thành",
+    "continue": "Tiếp tục học",
+    "start_course": "Bắt đầu khóa học",
+    "empty_title": "Bắt đầu học ngay hôm nay",
+    "empty_subtitle": "Khám phá hàng ngàn khóa học và tìm thấy khóa học hoàn hảo cho bạn.",
+    "browse_courses": "Duyệt các khóa học"
+  },
+  "Wishlist": {
+    "loading": "Đang tải danh sách yêu thích của bạn...",
+    "empty_title": "Danh sách yêu thích của bạn đang trống",
+    "empty_subtitle": "Hãy khám phá các khóa học và lưu lại những khóa học bạn yêu thích!",
+    "explore_courses": "Khám phá khóa học",
+    "add_to_cart": "Thêm vào giỏ hàng"
+  }
+}

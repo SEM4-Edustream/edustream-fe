@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight, Zap, Target, Cpu, LayoutGrid } from 'lucide-react';
@@ -9,6 +10,7 @@ import { courseService, CategoryResponse } from '@/services/courseService';
 import { cn } from '@/lib/utils';
 
 export default function CategoryShowcase() {
+  const t = useTranslations('Home.CategoryShowcase');
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -96,10 +98,10 @@ export default function CategoryShowcase() {
         {/* Left Side: Content */}
         <div className="lg:w-1/3 xl:w-1/4 space-y-6">
           <h2 className="text-2xl md:text-3xl font-semibold text-slate-800 tracking-tight leading-[1.2]">
-            Learn essential career and life skills
+            {t('title')}
           </h2>
           <p className="text-slate-500 text-base leading-relaxed">
-            EduStream helps you build in-demand skills fast and advance your career.
+            {t('subtitle')}
           </p>
           <div className="pt-2 flex gap-3">
             <button 

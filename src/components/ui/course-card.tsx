@@ -1,5 +1,6 @@
 import React from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +13,7 @@ interface CourseCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
   children: React.ReactNode;
 }
 export function CourseCard({ href, children, className, ...props }: CourseCardProps) {
+  const t = useTranslations('Course');
   return (
     <Link href={href} className="group block h-full focus:outline-none focus-visible:ring-0 outline-none focus:ring-0">
       <Card 
@@ -91,9 +93,10 @@ export function CourseCardFooter({ children }: { children: React.ReactNode }) {
 
 // 8. Rating Component
 export function CourseCardRating({ value, count }: { value: number | null, count: number }) {
+  const t = useTranslations('Course');
   return (
     <div className="flex items-center gap-1 mb-1">
-      <span className="text-[14px] font-bold text-[#b4690e]">{value ? value.toFixed(1) : 'New'}</span>
+      <span className="text-[14px] font-bold text-[#b4690e]">{value ? value.toFixed(1) : t('new')}</span>
       <div className="flex text-[#b4690e]">
         {[1, 2, 3, 4, 5].map((star) => (
           <Star 
@@ -110,6 +113,7 @@ export function CourseCardRating({ value, count }: { value: number | null, count
 
 // 9. Price Component
 export function CourseCardPrice({ value }: { value: number | null }) {
+  const t = useTranslations('Course');
   // Mock lại giá trị gốc cho hợp lý với ảnh (không quá cao)
   const originalPrice = value ? value * 1.48 : null;
 
@@ -118,7 +122,7 @@ export function CourseCardPrice({ value }: { value: number | null }) {
   return (
     <div className="flex items-center gap-1.5 mt-1">
       <span className="text-[16px] font-bold text-[#1c1d1f]">
-        {value === null ? 'Free' : formatPrice(value)}
+        {value === null ? t('free') : formatPrice(value)}
       </span>
       {originalPrice && (
         <span className="text-[14px] text-[#6a6f73] line-through">
@@ -131,11 +135,12 @@ export function CourseCardPrice({ value }: { value: number | null }) {
 
 // 10. Badges
 export function CourseCardBadges({ isBestSeller }: { isBestSeller?: boolean }) {
+  const t = useTranslations('Course');
   if (!isBestSeller) return null;
   return (
     <div className="mt-1 flex gap-1">
       <div className="inline-block bg-[#c0e5e4] text-[#1e6055] text-[12px] font-bold px-2 py-0.5 rounded-sm">
-        Bestseller
+        {t('best_seller')}
       </div>
     </div>
   );

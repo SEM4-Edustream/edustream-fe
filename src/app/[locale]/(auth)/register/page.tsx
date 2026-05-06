@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { useRegister } from '@/hooks/useAuthLogic';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ import {
 } from 'lucide-react';
 
 export default function RegisterPage() {
+  const t = useTranslations('Auth');
   const { submitRegistration, isPending, success, error: apiError } = useRegister();
   
   // Local state for form fields
@@ -142,7 +144,7 @@ export default function RegisterPage() {
           <div className="w-full max-w-[440px] space-y-6">
             
             <div className="space-y-1">
-               <h2 className="text-2xl font-semibold text-slate-800 tracking-tight">Sign up and start learning</h2>
+               <h2 className="text-2xl font-semibold text-slate-800 tracking-tight">{t('register_title')}</h2>
             </div>
 
             <form onSubmit={onSubmit} className="space-y-4">
@@ -164,7 +166,7 @@ export default function RegisterPage() {
                 <div className="space-y-1">
                   <Input 
                     name="firstName"
-                    placeholder="First name" 
+                    placeholder={t('first_name')} 
                     value={formData.firstName}
                     onChange={handleInputChange}
                     onBlur={handleBlur}
@@ -175,7 +177,7 @@ export default function RegisterPage() {
                 <div className="space-y-1">
                   <Input 
                     name="lastName"
-                    placeholder="Last name" 
+                    placeholder={t('last_name')} 
                     value={formData.lastName}
                     onChange={handleInputChange}
                     onBlur={handleBlur}
@@ -188,7 +190,7 @@ export default function RegisterPage() {
               <div className="space-y-1">
                 <Input 
                   name="username"
-                  placeholder="Username" 
+                  placeholder={t('username')} 
                   value={formData.username}
                   onChange={handleInputChange}
                   onBlur={handleBlur}
@@ -201,7 +203,7 @@ export default function RegisterPage() {
                 <Input 
                   name="email"
                   type="email" 
-                  placeholder="Email address" 
+                  placeholder={t('email')} 
                   value={formData.email}
                   onChange={handleInputChange}
                   onBlur={handleBlur}
@@ -214,7 +216,7 @@ export default function RegisterPage() {
                 <Input 
                   name="password"
                   type={showPassword ? 'text' : 'password'} 
-                  placeholder="Password" 
+                  placeholder={t('password')} 
                   value={formData.password}
                   onChange={handleInputChange}
                   onBlur={handleBlur}
@@ -230,14 +232,13 @@ export default function RegisterPage() {
                 {fieldErrors.password && touched.password && <p className="text-[11px] text-red-500 font-medium ml-1">{fieldErrors.password}</p>}
               </div>
 
-              {/* Password Checklist UI */}
               <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-100 space-y-2">
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Password Requirements</p>
+                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">{t('password_requirements')}</p>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                   <PasswordRequirement label="At least 8 characters" met={pwdValidation.length} />
-                   <PasswordRequirement label="One uppercase letter" met={pwdValidation.hasUpper} />
-                   <PasswordRequirement label="One number" met={pwdValidation.hasNumber} />
-                   <PasswordRequirement label="One special character" met={pwdValidation.hasSpecial} />
+                   <PasswordRequirement label={t('pwd_min_chars')} met={pwdValidation.length} />
+                   <PasswordRequirement label={t('pwd_upper')} met={pwdValidation.hasUpper} />
+                   <PasswordRequirement label={t('pwd_number')} met={pwdValidation.hasNumber} />
+                   <PasswordRequirement label={t('pwd_special')} met={pwdValidation.hasSpecial} />
                 </div>
               </div>
 
@@ -256,10 +257,10 @@ export default function RegisterPage() {
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Creating account...
+                    {t('creating_account')}
                   </>
                 ) : (
-                  'Sign up'
+                  t('register_btn')
                 )}
               </Button>
               
@@ -274,7 +275,7 @@ export default function RegisterPage() {
                      <span className="w-full border-t border-slate-100"></span>
                   </div>
                   <div className="relative flex justify-center text-xs">
-                     <span className="bg-white px-2 text-slate-400 font-bold uppercase tracking-wider">Other sign up options</span>
+                     <span className="bg-white px-2 text-slate-400 font-bold uppercase tracking-wider">{t('other_signup')}</span>
                   </div>
                </div>
 
@@ -294,9 +295,9 @@ export default function RegisterPage() {
 
             <div className="pt-6 border-t border-slate-100 text-center">
                <p className="text-sm text-slate-600 font-medium">
-                  Already have an account?{' '}
+                  {t('have_account')}{' '}
                   <Link href="/login" className="text-[#5624d0] hover:underline font-semibold transition-all">
-                     Log in
+                     {t('login_btn')}
                   </Link>
                </p>
             </div>

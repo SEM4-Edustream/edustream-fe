@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { 
   PlayCircle, 
@@ -30,6 +31,7 @@ interface Enrollment {
 }
 
 export default function MyLearningPage() {
+  const t = useTranslations('MyLearning');
   const { isAuthenticated, user } = useAuth();
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,8 +75,8 @@ export default function MyLearningPage() {
              className="border border-slate-200 p-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow cursor-default"
            >
               <div className="flex flex-col gap-1">
-                 <h3 className="text-xl font-bold text-[#1c1d1f]">Start a weekly streak</h3>
-                 <p className="text-sm text-slate-600">Let's chip away at your learning goals.</p>
+                 <h3 className="text-xl font-bold text-[#1c1d1f]">{t('streak_title')}</h3>
+                 <p className="text-sm text-slate-600">{t('streak_subtitle')}</p>
               </div>
               
               <div className="flex items-center gap-10">
@@ -83,8 +85,8 @@ export default function MyLearningPage() {
                        <Clock className="w-5 h-5 text-slate-400" />
                     </div>
                     <div>
-                       <div className="text-lg font-bold text-[#1c1d1f]">0 <span className="text-sm font-normal text-slate-500">weeks</span></div>
-                       <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Current streak</div>
+                       <div className="text-lg font-bold text-[#1c1d1f]">0 <span className="text-sm font-normal text-slate-500">{t('weeks')}</span></div>
+                       <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">{t('current_streak')}</div>
                     </div>
                  </div>
                  
@@ -101,11 +103,11 @@ export default function MyLearningPage() {
                  <div className="hidden md:block space-y-1">
                     <div className="flex items-center gap-2 text-xs font-medium">
                        <div className="w-2 h-2 rounded-full bg-orange-400" />
-                       <span>0/30 course min</span>
+                       <span>0/30 {t('course_min')}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs font-medium">
                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                       <span>1/1 visit</span>
+                       <span>1/1 {t('visit')}</span>
                     </div>
                     <div className="text-[10px] text-slate-400 font-bold ml-4">MAY 3 – 9</div>
                  </div>
@@ -124,16 +126,18 @@ export default function MyLearningPage() {
               </div>
               <div className="space-y-4">
                  <div>
-                    <h4 className="font-bold text-[#1c1d1f]">Schedule learning time</h4>
+                    <h4 className="font-bold text-[#1c1d1f]">{t('schedule_title')}</h4>
                     <p className="text-sm text-slate-600 max-w-3xl leading-relaxed">
-                       Learning a little each day adds up. Research shows that students who make learning a habit are more likely to reach their goals. Set time aside to learn and get reminders using your learning scheduler.
+                       {t('schedule_subtitle')}
                     </p>
                  </div>
                  <div className="flex items-center gap-4">
-                    <Button variant="outline" className="border-[#1c1d1f] text-[#1c1d1f] font-bold h-10 px-6 hover:bg-slate-50 rounded-none">
-                       Get started
-                    </Button>
-                    <button className="text-sm font-bold text-[#1c1d1f] hover:text-slate-600">Dismiss</button>
+                    <Link href="/courses">
+                      <Button variant="outline" className="border-[#1c1d1f] text-[#1c1d1f] font-bold h-10 px-6 hover:bg-slate-50 rounded-none">
+                         {t('get_started')}
+                      </Button>
+                    </Link>
+                    <button className="text-sm font-bold text-[#1c1d1f] hover:text-slate-600">{t('dismiss')}</button>
                  </div>
               </div>
            </motion.div>
@@ -203,16 +207,16 @@ export default function MyLearningPage() {
                               style={{ width: `${course.progressPercentage}%` }}
                             />
                          </div>
-                         <div className="flex items-center justify-between mt-1.5">
-                            <span className="text-[12px] font-medium text-slate-600">{course.progressPercentage}% complete</span>
-                         </div>
+                          <div className="flex items-center justify-between mt-1.5">
+                             <span className="text-[12px] font-medium text-slate-600">{course.progressPercentage}% {t('complete')}</span>
+                          </div>
                       </div>
                       
                       <Link 
                         href={`/learning/${course.courseId}`}
                         className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1c1d1f] uppercase tracking-tighter hover:text-indigo-600 transition-colors pt-2"
                       >
-                         {course.progressPercentage > 0 ? 'Continue' : 'Start course'}
+                         {course.progressPercentage > 0 ? t('continue') : t('start_course')}
                          <ChevronRight className="w-3.5 h-3.5" />
                       </Link>
                    </div>
@@ -224,15 +228,15 @@ export default function MyLearningPage() {
                 <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100">
                    <PlayCircle className="w-10 h-10 text-slate-300" />
                 </div>
-                <div className="space-y-2">
-                   <h3 className="text-xl font-bold text-slate-900">Start learning today</h3>
-                   <p className="text-slate-500 max-w-sm mx-auto">Explore thousands of courses and find the perfect one for you.</p>
-                </div>
-                <Link href="/courses">
-                   <Button className="bg-[#1c1d1f] hover:bg-slate-800 text-white font-bold h-12 px-8 rounded-none">
-                      Browse courses
-                   </Button>
-                </Link>
+                 <div className="space-y-2">
+                    <h3 className="text-xl font-bold text-slate-900">{t('empty_title')}</h3>
+                    <p className="text-slate-500 max-w-sm mx-auto">{t('empty_subtitle')}</p>
+                 </div>
+                 <Link href="/courses">
+                    <Button className="bg-[#1c1d1f] hover:bg-slate-800 text-white font-bold h-12 px-8 rounded-none">
+                       {t('browse_courses')}
+                    </Button>
+                 </Link>
              </div>
            )}
         </div>
