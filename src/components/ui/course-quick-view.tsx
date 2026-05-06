@@ -1,10 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
-import { CourseSummary } from '@/services/courseService';
+import { CourseSummary, courseService } from '@/services/courseService';
 import { Button } from '@/components/ui/button';
-import { Heart, Check } from 'lucide-react';
+import { Heart, Check, Loader2 } from 'lucide-react';
+import { cartService } from '@/services/cartService';
+import { wishlistService } from '@/services/wishlistService';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 interface CourseQuickViewProps {
   course: CourseSummary;
@@ -12,7 +17,85 @@ interface CourseQuickViewProps {
 }
 
 export function CourseQuickView({ course, children }: CourseQuickViewProps) {
-  // Dữ liệu giả lập cho hiển thị giống Udemy vì Backend chưa có (Hours, Bullets)
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+  const [isInCart, setIsInCart] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [togglingWishlist, setTogglingWishlist] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+
+  // Check status on open
+  const onOpenChange = async (open: boolean) => {
+    if (open && isAuthenticated) {
+      try {
+        const [cartItems, wishlistItems, enrolled] = await Promise.all([
+          cartService.getCartItems(),
+          wishlistService.getWishlistItems(),
+          courseService.checkEnrollment(course.id)
+        ]);
+        setIsInCart(cartItems.some(item => item.courseId === course.id));
+        setIsInWishlist(wishlistItems.some(item => item.courseId === course.id));
+        setIsEnrolled(enrolled);
+      } catch { /* ignore */ }
+    }
+  };
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      toast.info('Please log in to add to cart');
+      router.push(`/login?redirect=/courses/${course.id}`);
+      return;
+    }
+
+    if (isInCart) {
+      router.push('/cart');
+      return;
+    }
+
+    try {
+      setAddingToCart(true);
+      await cartService.addToCart(course.id);
+      setIsInCart(true);
+      toast.success('Added to cart!');
+      window.dispatchEvent(new Event('cart-updated'));
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || 'Failed to add to cart');
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  const handleToggleWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      toast.info('Please log in to save to wishlist');
+      router.push(`/login?redirect=/courses/${course.id}`);
+      return;
+    }
+
+    try {
+      setTogglingWishlist(true);
+      if (isInWishlist) {
+        await wishlistService.removeFromWishlist(course.id);
+        setIsInWishlist(false);
+        toast.success('Removed from wishlist');
+      } else {
+        await wishlistService.addToWishlist(course.id);
+        setIsInWishlist(true);
+        toast.success('Added to wishlist!');
+      }
+      window.dispatchEvent(new Event('wishlist-updated'));
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || 'Failed to update wishlist');
+    } finally {
+      setTogglingWishlist(false);
+    }
+  };
+
   const totalHours = Math.floor(Math.random() * 40) + 10;
   const mockObjectives = course.learningObjectives?.length 
     ? course.learningObjectives.slice(0, 3) 
@@ -23,7 +106,7 @@ export function CourseQuickView({ course, children }: CourseQuickViewProps) {
       ];
 
   return (
-    <HoverCard openDelay={300} closeDelay={100}>
+    <HoverCard openDelay={300} closeDelay={100} onOpenChange={onOpenChange}>
       <HoverCardTrigger asChild>
         <div className="h-full w-full block cursor-pointer outline-none focus:outline-none focus:ring-0 focus-visible:ring-0">
           {children}
@@ -35,7 +118,7 @@ export function CourseQuickView({ course, children }: CourseQuickViewProps) {
         align="start" 
         sideOffset={14} 
         className="w-[340px] p-6 shadow-2xl border border-gray-200 bg-white z-[100] rounded-none animate-in zoom-in-95 data-[side=left]:slide-in-from-right-4 data-[side=right]:slide-in-from-left-4"
-        avoidCollisions={true} // Tự động lật trái phải nếu đụng mép màn hình
+        avoidCollisions={true}
       >
         <h3 className="font-bold text-[18px] text-[#1c1d1f] mb-2 leading-tight">
           {course.title}
@@ -63,12 +146,43 @@ export function CourseQuickView({ course, children }: CourseQuickViewProps) {
         </ul>
 
         <div className="flex items-center gap-2 mt-auto">
-          <Button className="flex-1 bg-[#a435f0] hover:bg-[#8710d8] text-white h-12 text-[16px] font-bold rounded-none">
-            Add to cart
-          </Button>
-          <Button variant="outline" size="icon" className="h-12 w-12 rounded-full border-[#1c1d1f] border hover:bg-slate-50 shrink-0">
-            <Heart className="w-5 h-5 text-[#1c1d1f]" strokeWidth={2} />
-          </Button>
+          {isEnrolled ? (
+            <Button 
+              onClick={() => router.push(`/learning/${course.id}`)}
+              className="flex-1 bg-[#1c1d1f] hover:bg-slate-800 text-white h-12 text-[16px] font-bold rounded-xl"
+            >
+              Go to Course
+            </Button>
+          ) : (
+            <>
+              <Button 
+                onClick={handleAddToCart}
+                disabled={addingToCart}
+                className={`flex-1 ${isInCart ? 'bg-white border-2 border-[#1c1d1f] text-[#1c1d1f] hover:bg-slate-50' : 'bg-[#a435f0] hover:bg-[#8710d8] text-white'} h-12 text-[16px] font-bold rounded-xl transition-all`}
+              >
+                {addingToCart ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : isInCart ? (
+                  'Go to cart'
+                ) : (
+                  'Add to cart'
+                )}
+              </Button>
+              <Button 
+                onClick={handleToggleWishlist}
+                disabled={togglingWishlist}
+                variant="outline" 
+                size="icon" 
+                className={`h-12 w-12 rounded-full border-[#1c1d1f] border hover:bg-slate-50 shrink-0 transition-all ${isInWishlist ? 'bg-pink-50 border-pink-500 text-pink-600' : ''}`}
+              >
+                {togglingWishlist ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Heart className={`w-5 h-5 ${isInWishlist ? 'fill-current' : ''}`} strokeWidth={2} />
+                )}
+              </Button>
+            </>
+          )}
         </div>
       </HoverCardContent>
     </HoverCard>

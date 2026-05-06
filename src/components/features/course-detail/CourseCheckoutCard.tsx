@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { PlayCircle, ShieldCheck, Monitor, Smartphone, Award, Infinity, RefreshCcw, Heart, Lock, FileText, ArrowRight } from 'lucide-react';
+import { PlayCircle, ShieldCheck, Monitor, Smartphone, Award, Infinity, RefreshCcw, Heart, Lock, FileText, ArrowRight, ShoppingCart, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CourseSummary, courseService } from '@/services/courseService';
+import { cartService } from '@/services/cartService';
+import { wishlistService } from '@/services/wishlistService';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
@@ -17,12 +19,28 @@ export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) 
   const router = useRouter();
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInCart, setIsInCart] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [togglingWishlist, setTogglingWishlist] = useState(false);
 
   useEffect(() => {
     const checkStatus = async () => {
       if (isAuthenticated) {
         const enrolled = await courseService.checkEnrollment(course.id);
         setIsEnrolled(enrolled);
+
+        // Check if course is in cart
+        try {
+          const cartItems = await cartService.getCartItems();
+          setIsInCart(cartItems.some(item => item.courseId === course.id));
+        } catch { /* ignore if not logged in */ }
+
+        // Check if course is in wishlist
+        try {
+          const wishlistItems = await wishlistService.getWishlistItems();
+          setIsInWishlist(wishlistItems.some(item => item.courseId === course.id));
+        } catch { /* ignore */ }
       }
       setIsLoading(false);
     };
@@ -57,8 +75,58 @@ export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) 
     router.push(`/checkout/${course.id}`);
   };
 
-  const handleAddToCart = () => {
-    toast.success('Course added to cart!');
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      toast.info('Please log in to add to cart');
+      router.push(`/login?redirect=/courses/${course.id}`);
+      return;
+    }
+
+    if (isInCart) {
+      router.push('/cart');
+      return;
+    }
+
+    try {
+      setAddingToCart(true);
+      await cartService.addToCart(course.id);
+      setIsInCart(true);
+      toast.success('Added to cart!');
+      // Dispatch event to update navbar badge
+      window.dispatchEvent(new Event('cart-updated'));
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || 'Failed to add to cart';
+      toast.error(msg);
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  const handleToggleWishlist = async () => {
+    if (!isAuthenticated) {
+      toast.info('Please log in to save to wishlist');
+      router.push(`/login?redirect=/courses/${course.id}`);
+      return;
+    }
+
+    try {
+      setTogglingWishlist(true);
+      if (isInWishlist) {
+        await wishlistService.removeFromWishlist(course.id);
+        setIsInWishlist(false);
+        toast.success('Removed from wishlist');
+      } else {
+        await wishlistService.addToWishlist(course.id);
+        setIsInWishlist(true);
+        toast.success('Added to wishlist!');
+      }
+      window.dispatchEvent(new Event('wishlist-updated'));
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || 'Failed to update wishlist';
+      toast.error(msg);
+    } finally {
+      setTogglingWishlist(false);
+    }
   };
 
   return (
@@ -117,13 +185,33 @@ export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) 
             <div className="flex gap-2">
               <Button 
                 onClick={handleAddToCart}
+                disabled={addingToCart}
                 variant="outline" 
-                className="flex-1 h-12 text-sm font-bold border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-xl transition-all"
+                className={`flex-1 h-12 text-sm font-bold border-2 rounded-xl transition-all ${
+                  isInCart
+                    ? 'border-emerald-500 text-emerald-600 hover:bg-emerald-50'
+                    : 'border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white'
+                }`}
               >
-                 Add to cart
+                {addingToCart ? (
+                  <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                ) : isInCart ? (
+                  <><Check className="w-4 h-4 mr-2" /> Go to cart</>
+                ) : (
+                  <><ShoppingCart className="w-4 h-4 mr-2" /> Add to cart</>
+                )}
               </Button>
-              <Button variant="outline" className="w-12 h-12 p-0 border-2 border-indigo-600 text-indigo-600 rounded-xl hover:bg-pink-50 hover:text-pink-600 transition-all group">
-                 <Heart className="w-5 h-5 group-hover:fill-current" />
+              <Button 
+                onClick={handleToggleWishlist}
+                disabled={togglingWishlist}
+                variant="outline" 
+                className={`w-12 h-12 p-0 border-2 rounded-xl transition-all group ${
+                  isInWishlist 
+                    ? 'border-pink-500 bg-pink-50 text-pink-600' 
+                    : 'border-indigo-600 text-indigo-600 hover:bg-pink-50 hover:text-pink-600'
+                }`}
+              >
+                <Heart className={`w-5 h-5 ${isInWishlist ? 'fill-current' : 'group-hover:fill-current'}`} />
               </Button>
             </div>
           )}

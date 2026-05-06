@@ -19,6 +19,9 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { courseService, CategoryResponse } from '@/services/courseService';
+import { cartService } from '@/services/cartService';
+import { wishlistService } from '@/services/wishlistService';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 const Navbar = () => {
@@ -30,6 +33,12 @@ const Navbar = () => {
   const [mobileCatsOpen, setMobileCatsOpen] = useState(false);
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [wishlistCount, setWishlistCount] = useState(0);
+  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [wishlistItems, setWishlistItems] = useState<any[]>([]);
+  const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
+  const [wishlistDropdownOpen, setWishlistDropdownOpen] = useState(false);
   const pathname = usePathname();
   const isCheckoutPage = pathname?.startsWith('/checkout') || pathname?.startsWith('/payment');
   const isAuthPage = pathname?.startsWith('/login') || pathname?.startsWith('/register');
@@ -38,6 +47,22 @@ const Navbar = () => {
   
   const courseIdMatch = pathname?.match(/\/checkout\/([^/]+)/);
   const checkoutCancelUrl = courseIdMatch ? `/courses/${courseIdMatch[1]}` : "/";
+
+  const fetchCartData = async () => {
+    try {
+      const items = await cartService.getCartItems();
+      setCartItems(items);
+      setCartCount(items.length);
+    } catch { /* ignore if not logged in */ }
+  };
+
+  const fetchWishlistData = async () => {
+    try {
+      const items = await wishlistService.getWishlistItems();
+      setWishlistItems(items);
+      setWishlistCount(items.length);
+    } catch { /* ignore */ }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -56,9 +81,19 @@ const Navbar = () => {
     };
 
     fetchCats();
+    if (isAuthenticated) {
+      fetchCartData();
+      fetchWishlistData();
+    }
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    window.addEventListener('cart-updated', fetchCartData);
+    window.addEventListener('wishlist-updated', fetchWishlistData);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('cart-updated', fetchCartData);
+      window.removeEventListener('wishlist-updated', fetchWishlistData);
+    };
+  }, [isAuthenticated]);
 
   if (isLearningPage) return null;
 
@@ -193,12 +228,156 @@ const Navbar = () => {
               <div className="w-32 h-9 bg-slate-100 animate-pulse rounded-md" />
             ) : isAuthenticated ? (
               <>
-                <button className="p-2.5 text-slate-600 hover:text-[#5624d0] transition-colors hidden sm:block">
-                  <Heart className="h-5 w-5" />
-                </button>
-                <Link href="/cart" className="p-2.5 text-slate-600 hover:text-[#5624d0] transition-colors">
-                  <ShoppingCart className="h-5 w-5" />
-                </Link>
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setWishlistDropdownOpen(true)}
+                  onMouseLeave={() => setWishlistDropdownOpen(false)}
+                >
+                  <Link href="/my-learning/wishlist" className="p-2 text-slate-600 hover:text-[#5624d0] transition-colors hidden sm:block relative flex items-center justify-center">
+                    <Heart className="h-5 w-5" />
+                    {wishlistCount > 0 && (
+                      <span className="absolute top-0.5 right-0.5 w-[18px] h-[18px] bg-[#a435f0] text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm">
+                        {wishlistCount > 9 ? '9+' : wishlistCount}
+                      </span>
+                    )}
+                  </Link>
+
+                  <AnimatePresence>
+                    {wishlistDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute right-0 top-full w-[300px] bg-white border border-slate-200 shadow-2xl z-50 pt-2"
+                      >
+                        <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                          {wishlistItems.length > 0 ? (
+                            <div className="flex flex-col">
+                              {wishlistItems.map((item) => (
+                                <div key={item.id} className="p-3 border-b border-slate-100 flex gap-3 hover:bg-slate-50 transition-colors group">
+                                  <div className="w-16 h-16 shrink-0 bg-slate-100 overflow-hidden">
+                                    <img src={item.courseThumbnail || '/images/course-placeholder.jpg'} alt="" className="w-full h-full object-cover" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="text-[14px] font-bold text-slate-900 line-clamp-2 leading-tight mb-1 group-hover:text-[#5624d0]">
+                                      {item.courseTitle}
+                                    </h4>
+                                    <p className="text-[12px] text-slate-500 mb-1">{item.tutorName}</p>
+                                    <div className="font-bold text-[14px] text-slate-900">
+                                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.coursePrice || 0)}
+                                    </div>
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm" 
+                                      className="w-full mt-2 h-8 text-xs font-bold border-[#1c1d1f] rounded-xl hover:bg-slate-50"
+                                      onClick={async (e) => {
+                                        e.preventDefault();
+                                        try {
+                                          await cartService.addToCart(item.courseId);
+                                          toast.success('Added to cart!');
+                                          window.dispatchEvent(new Event('cart-updated'));
+                                        } catch (err: any) {
+                                          toast.error(err?.response?.data?.message || 'Failed to add to cart');
+                                        }
+                                      }}
+                                    >
+                                      Add to cart
+                                    </Button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="p-8 text-center">
+                              <p className="text-slate-500 text-sm font-medium mb-4">Your wishlist is empty.</p>
+                              <Link href="/courses" className="text-[#5624d0] font-bold text-sm hover:underline">Explore courses</Link>
+                            </div>
+                          )}
+                        </div>
+                        {wishlistItems.length > 0 && (
+                          <div className="p-3">
+                            <Link href="/my-learning/wishlist">
+                              <Button className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold rounded-xl h-11">
+                                Go to wishlist
+                              </Button>
+                            </Link>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setCartDropdownOpen(true)}
+                  onMouseLeave={() => setCartDropdownOpen(false)}
+                >
+                  <Link href="/cart" className="p-2 text-slate-600 hover:text-[#5624d0] transition-colors relative flex items-center justify-center">
+                    <ShoppingCart className="h-5 w-5" />
+                    {cartCount > 0 && (
+                      <span className="absolute top-0.5 right-0.5 w-[18px] h-[18px] bg-[#a435f0] text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm">
+                        {cartCount > 9 ? '9+' : cartCount}
+                      </span>
+                    )}
+                  </Link>
+
+                  <AnimatePresence>
+                    {cartDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute right-0 top-full w-[300px] bg-white border border-slate-200 shadow-2xl z-50 pt-2"
+                      >
+                        <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                          {cartItems.length > 0 ? (
+                            <div className="flex flex-col">
+                              {cartItems.map((item) => (
+                                <div key={item.id} className="p-3 border-b border-slate-100 flex gap-3 hover:bg-slate-50 transition-colors group">
+                                  <div className="w-16 h-16 shrink-0 bg-slate-100 overflow-hidden">
+                                    <img src={item.courseThumbnail || '/images/course-placeholder.jpg'} alt="" className="w-full h-full object-cover" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="text-[14px] font-bold text-slate-900 line-clamp-2 leading-tight mb-1 group-hover:text-[#5624d0]">
+                                      {item.courseTitle}
+                                    </h4>
+                                    <p className="text-[12px] text-slate-500 mb-1">{item.tutorName}</p>
+                                    <div className="font-bold text-[14px] text-slate-900">
+                                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.coursePrice || 0)}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="p-8 text-center">
+                              <p className="text-slate-500 text-sm font-medium mb-4">Your cart is empty.</p>
+                              <Link href="/courses" className="text-[#5624d0] font-bold text-sm hover:underline">Keep shopping</Link>
+                            </div>
+                          )}
+                        </div>
+                        {cartItems.length > 0 && (
+                          <div className="p-4 bg-white">
+                            <div className="flex items-center justify-between mb-4">
+                              <span className="text-lg font-bold text-slate-900">Total:</span>
+                              <span className="text-lg font-extrabold text-[#1c1d1f]">
+                                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+                                  cartItems.reduce((acc, item) => acc + (item.coursePrice || 0), 0)
+                                )}
+                              </span>
+                            </div>
+                            <Link href="/cart">
+                              <Button className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold rounded-xl h-11">
+                                Go to cart
+                              </Button>
+                            </Link>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
                 <button className="p-2.5 text-slate-600 hover:text-[#5624d0] transition-colors hidden sm:block">
                   <Bell className="h-5 w-5" />
                 </button>
@@ -239,7 +418,7 @@ const Navbar = () => {
                         <Link href="/profile" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Profile</Link>
                         <Link href="/my-learning" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">My learning</Link>
                         <Link href="/cart" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Cart</Link>
-                        <Link href="/wishlist" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Wishlist</Link>
+                        <Link href="/my-learning/wishlist" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">Wishlist</Link>
                         <button className="w-full flex items-center justify-between px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
                           <span>Language</span>
                           <div className="flex items-center gap-1 text-slate-500">
