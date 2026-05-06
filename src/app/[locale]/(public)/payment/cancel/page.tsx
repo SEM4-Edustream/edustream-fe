@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useRef, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
+import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { paymentService } from '@/services/paymentService';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
 function CancelLogic() {
+  const t = useTranslations('Payment');
   const router = useRouter();
   const searchParams = useSearchParams();
   const called = useRef(false);
@@ -27,7 +30,7 @@ function CancelLogic() {
 
       try {
         await paymentService.cancelBooking(bookingId);
-        toast.info("Payment cancelled. Booking removed.");
+        toast.info(t('cancelled_msg'));
       } catch (error) {
         console.error("Failed to cancel booking:", error);
       } finally {
@@ -41,8 +44,8 @@ function CancelLogic() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4 text-center">
       <Loader2 className="h-10 w-10 text-indigo-600 animate-spin mb-4" />
-      <h1 className="text-xl font-bold text-slate-900 mb-2">Cancelling Payment</h1>
-      <p className="text-slate-500">Please wait while we clear your pending transaction...</p>
+      <h1 className="text-xl font-bold text-slate-900 mb-2">{t('cancelling_title')}</h1>
+      <p className="text-slate-500">{t('cancelling_subtitle')}</p>
     </div>
   );
 }

@@ -134,6 +134,9 @@
     "showing": "Showing",
     "results": "results",
     "show_results": "Show Results",
+    "category_title": "All {category} courses",
+    "guarantee": "Not sure? All courses have a 30-day money-back guarantee",
+    "filter": "Filter",
     "Filters": {
       "categories": "Categories",
       "level": "Level",
@@ -149,6 +152,13 @@
         "free": "Free",
         "paid": "Paid"
       }
+    },
+    "Sort": {
+      "label": "Sort by",
+      "newest": "Newest",
+      "price_asc": "Price: Low to High",
+      "price_desc": "Price: High to Low",
+      "rating": "Most Rated"
     }
   },
   "Learning": {
@@ -198,5 +208,14 @@
     "empty_subtitle": "Explore courses and save your favorites!",
     "explore_courses": "Explore Courses",
     "add_to_cart": "Add to Cart"
+  },
+  "Payment": {
+    "cancelling_title": "Cancelling Payment",
+    "cancelling_subtitle": "Please wait while we clear your pending transaction...",
+    "cancelled_msg": "Payment cancelled. Booking removed.",
+    "success_title": "Payment Successful!",
+    "success_subtitle": "Thank you for joining the course. We wish you a great learning journey!",
+    "go_to_course": "Go to course now",
+    "view_my_learning": "My Learning"
   }
 }

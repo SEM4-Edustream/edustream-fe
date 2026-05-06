@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
+import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import {
   Select,
   SelectContent,
@@ -11,6 +13,7 @@ import {
 } from "@/components/ui/select";
 
 export function CourseSort() {
+  const t = useTranslations('CourseListing.Sort');
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -24,16 +27,16 @@ export function CourseSort() {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm font-medium text-gray-500 whitespace-nowrap">Sort by:</span>
+      <span className="text-sm font-medium text-gray-500 whitespace-nowrap">{t('label')}:</span>
       <Select value={selectedSort} onValueChange={onSortChange}>
         <SelectTrigger className="w-[180px] h-10 border-gray-200 rounded-lg focus:ring-indigo-500">
-          <SelectValue placeholder="Newest" />
+          <SelectValue placeholder={t('newest')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="newest">Newest</SelectItem>
-          <SelectItem value="price_asc">Price: Low to High</SelectItem>
-          <SelectItem value="price_desc">Price: High to Low</SelectItem>
-          <SelectItem value="rating">Most Rated</SelectItem>
+          <SelectItem value="newest">{t('newest')}</SelectItem>
+          <SelectItem value="price_asc">{t('price_asc')}</SelectItem>
+          <SelectItem value="price_desc">{t('price_desc')}</SelectItem>
+          <SelectItem value="rating">{t('rating')}</SelectItem>
         </SelectContent>
       </Select>
     </div>

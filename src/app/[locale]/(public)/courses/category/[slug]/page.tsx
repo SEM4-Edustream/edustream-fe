@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter, useParams } from 'next/navigation';
+import { useSearchParams, useParams } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { 
   courseService, 
   CourseSummary, 
@@ -16,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 function CoursePageContent() {
+  const t = useTranslations('CourseListing');
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = useParams();
@@ -93,7 +96,7 @@ function CoursePageContent() {
       {/* Header Section - Minimal Udemy Style */}
       <div className="container mx-auto px-4 pt-12 pb-6 mt-16 md:mt-24 lg:mt-0">
         <h1 className="text-[32px] font-bold text-[#1c1d1f] mb-6">
-          All {currentCategoryName} courses
+          {t('category_title', { category: currentCategoryName })}
         </h1>
 
         {/* Info Banner */}
@@ -102,7 +105,7 @@ function CoursePageContent() {
             <Info className="w-5 h-5 text-[#5624d0]" strokeWidth={2} />
           </div>
           <span className="text-[16px] font-bold text-[#1c1d1f]">
-            Not sure? All courses have a 30-day money-back guarantee
+            {t('guarantee')}
           </span>
         </div>
       </div>
@@ -128,12 +131,12 @@ function CoursePageContent() {
                   onClick={() => setShowMobileFilters(true)}
                 >
                   <SlidersHorizontal className="w-4 h-4" />
-                  Filter
+                  {t('filter')}
                 </Button>
                 <CourseSort />
               </div>
               <div className="text-[16px] font-bold text-[#6a6f73]">
-                {courses.length.toLocaleString()} results
+                {courses.length.toLocaleString()} {t('results')}
               </div>
             </div>
 
@@ -149,14 +152,14 @@ function CoursePageContent() {
           <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setShowMobileFilters(false)}></div>
           <div className="absolute right-0 top-0 bottom-0 w-80 bg-white shadow-2xl p-6 overflow-y-auto animate-in slide-in-from-right duration-300">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-bold text-slate-900">Filters</h3>
+              <h3 className="text-xl font-bold text-slate-900">{t('filter')}</h3>
               <Button variant="ghost" size="icon" onClick={() => setShowMobileFilters(false)}>
                 <X className="w-6 h-6" />
               </Button>
             </div>
             <CourseFilters categories={categories} />
             <Button className="w-full mt-8 h-12 bg-indigo-600" onClick={() => setShowMobileFilters(false)}>
-              Show Results
+              {t('show_results')}
             </Button>
           </div>
         </div>
