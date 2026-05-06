@@ -63,4 +63,14 @@ export const authService = {
     const response: any = await axiosInstance.post<ApiResponse<{ valid: boolean }> | { valid: boolean }>('/auth/introspect', { token });
     return unwrapResult(response);
   },
+
+  forgotPassword: async (email: string) => {
+    const response: any = await axiosInstance.post<ApiResponse<void>>('/auth/forgot-password', { email });
+    return unwrapResult(response);
+  },
+
+  resetPassword: async (token: string, newPassword: string) => {
+    const response: any = await axiosInstance.post<ApiResponse<void>>('/auth/reset-password', { token, newPassword });
+    return unwrapResult(response);
+  },
 };

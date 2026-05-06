@@ -93,3 +93,54 @@ export function useRegister() {
 
   return { submitRegistration, isPending, success, error };
 }
+
+export function useForgotPassword() {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const submitForgotPassword = (email: string) => {
+    setError('');
+    setSuccess('');
+
+    startTransition(async () => {
+      try {
+        await authService.forgotPassword(email);
+        setSuccess('If an account exists, a password reset link has been sent.');
+      } catch (err: any) {
+        console.error(err);
+        setError(err?.response?.data?.message || 'Failed to send reset link. Please try again.');
+      }
+    });
+  };
+
+  return { submitForgotPassword, isPending, success, error };
+}
+
+export function useResetPassword() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const submitResetPassword = (token: string, newPassword: string) => {
+    setError('');
+    setSuccess('');
+
+    startTransition(async () => {
+      try {
+        await authService.resetPassword(token, newPassword);
+        setSuccess('Password has been reset successfully. Redirecting to login...');
+
+        setTimeout(() => {
+          router.push('/login');
+        }, 3000);
+      } catch (err: any) {
+        console.error(err);
+        setError(err?.response?.data?.message || 'Failed to reset password. Token may be invalid or expired.');
+      }
+    });
+  };
+
+  return { submitResetPassword, isPending, success, error };
+}

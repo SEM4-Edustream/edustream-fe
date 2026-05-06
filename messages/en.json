@@ -56,7 +56,15 @@
     "pwd_min_chars": "At least 8 characters",
     "pwd_upper": "One uppercase letter",
     "pwd_number": "One number",
-    "pwd_special": "One special character"
+    "pwd_special": "One special character",
+    "forgot_password_title": "Forgot Password",
+    "forgot_password_desc": "Enter your email address and we'll send you a link to reset your password.",
+    "reset_password_btn": "Send Reset Link",
+    "reset_password_title": "Reset Password",
+    "new_password": "New Password",
+    "confirm_new_password": "Confirm New Password",
+    "reset_btn": "Reset Password",
+    "back_to_login": "Back to login"
   },
   "Hero": {
     "title": "Unlimited Learning with EduStream",

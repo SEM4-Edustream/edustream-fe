@@ -56,7 +56,15 @@
     "pwd_min_chars": "Ít nhất 8 ký tự",
     "pwd_upper": "Một chữ cái viết hoa",
     "pwd_number": "Một chữ số",
-    "pwd_special": "Một ký tự đặc biệt"
+    "pwd_special": "Một ký tự đặc biệt",
+    "forgot_password_title": "Quên Mật Khẩu",
+    "forgot_password_desc": "Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn một liên kết để đặt lại mật khẩu.",
+    "reset_password_btn": "Gửi Liên Kết",
+    "reset_password_title": "Đặt Lại Mật Khẩu",
+    "new_password": "Mật khẩu mới",
+    "confirm_new_password": "Xác nhận mật khẩu mới",
+    "reset_btn": "Đặt lại mật khẩu",
+    "back_to_login": "Trở lại đăng nhập"
   },
   "Hero": {
     "title": "Học tập không giới hạn cùng EduStream",
