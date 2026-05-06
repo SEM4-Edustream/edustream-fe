@@ -217,5 +217,19 @@
     "success_subtitle": "Thank you for joining the course. We wish you a great learning journey!",
     "go_to_course": "Go to course now",
     "view_my_learning": "My Learning"
+  },
+  "Authenticate": {
+    "auth_failed": "Authentication failed. Please try again.",
+    "session_timeout": "Session timed out. Please try again.",
+    "status": {
+      "loading": "Authenticating...",
+      "syncing": "Setting up your account...",
+      "success": "Welcome to EduStream!",
+      "error": "Authentication failed",
+      "loading_sub": "Verifying your identity with Google...",
+      "syncing_sub": "Syncing your profile with EduStream...",
+      "success_sub": "Redirecting you now...",
+      "error_sub": "Redirecting back to login..."
+    }
   }
 }

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from '@/i18n/routing';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useRegister } from '@/hooks/useAuthLogic';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,7 @@ import {
 
 export default function RegisterPage() {
   const t = useTranslations('Auth');
+  const locale = useLocale();
   const { submitRegistration, isPending, success, error: apiError } = useRegister();
   
   // Local state for form fields
@@ -41,7 +42,7 @@ export default function RegisterPage() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/authenticate`,
+        redirectTo: `${window.location.origin}/${locale}/authenticate`,
       },
     });
   };

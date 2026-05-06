@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Link } from '@/i18n/routing';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useLogin } from '@/hooks/useAuthLogic';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import {
 
 export default function LoginPage() {
   const t = useTranslations('Auth');
+  const locale = useLocale();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { handleLogin, loading, error } = useLogin();
@@ -23,7 +24,7 @@ export default function LoginPage() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/authenticate`,
+        redirectTo: `${window.location.origin}/${locale}/authenticate`,
       },
     });
   };

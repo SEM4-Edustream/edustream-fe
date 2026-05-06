@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { supabase } from '@/lib/supabase';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
 
 export default function AuthenticatePage() {
+  const t = useTranslations('Authenticate');
   const router = useRouter();
   const { login } = useAuth();
   const [status, setStatus] = useState<'loading' | 'syncing' | 'success' | 'error'>('loading');
@@ -73,7 +75,7 @@ export default function AuthenticatePage() {
           console.error('Backend sync error:', err);
           setStatus('error');
           setTimeout(() => {
-            router.push('/login?error=Authentication failed. Please try again.');
+            router.push(`/login?error=${t('auth_failed')}`);
           }, 1500);
         }
       }
@@ -85,7 +87,7 @@ export default function AuthenticatePage() {
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
         console.error('Session timeout - redirecting to login');
-        router.push('/login?error=Session timed out. Please try again.');
+        router.push(`/login?error=${t('session_timeout')}`);
       }
     }, 8000);
 
@@ -110,16 +112,16 @@ export default function AuthenticatePage() {
         </div>
         <div className="space-y-2">
           <h1 className="text-xl font-bold text-slate-800">
-            {status === 'loading' && 'Authenticating...'}
-            {status === 'syncing' && 'Setting up your account...'}
-            {status === 'success' && 'Welcome to EduStream!'}
-            {status === 'error' && 'Authentication failed'}
+            {status === 'loading' && t('status.loading')}
+            {status === 'syncing' && t('status.syncing')}
+            {status === 'success' && t('status.success')}
+            {status === 'error' && t('status.error')}
           </h1>
           <p className="text-slate-500 text-sm">
-            {status === 'loading' && 'Verifying your identity with Google...'}
-            {status === 'syncing' && 'Syncing your profile with EduStream...'}
-            {status === 'success' && 'Redirecting you now...'}
-            {status === 'error' && 'Redirecting back to login...'}
+            {status === 'loading' && t('status.loading_sub')}
+            {status === 'syncing' && t('status.syncing_sub')}
+            {status === 'success' && t('status.success_sub')}
+            {status === 'error' && t('status.error_sub')}
           </p>
         </div>
       </div>

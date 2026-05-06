@@ -217,5 +217,19 @@
     "success_subtitle": "Cảm ơn bạn đã tham gia khóa học. Chúc bạn có một hành trình học tập tuyệt vời!",
     "go_to_course": "Đến khóa học ngay",
     "view_my_learning": "Quản lý học tập"
+  },
+  "Authenticate": {
+    "auth_failed": "Xác thực thất bại. Vui lòng thử lại.",
+    "session_timeout": "Hết phiên làm việc. Vui lòng thử lại.",
+    "status": {
+      "loading": "Đang xác thực...",
+      "syncing": "Đang thiết lập tài khoản của bạn...",
+      "success": "Chào mừng bạn đến với EduStream!",
+      "error": "Xác thực thất bại",
+      "loading_sub": "Đang xác minh danh tính của bạn với Google...",
+      "syncing_sub": "Đang đồng bộ hồ sơ của bạn với EduStream...",
+      "success_sub": "Đang chuyển hướng...",
+      "error_sub": "Đang quay lại trang đăng nhập..."
+    }
   }
 }
