@@ -190,7 +190,18 @@
       "notes": "Notes",
       "announcements": "Announcements",
       "reviews": "Reviews"
-    }
+    },
+    "note_added": "Note added!",
+    "note_failed": "Failed to add note",
+    "note_deleted": "Note deleted",
+    "note_delete_failed": "Failed to delete note",
+    "create_note": "Create a new note",
+    "at": "At",
+    "note_placeholder": "Enter your note content here...",
+    "save_note": "Save note",
+    "all_notes": "All notes",
+    "no_notes": "You don't have any notes in this course yet.",
+    "coming_soon": "This feature is coming soon!"
   },
   "MyLearning": {
     "streak_title": "Start a weekly streak",

@@ -190,7 +190,18 @@
       "notes": "Ghi chú",
       "announcements": "Thông báo",
       "reviews": "Đánh giá"
-    }
+    },
+    "note_added": "Đã thêm ghi chú!",
+    "note_failed": "Không thể thêm ghi chú",
+    "note_deleted": "Đã xóa ghi chú",
+    "note_delete_failed": "Không thể xóa ghi chú",
+    "create_note": "Tạo ghi chú mới",
+    "at": "Tại",
+    "note_placeholder": "Nhập nội dung ghi chú của bạn tại đây...",
+    "save_note": "Lưu ghi chú",
+    "all_notes": "Tất cả ghi chú",
+    "no_notes": "Bạn chưa có ghi chú nào trong khóa học này.",
+    "coming_soon": "Tính năng này sẽ sớm ra mắt!"
   },
   "MyLearning": {
     "streak_title": "Bắt đầu chuỗi học tập hàng tuần",

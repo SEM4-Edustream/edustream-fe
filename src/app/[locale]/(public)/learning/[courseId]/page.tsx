@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { courseService, CourseSummary, LessonResponse } from '@/services/courseService';
+import { noteService, NoteResponse } from '@/services/noteService';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -38,6 +39,13 @@ export default function LearningPage() {
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
   const [isCompleting, setIsCompleting] = useState(false);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'announcements' | 'reviews'>('overview');
+  const [notes, setNotes] = useState<NoteResponse[]>([]);
+  const [isNotesLoading, setIsNotesLoading] = useState(false);
+  const [noteContent, setNoteContent] = useState('');
+  const [isSubmittingNote, setIsSubmittingNote] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -70,8 +78,65 @@ export default function LearningPage() {
     };
 
     fetchCourseData();
+    fetchNotes();
     document.title = "Learning | EduStream";
   }, [courseId]);
+
+  const fetchNotes = async () => {
+    try {
+      setIsNotesLoading(true);
+      const data = await noteService.getMyNotesByCourse(courseId);
+      setNotes(data);
+    } catch (error) {
+      console.error("Failed to fetch notes", error);
+    } finally {
+      setIsNotesLoading(false);
+    }
+  };
+
+  const handleAddNote = async () => {
+    if (!noteContent.trim() || !activeLesson) return;
+    
+    try {
+      setIsSubmittingNote(true);
+      const newNote = await noteService.createNote({
+        courseId,
+        lessonId: activeLesson.id,
+        content: noteContent,
+        timestampSeconds: activeLesson.type === 'VIDEO' ? Math.floor(currentTime) : undefined
+      });
+      setNotes([newNote, ...notes]);
+      setNoteContent('');
+      toast.success(t('note_added'));
+    } catch (error) {
+      toast.error(t('note_failed'));
+    } finally {
+      setIsSubmittingNote(false);
+    }
+  };
+
+  const handleDeleteNote = async (id: string) => {
+    try {
+      await noteService.deleteNote(id);
+      setNotes(notes.filter(n => n.id !== id));
+      toast.success(t('note_deleted'));
+    } catch (error) {
+      toast.error(t('note_delete_failed'));
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const jumpToTime = (seconds: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = seconds;
+      videoRef.current.play();
+    }
+  };
 
   const toggleModule = (moduleId: string) => {
     const newSet = new Set(expandedModules);
@@ -185,10 +250,12 @@ export default function LearningPage() {
                  {/* Video Player Placeholder or Actual Iframe/Video Tag */}
                  {activeLesson.videoUrl ? (
                    <video 
+                     ref={videoRef}
                      src={activeLesson.videoUrl} 
                      controls 
                      className="w-full h-full"
                      autoPlay
+                     onTimeUpdate={() => setCurrentTime(videoRef.current?.currentTime || 0)}
                    />
                  ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 space-y-4">
@@ -250,33 +317,136 @@ export default function LearningPage() {
           {/* Additional Tabs (Overview, Q&A, etc.) */}
           <div className="max-w-4xl mx-auto w-full px-4 md:px-6 py-10 space-y-12 pb-32">
              <div className="border-b border-slate-200 flex gap-8">
-                {[t('tabs.overview'), t('tabs.notes'), t('tabs.announcements'), t('tabs.reviews')].map((tab, i) => (
-                  <button key={tab} className={cn("pb-4 text-sm font-bold border-b-2 transition-all", i === 0 ? "border-slate-900 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-900")}>
-                    {tab}
+                {[
+                  { id: 'overview', label: t('tabs.overview') },
+                  { id: 'notes', label: t('tabs.notes') },
+                  { id: 'announcements', label: t('tabs.announcements') },
+                  { id: 'reviews', label: t('tabs.reviews') }
+                ].map((tab) => (
+                  <button 
+                    key={tab.id} 
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={cn(
+                      "pb-4 text-sm font-bold border-b-2 transition-all", 
+                      activeTab === tab.id ? "border-slate-900 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-900"
+                    )}
+                  >
+                    {tab.label}
                   </button>
                 ))}
              </div>
              
-             <div className="space-y-6">
-                <div className="space-y-4">
-                   <h3 className="text-xl font-bold text-slate-900">{t('about_course')}</h3>
-                   <p className="text-slate-600 leading-relaxed">{course.subtitle}</p>
-                </div>
-                
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6">
-                   <div className="space-y-1">
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('skill_level')}</div>
-                      <div className="text-sm font-medium text-slate-700">{course.level}</div>
-                   </div>
-                   <div className="space-y-1">
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('lectures')}</div>
-                      <div className="text-sm font-medium text-slate-700">{(course.modules || []).reduce((acc, m) => acc + (m.lessons?.length || 0), 0)}</div>
-                   </div>
-                </div>
+             <div className="min-h-[400px]">
+                {activeTab === 'overview' && (
+                   <div className="space-y-6 animate-in fade-in duration-500">
+                      <div className="space-y-4">
+                         <h3 className="text-xl font-bold text-slate-900">{t('about_course')}</h3>
+                         <p className="text-slate-600 leading-relaxed">{course.subtitle}</p>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6">
+                         <div className="space-y-1">
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('skill_level')}</div>
+                            <div className="text-sm font-medium text-slate-700">{course.level}</div>
+                         </div>
+                         <div className="space-y-1">
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('lectures')}</div>
+                            <div className="text-sm font-medium text-slate-700">{(course.modules || []).reduce((acc, m) => acc + (m.lessons?.length || 0), 0)}</div>
+                         </div>
+                      </div>
 
-                <div className="pt-8 prose prose-slate max-w-none">
-                   <div dangerouslySetInnerHTML={{ __html: course.description || '' }} />
-                </div>
+                      <div className="pt-8 prose prose-slate max-w-none editor-content">
+                         <div dangerouslySetInnerHTML={{ __html: course.description || '' }} />
+                      </div>
+                   </div>
+                )}
+
+                {activeTab === 'notes' && (
+                   <div className="space-y-8 animate-in fade-in duration-500">
+                      {/* Add Note Form */}
+                      <div className="space-y-4 bg-slate-50 p-6 rounded-xl border border-slate-100">
+                         <div className="flex items-center justify-between">
+                            <h3 className="font-bold text-slate-900">{t('create_note')}</h3>
+                            {activeLesson?.type === 'VIDEO' && (
+                               <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded">
+                                  {t('at')} {formatTime(currentTime)}
+                               </span>
+                            )}
+                         </div>
+                         <textarea 
+                           className="w-full min-h-[100px] p-4 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all resize-none text-sm"
+                           placeholder={t('note_placeholder')}
+                           value={noteContent}
+                           onChange={(e) => setNoteContent(e.target.value)}
+                         />
+                         <div className="flex justify-end">
+                            <Button 
+                              onClick={handleAddNote}
+                              disabled={!noteContent.trim() || isSubmittingNote}
+                              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg h-10 px-6"
+                            >
+                               {isSubmittingNote ? <Loader2 className="w-4 h-4 animate-spin" /> : t('save_note')}
+                            </Button>
+                         </div>
+                      </div>
+
+                      {/* Notes List */}
+                      <div className="space-y-6">
+                         <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                            {t('all_notes')} <span className="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full">{notes.length}</span>
+                         </h3>
+                         
+                         {isNotesLoading ? (
+                            <div className="flex justify-center py-12">
+                               <Loader2 className="w-8 h-8 animate-spin text-slate-300" />
+                            </div>
+                         ) : notes.length > 0 ? (
+                            <div className="space-y-4">
+                               {notes.map((note) => (
+                                 <div key={note.id} className="group p-5 bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:shadow-md transition-all">
+                                    <div className="flex items-start justify-between mb-3">
+                                       <div className="flex items-center gap-3">
+                                          {note.timestampSeconds !== null && (
+                                             <button 
+                                               onClick={() => jumpToTime(note.timestampSeconds!)}
+                                               className="text-xs font-bold bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700 transition-colors flex items-center gap-1"
+                                             >
+                                                <PlayCircle className="w-3 h-3" />
+                                                {formatTime(note.timestampSeconds)}
+                                             </button>
+                                          )}
+                                          <span className="text-xs font-bold text-slate-400">{note.lessonTitle}</span>
+                                       </div>
+                                       <button 
+                                         onClick={() => handleDeleteNote(note.id)}
+                                         className="p-1 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                                       >
+                                          <X className="w-4 h-4" />
+                                       </button>
+                                    </div>
+                                    <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{note.content}</p>
+                                    <div className="mt-4 text-[10px] text-slate-400 font-medium">
+                                       {new Date(note.createdDate).toLocaleDateString()}
+                                    </div>
+                                 </div>
+                               ))}
+                            </div>
+                         ) : (
+                            <div className="text-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                               <MessageSquare className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                               <p className="text-slate-400 font-medium">{t('no_notes')}</p>
+                            </div>
+                         )}
+                      </div>
+                   </div>
+                )}
+                
+                {(activeTab === 'announcements' || activeTab === 'reviews') && (
+                   <div className="text-center py-20 bg-slate-50 rounded-2xl animate-in fade-in duration-500">
+                      <MessageSquare className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                      <p className="text-slate-400 font-medium">{t('coming_soon')}</p>
+                   </div>
+                )}
              </div>
           </div>
         </div>
