@@ -3,6 +3,7 @@
 import React from "react";
 import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { 
   PlaySquare, 
   MessageSquare, 
@@ -13,16 +14,17 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const menuItems = [
-  { title: "Courses", href: "/tutor/dashboard", icon: PlaySquare, active: true },
-  { title: "Communication", href: "/tutor/dashboard/communication", icon: MessageSquare },
-  { title: "Performance", href: "/tutor/dashboard/performance", icon: BarChart3 },
-  { title: "Tools", href: "/tutor/dashboard/tools", icon: Wrench },
-  { title: "Resources", href: "/tutor/dashboard/resources", icon: HelpCircle },
-];
-
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const t = useTranslations('TutorDashboard');
+
+  const menuItems = [
+    { title: t('courses'), href: "/tutor/dashboard", icon: PlaySquare, active: true },
+    { title: t('communication'), href: "/tutor/dashboard/communication", icon: MessageSquare },
+    { title: t('performance'), href: "/tutor/dashboard/performance", icon: BarChart3 },
+    { title: t('tools'), href: "/tutor/dashboard/tools", icon: Wrench },
+    { title: t('resources'), href: "/tutor/dashboard/resources", icon: HelpCircle },
+  ];
 
   return (
     <aside 

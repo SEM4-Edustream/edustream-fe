@@ -250,5 +250,26 @@
       "success_sub": "Đang chuyển hướng...",
       "error_sub": "Đang quay lại trang đăng nhập..."
     }
+  },
+  "TutorProfile": {
+    "title": "Hồ sơ Giảng viên",
+    "about": "Giới thiệu",
+    "courses": "Các khóa học của tôi",
+    "stats": {
+      "courses": "Khóa học",
+      "students": "Học viên",
+      "reviews": "Đánh giá"
+    },
+    "no_bio": "Giảng viên chưa có phần giới thiệu bản thân.",
+    "video_intro": "Video giới thiệu",
+    "view_profile": "Xem hồ sơ"
+  },
+  "TutorDashboard": {
+    "courses": "Khóa học",
+    "communication": "Giao tiếp",
+    "performance": "Hiệu suất",
+    "tools": "Công cụ",
+    "resources": "Tài nguyên",
+    "switch_to_student": "Học viên"
   }
 }

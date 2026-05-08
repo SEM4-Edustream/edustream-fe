@@ -2,6 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { getCourseById } from '@/services/courseService';
 import CourseHero from '@/components/features/course-detail/CourseHero';
+import { Link } from '@/i18n/routing';
 import CourseContent from '@/components/features/course-detail/CourseContent';
 import CourseCheckoutCard from '@/components/features/course-detail/CourseCheckoutCard';
 import { Metadata } from 'next';
@@ -88,16 +89,18 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
                <h2 className="text-2xl font-bold text-slate-900 uppercase tracking-tight">Instructor</h2>
                <div className="space-y-6">
                   <div className="flex items-center gap-6">
-                     <div className="w-24 h-24 rounded-full bg-slate-100 border-2 border-slate-200 overflow-hidden shrink-0">
-                        <img 
-                          src={`https://api.dicebear.com/7.x/initials/svg?seed=${course.tutorName}`} 
-                          alt={course.tutorName} 
-                          className="w-full h-full object-cover" 
-                        />
-                     </div>
-                     <div className="space-y-1">
-                        <h3 className="text-xl font-bold text-indigo-600 hover:underline cursor-pointer transition-all">{course.tutorName}</h3>
-                        <p className="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em]">Senior Educator • EduStream Expert</p>
+                      <div className="w-24 h-24 rounded-full bg-slate-100 border-2 border-slate-200 overflow-hidden shrink-0">
+                         <img 
+                           src={course.tutorAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${course.tutorName}`} 
+                           alt={course.tutorName} 
+                           className="w-full h-full object-cover" 
+                         />
+                      </div>
+                      <div className="space-y-1">
+                         <Link href={`/tutors/${course.tutorProfileId}`}>
+                            <h3 className="text-xl font-bold text-indigo-600 hover:underline cursor-pointer transition-all">{course.tutorName}</h3>
+                         </Link>
+                         <p className="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em]">Senior Educator • EduStream Expert</p>
                         <div className="flex items-center gap-4 pt-2">
                            <div className="flex items-center gap-1.5 text-slate-900 font-bold text-xs">
                               <PlayCircle className="w-4 h-4 text-slate-500" />

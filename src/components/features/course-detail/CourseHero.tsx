@@ -50,7 +50,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
             <div className="space-y-3 text-sm font-bold">
               <div className="flex items-center gap-2">
                  <span className="text-slate-400">Created by</span>
-                 <Link href={`/tutor/${course.tutorProfileId}`} className="text-indigo-400 underline decoration-indigo-400/30 hover:decoration-indigo-400 transition-all">
+                 <Link href={`/tutors/${course.tutorProfileId}`} className="text-indigo-400 underline decoration-indigo-400/30 hover:decoration-indigo-400 transition-all">
                     {course.tutorName}
                  </Link>
               </div>

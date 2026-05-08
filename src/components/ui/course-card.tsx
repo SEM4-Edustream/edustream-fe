@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Star } from 'lucide-react';
@@ -33,12 +32,10 @@ export function CourseCard({ href, children, className, ...props }: CourseCardPr
 export function CourseCardThumbnail({ src, alt = "Thumbnail" }: { src: string, alt?: string }) {
   return (
     <div className="relative h-[135px] w-full overflow-hidden border border-gray-200 bg-gray-50">
-      <Image 
+      <img 
         src={src || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"} 
         alt={alt}
-        fill
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        className="object-cover"
+        className="w-full h-full object-cover"
       />
     </div>
   );

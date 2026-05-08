@@ -1,0 +1,66 @@
+# Implementation Plan: Student View Tutor Profile
+
+This plan outlines the steps to allow students (and guests) to view a tutor's public profile, including their biography, stats, and published courses.
+
+## User Review Required
+
+> [!IMPORTANT]
+> The tutor profile will be publicly accessible. We need to ensure that sensitive information (like verification documents or internal status) is NOT exposed in the public API.
+
+## Proposed Changes
+
+### Backend (Spring Boot)
+
+#### [NEW] [PublicTutorResponse.java](file:///e:/edustream-be/src/main/java/sem4/edustreambe/dto/tutor/response/PublicTutorResponse.java)
+- Create a new DTO for public display.
+- Fields: `id`, `fullName`, `avatarUrl`, `headline`, `bio`, `videoIntroduction`, `totalCourses`, `averageRating`, `totalReviews`, `courses` (List of `CourseResponse`).
+
+#### [MODIFY] [TutorMapper.java](file:///e:/edustream-be/src/main/java/sem4/edustreambe/mapper/TutorMapper.java)
+- Add mapping for `PublicTutorResponse`.
+- Map `user.fullName` to `fullName` and `user.avatarUrl` to `avatarUrl`.
+
+#### [MODIFY] [TutorProfileService.java](file:///e:/edustream-be/src/main/java/sem4/edustreambe/service/TutorProfileService.java)
+- Add `getPublicTutorProfile(String profileId)` method.
+- Fetch tutor profile, ensure it's `APPROVED`.
+- Fetch all `PUBLISHED` courses for this tutor.
+- Calculate stats (total courses, average rating, etc.).
+
+#### [NEW] [PublicTutorController.java](file:///e:/edustream-be/src/main/java/sem4/edustreambe/controller/PublicTutorController.java)
+- Create a new controller for public tutor endpoints.
+- Path: `/api/public/tutors/{id}`.
+- Allow anonymous access.
+
+#### [MODIFY] [SecurityConfig.java](file:///e:/edustream-be/src/main/java/sem4/edustreambe/config/SecurityConfig.java)
+- Add `/api/public/tutors/**` to `PUBLIC_ENDPOINTS`.
+
+---
+
+### Frontend (Next.js)
+
+#### [NEW] [tutorService.ts](file:///e:/edustream-fe/src/services/tutorService.ts)
+- Add `getPublicTutorProfile(id)` method.
+
+#### [NEW] [Tutor Profile Page](file:///e:/edustream-fe/src/app/[locale]/(public)/tutors/[id]/page.tsx)
+- Implementation of the profile page.
+- Top section: Avatar, Name, Headline, Stats (Courses, Reviews).
+- Left/Main section: Bio, Introduction Video.
+- Bottom section: List of courses by the tutor (reusing `CourseCard` component).
+
+#### [MODIFY] [Course Detail Page](file:///e:/edustream-fe/src/app/[locale]/(public)/courses/[id]/page.tsx)
+- Update the tutor information section to link to the new tutor profile page.
+
+---
+
+## Verification Plan
+
+### Automated Tests
+- Postman/Insomnia: Test GET `/api/public/tutors/{id}`.
+- Verify that only `PUBLISHED` courses are returned.
+- Verify that sensitive fields (documents) are NOT present.
+
+### Manual Verification
+1. Log in as a student.
+2. Navigate to a course detail page.
+3. Click on the tutor's name.
+4. Verify the tutor profile page displays correctly with stats and courses.
+5. Verify the page is accessible even when logged out (guest mode).

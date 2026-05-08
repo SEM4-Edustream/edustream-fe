@@ -31,6 +31,19 @@ export interface TutorProfileResponse {
   documents: TutorDocumentResponse[];
 }
 
+export interface PublicTutorResponse {
+  id: string;
+  fullName: string;
+  avatarUrl: string;
+  headline: string;
+  bio: string;
+  videoIntroduction: string;
+  totalCourses: number;
+  averageRating: number;
+  totalReviews: number;
+  courses: any[]; // List of CourseResponse
+}
+
 const tutorService = {
   // Step 1: Create initial profile
   createProfile: async (data: TutorProfileRequest) => {
@@ -54,6 +67,12 @@ const tutorService = {
   getMyProfileStatus: async () => {
     const response: any = await axiosInstance.get(`/api/tutor-profiles/my-profile`);
     return response;
+  },
+
+  // Fetch public profile
+  getPublicTutorProfile: async (id: string): Promise<PublicTutorResponse> => {
+    const response: any = await axiosInstance.get(`/api/public/tutors/${id}`);
+    return response.result;
   }
 };
 

@@ -250,5 +250,26 @@
       "success_sub": "Redirecting you now...",
       "error_sub": "Redirecting back to login..."
     }
+  },
+  "TutorProfile": {
+    "title": "Tutor Profile",
+    "about": "About me",
+    "courses": "My Courses",
+    "stats": {
+      "courses": "Courses",
+      "students": "Students",
+      "reviews": "Reviews"
+    },
+    "no_bio": "This tutor has not provided a biography yet.",
+    "video_intro": "Introduction Video",
+    "view_profile": "View profile"
+  },
+  "TutorDashboard": {
+    "courses": "Courses",
+    "communication": "Communication",
+    "performance": "Performance",
+    "tools": "Tools",
+    "resources": "Resources",
+    "switch_to_student": "Student"
   }
 }
