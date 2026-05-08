@@ -30,6 +30,7 @@ export interface CourseSummary {
   id: string;
   tutorProfileId?: string;
   tutorName?: string;
+  tutorAvatar?: string;
   title: string;
   subtitle?: string;
   description?: string;
