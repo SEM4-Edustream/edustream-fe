@@ -25,7 +25,7 @@ export default function QuizView({ lessonId, onComplete }: QuizViewProps) {
       setLoading(true);
       setResult(null);
       setAnswers({});
-      const res = await axiosInstance.get(`/api/quizzes/${lessonId}/questions`);
+      const res: any = await axiosInstance.get(`/api/quizzes/${lessonId}/questions`);
       setQuestions(res.result || []);
     } catch (error) {
       console.error(error);
@@ -55,7 +55,7 @@ export default function QuizView({ lessonId, onComplete }: QuizViewProps) {
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
-      const res = await axiosInstance.post(`/api/quizzes/${lessonId}/submit`, { answers });
+      const res: any = await axiosInstance.post(`/api/quizzes/${lessonId}/submit`, { answers });
       setResult(res.result);
       
       if (res.result.passed) {

@@ -29,7 +29,7 @@ export default function AssignmentView({ lesson, onComplete }: AssignmentViewPro
   const fetchSubmission = async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get(`/api/assignments/${lesson.id}/my-submission`);
+      const res: any = await axiosInstance.get(`/api/assignments/${lesson.id}/my-submission`);
       if (res.result) {
         setSubmission(res.result);
         setContent(res.result.content || '');
@@ -83,7 +83,7 @@ export default function AssignmentView({ lesson, onComplete }: AssignmentViewPro
 
     try {
       setIsSubmitting(true);
-      const res = await axiosInstance.post(`/api/assignments/${lesson.id}/submit`, {
+      const res: any = await axiosInstance.post(`/api/assignments/${lesson.id}/submit`, {
         content,
         fileUrl
       });

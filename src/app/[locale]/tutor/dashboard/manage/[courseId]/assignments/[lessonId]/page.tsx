@@ -25,7 +25,7 @@ export default function AssignmentGradingPage() {
   const fetchSubmissions = async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get(`/api/assignments/${lessonId}/submissions?page=0&size=100`);
+      const res: any = await axiosInstance.get(`/api/assignments/${lessonId}/submissions?page=0&size=100`);
       setSubmissions(res.result.content || []);
     } catch (error) {
       toast.error('Failed to load submissions');
@@ -43,7 +43,7 @@ export default function AssignmentGradingPage() {
 
     try {
       setIsGrading(true);
-      const res = await axiosInstance.post(`/api/assignments/submissions/${selectedSub.id}/grade`, {
+      const res: any = await axiosInstance.post(`/api/assignments/submissions/${selectedSub.id}/grade`, {
         grade: Number(grade),
         feedback
       });
