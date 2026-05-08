@@ -22,7 +22,7 @@ export default function QuizEditor({ lesson, moduleId }: QuizEditorProps) {
   const fetchQuestions = async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get(`/api/quizzes/${lesson.id}/questions/tutor`);
+      const res: any = await axiosInstance.get(`/api/quizzes/${lesson.id}/questions/tutor`);
       setQuestions(res.result || []);
     } catch (error) {
       console.error('Failed to fetch quiz questions', error);
