@@ -39,7 +39,7 @@ export default function LearningPage() {
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
   const [isCompleting, setIsCompleting] = useState(false);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
-  const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'announcements' | 'reviews'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'announcements' | 'reviews'>('overview');
   const [notes, setNotes] = useState<NoteResponse[]>([]);
   const [isNotesLoading, setIsNotesLoading] = useState(false);
   const [noteContent, setNoteContent] = useState('');
@@ -78,7 +78,7 @@ export default function LearningPage() {
     };
 
     fetchCourseData();
-    fetchNotes();
+    // fetchNotes(); // Temporarily disabled
     document.title = "Learning | EduStream";
   }, [courseId]);
 
@@ -319,7 +319,6 @@ export default function LearningPage() {
              <div className="border-b border-slate-200 flex gap-8">
                 {[
                   { id: 'overview', label: t('tabs.overview') },
-                  { id: 'notes', label: t('tabs.notes') },
                   { id: 'announcements', label: t('tabs.announcements') },
                   { id: 'reviews', label: t('tabs.reviews') }
                 ].map((tab) => (
@@ -361,85 +360,7 @@ export default function LearningPage() {
                    </div>
                 )}
 
-                {activeTab === 'notes' && (
-                   <div className="space-y-8 animate-in fade-in duration-500">
-                      {/* Add Note Form */}
-                      <div className="space-y-4 bg-slate-50 p-6 rounded-xl border border-slate-100">
-                         <div className="flex items-center justify-between">
-                            <h3 className="font-bold text-slate-900">{t('create_note')}</h3>
-                            {activeLesson?.type === 'VIDEO' && (
-                               <span className="text-xs font-bold bg-indigo-100 text-indigo-700 px-2 py-1 rounded">
-                                  {t('at')} {formatTime(currentTime)}
-                               </span>
-                            )}
-                         </div>
-                         <textarea 
-                           className="w-full min-h-[100px] p-4 rounded-lg border border-slate-200 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all resize-none text-sm"
-                           placeholder={t('note_placeholder')}
-                           value={noteContent}
-                           onChange={(e) => setNoteContent(e.target.value)}
-                         />
-                         <div className="flex justify-end">
-                            <Button 
-                              onClick={handleAddNote}
-                              disabled={!noteContent.trim() || isSubmittingNote}
-                              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg h-10 px-6"
-                            >
-                               {isSubmittingNote ? <Loader2 className="w-4 h-4 animate-spin" /> : t('save_note')}
-                            </Button>
-                         </div>
-                      </div>
-
-                      {/* Notes List */}
-                      <div className="space-y-6">
-                         <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                            {t('all_notes')} <span className="bg-slate-200 text-slate-600 text-xs px-2 py-0.5 rounded-full">{notes.length}</span>
-                         </h3>
-                         
-                         {isNotesLoading ? (
-                            <div className="flex justify-center py-12">
-                               <Loader2 className="w-8 h-8 animate-spin text-slate-300" />
-                            </div>
-                         ) : notes.length > 0 ? (
-                            <div className="space-y-4">
-                               {notes.map((note) => (
-                                 <div key={note.id} className="group p-5 bg-white border border-slate-100 rounded-xl hover:border-indigo-200 hover:shadow-md transition-all">
-                                    <div className="flex items-start justify-between mb-3">
-                                       <div className="flex items-center gap-3">
-                                          {note.timestampSeconds !== null && (
-                                             <button 
-                                               onClick={() => jumpToTime(note.timestampSeconds!)}
-                                               className="text-xs font-bold bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700 transition-colors flex items-center gap-1"
-                                             >
-                                                <PlayCircle className="w-3 h-3" />
-                                                {formatTime(note.timestampSeconds)}
-                                             </button>
-                                          )}
-                                          <span className="text-xs font-bold text-slate-400">{note.lessonTitle}</span>
-                                       </div>
-                                       <button 
-                                         onClick={() => handleDeleteNote(note.id)}
-                                         className="p-1 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
-                                       >
-                                          <X className="w-4 h-4" />
-                                       </button>
-                                    </div>
-                                    <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{note.content}</p>
-                                    <div className="mt-4 text-[10px] text-slate-400 font-medium">
-                                       {new Date(note.createdDate).toLocaleDateString()}
-                                    </div>
-                                 </div>
-                               ))}
-                            </div>
-                         ) : (
-                            <div className="text-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
-                               <MessageSquare className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                               <p className="text-slate-400 font-medium">{t('no_notes')}</p>
-                            </div>
-                         )}
-                      </div>
-                   </div>
-                )}
+                {/* Notes tab content temporarily removed */}
                 
                 {(activeTab === 'announcements' || activeTab === 'reviews') && (
                    <div className="text-center py-20 bg-slate-50 rounded-2xl animate-in fade-in duration-500">
