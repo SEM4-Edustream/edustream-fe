@@ -10,15 +10,19 @@ import {
   ChevronUp,
   Loader2,
   CheckCircle2,
-  X
+  X,
+  ExternalLink
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
-import { courseService, LessonResponse } from '@/services/courseService';
 import fileService from '@/services/fileService';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import axios from 'axios';
+import QuizEditor from './QuizEditor';
+import { useParams } from 'next/navigation';
+import { Link } from '@/i18n/routing';
+import { courseService, LessonResponse } from '@/services/courseService';
 
 interface LessonItemProps {
   lesson: LessonResponse;
@@ -28,12 +32,13 @@ interface LessonItemProps {
 }
 
 export default function LessonItem({ lesson, moduleId, index, onRefresh }: LessonItemProps) {
+  const { courseId } = useParams() as { courseId: string };
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   
   // Content Management States
-  const [activeTab, setActiveTab] = useState<'VIDEO' | 'TEXT'>(
-    lesson.type === 'QUIZ' ? 'TEXT' : lesson.type
+  const [activeTab, setActiveTab] = useState<'VIDEO' | 'TEXT' | 'QUIZ' | 'ASSIGNMENT'>(
+    lesson.type
   );
   const [textContent, setTextContent] = useState(lesson.content || '');
   const [isSavingText, setIsSavingText] = useState(false);
@@ -164,12 +169,22 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
               <div className={cn("w-7 h-7 rounded flex items-center justify-center transition-colors", hasContent ? "bg-indigo-100 text-indigo-700" : "bg-slate-100 text-slate-500")}>
                 <Video className="w-3.5 h-3.5" />
               </div>
+            ) : lesson.type === 'QUIZ' ? (
+              <div className={cn("w-7 h-7 rounded flex items-center justify-center transition-colors", "bg-orange-100 text-orange-700")}>
+                <CheckCircle2 className="w-3.5 h-3.5" />
+              </div>
+            ) : lesson.type === 'ASSIGNMENT' ? (
+              <div className={cn("w-7 h-7 rounded flex items-center justify-center transition-colors", hasContent ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-500")}>
+                <FileText className="w-3.5 h-3.5" />
+              </div>
             ) : (
               <div className={cn("w-7 h-7 rounded flex items-center justify-center transition-colors", hasContent ? "bg-indigo-100 text-indigo-700" : "bg-slate-100 text-slate-500")}>
                 <FileText className="w-3.5 h-3.5" />
               </div>
             )}
-            <span className="text-sm font-medium text-[#1c1d1f]">Lecture {index + 1}: {lesson.title}</span>
+            <span className="text-sm font-medium text-[#1c1d1f]">
+              {lesson.type === 'QUIZ' ? 'Quiz' : lesson.type === 'ASSIGNMENT' ? 'Assignment' : 'Lecture'} {index + 1}: {lesson.title}
+            </span>
             
             {hasContent && !isExpanded && (
                <CheckCircle2 className="w-4 h-4 text-green-600 ml-2 animate-in zoom-in" />
@@ -201,28 +216,80 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
         <div className="p-5 bg-white animate-in slide-in-from-top-2 duration-200">
           
           <div className="flex items-center gap-2 border-b border-slate-100 pb-4 mb-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mr-4">Content Type:</h4>
-            <Button 
-               variant="ghost" 
-               size="sm" 
-               className={cn("h-8 px-4 rounded-full text-xs font-bold gap-2", activeTab === 'VIDEO' ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}
-               onClick={() => setActiveTab('VIDEO')}
-            >
-               <Video className="w-3.5 h-3.5" /> Video
-            </Button>
-            <Button 
-               variant="ghost" 
-               size="sm" 
-               className={cn("h-8 px-4 rounded-full text-xs font-bold gap-2", activeTab === 'TEXT' ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}
-               onClick={() => setActiveTab('TEXT')}
-            >
-               <FileText className="w-3.5 h-3.5" /> Article
-            </Button>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mr-4">
+              {lesson.type === 'QUIZ' ? 'Quiz Settings' : lesson.type === 'ASSIGNMENT' ? 'Assignment Details' : 'Content Type:'}
+            </h4>
+            
+            {(lesson.type === 'VIDEO' || lesson.type === 'TEXT') && (
+              <>
+                <Button 
+                   variant="ghost" 
+                   size="sm" 
+                   className={cn("h-8 px-4 rounded-full text-xs font-bold gap-2", activeTab === 'VIDEO' ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}
+                   onClick={() => setActiveTab('VIDEO')}
+                >
+                   <Video className="w-3.5 h-3.5" /> Video
+                </Button>
+                <Button 
+                   variant="ghost" 
+                   size="sm" 
+                   className={cn("h-8 px-4 rounded-full text-xs font-bold gap-2", activeTab === 'TEXT' ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}
+                   onClick={() => setActiveTab('TEXT')}
+                >
+                   <FileText className="w-3.5 h-3.5" /> Article
+                </Button>
+              </>
+            )}
             <div className="flex-1"></div>
             <Button variant="ghost" size="sm" onClick={handleDelete} className="text-red-500 hover:text-red-600 hover:bg-red-50 text-xs font-bold">
-               Delete Lecture
+               Delete {lesson.type === 'QUIZ' ? 'Quiz' : lesson.type === 'ASSIGNMENT' ? 'Assignment' : 'Lecture'}
             </Button>
           </div>
+
+          {activeTab === 'QUIZ' && (
+            <QuizEditor lesson={lesson} moduleId={moduleId} />
+          )}
+
+          {activeTab === 'ASSIGNMENT' && (
+            <div className="space-y-4">
+              <RichTextEditor 
+                 value={textContent}
+                 onChange={setTextContent}
+                 placeholder="Enter assignment prompt and instructions..."
+                 className="min-h-[300px]"
+              />
+              <div className="flex justify-between items-center pt-2">
+                 <Link href={`/tutor/dashboard/manage/${courseId}/assignments/${lesson.id}`}>
+                   <Button variant="outline" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50">
+                      <ExternalLink className="w-4 h-4 mr-2" /> Grade Submissions
+                   </Button>
+                 </Link>
+                 <Button 
+                    onClick={async () => {
+                      try {
+                        setIsSavingText(true);
+                        await courseService.updateLesson(moduleId, lesson.id, {
+                          title: lesson.title,
+                          type: 'ASSIGNMENT',
+                          content: textContent,
+                          orderIndex: lesson.orderIndex
+                        });
+                        toast.success('Assignment saved successfully');
+                      } catch (e) {
+                        toast.error('Failed to save assignment');
+                      } finally {
+                        setIsSavingText(false);
+                      }
+                    }}
+                    disabled={isSavingText}
+                    className="bg-slate-900 text-white font-bold"
+                 >
+                    {isSavingText && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                    Save Assignment
+                 </Button>
+              </div>
+            </div>
+          )}
 
           {/* VIDEO UPLOAD UI */}
           {activeTab === 'VIDEO' && (

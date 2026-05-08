@@ -26,6 +26,8 @@ import { noteService, NoteResponse } from '@/services/noteService';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import QuizView from '@/components/features/learning/QuizView';
+import AssignmentView from '@/components/features/learning/AssignmentView';
 
 export default function LearningPage() {
   const t = useTranslations('Learning');
@@ -274,6 +276,25 @@ export default function LearningPage() {
                     />
                  </article>
               </div>
+            ) : activeLesson?.type === 'QUIZ' ? (
+              <QuizView 
+                lessonId={activeLesson.id} 
+                onComplete={() => {
+                  const newCompleted = new Set(completedLessons);
+                  newCompleted.add(activeLesson.id);
+                  setCompletedLessons(newCompleted);
+                  moveToNextLesson();
+                }} 
+              />
+            ) : activeLesson?.type === 'ASSIGNMENT' ? (
+              <AssignmentView 
+                lesson={activeLesson} 
+                onComplete={() => {
+                  const newCompleted = new Set(completedLessons);
+                  newCompleted.add(activeLesson.id);
+                  setCompletedLessons(newCompleted);
+                }} 
+              />
             ) : (
                <div className="w-full h-full flex items-center justify-center text-slate-500">
                   <p>{t('select_lesson')}</p>
@@ -442,6 +463,10 @@ export default function LearningPage() {
                                      <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
                                         {lesson.type === 'VIDEO' ? (
                                           <><PlayCircle className="w-3 h-3" /> {t('video')}</>
+                                        ) : lesson.type === 'QUIZ' ? (
+                                          <><CheckCircle2 className="w-3 h-3" /> Quiz</>
+                                        ) : lesson.type === 'ASSIGNMENT' ? (
+                                          <><FileText className="w-3 h-3" /> Assignment</>
                                         ) : (
                                           <><FileText className="w-3 h-3" /> {t('article')}</>
                                         )}

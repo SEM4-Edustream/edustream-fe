@@ -1,0 +1,87 @@
+# Implementation Plan: Quiz and Assignment Features
+
+Mục tiêu: Bổ sung 2 loại bài học mới là `QUIZ` (Trắc nghiệm) và `ASSIGNMENT` (Bài tập tự luận) vào hệ thống EduStream, cho phép giảng viên tạo bài tập và học viên làm bài/nhận điểm.
+
+## User Review Required
+> [!IMPORTANT]
+> Vui lòng xem xét các đề xuất dưới đây, đặc biệt là phần **Cấu trúc Dữ liệu** và **Luồng tính năng** để đảm bảo đúng với yêu cầu của dự án.
+> Nếu bạn đồng ý, hãy phản hồi để tôi bắt đầu triển khai từng bước.
+
+## 1. Cấu trúc Database (Backend)
+
+### 1.1 Bổ sung Enum
+- Sửa `LessonType.java`: Thêm `ASSIGNMENT` (hiện tại đã có `QUIZ`, `VIDEO`, `TEXT`).
+
+### 1.2 Thực thể Quiz (Trắc nghiệm)
+Sẽ tạo thêm các Entity sau:
+- **`QuizQuestion`**: Chứa câu hỏi của bài Quiz.
+  - `id`, `lesson` (ManyToOne), `content` (Nội dung câu hỏi), `questionType` (SINGLE_CHOICE, MULTIPLE_CHOICE), `orderIndex`
+- **`QuizAnswerChoice`**: Chứa các đáp án của câu hỏi.
+  - `id`, `question` (ManyToOne), `content` (Nội dung đáp án), `isCorrect` (Đúng/Sai), `orderIndex`
+- **`QuizSubmission`**: Lưu kết quả làm bài của học viên.
+  - `id`, `lessonId`, `studentId`, `score` (Điểm), `passed` (Đạt/Không Đạt)
+
+### 1.3 Thực thể Assignment (Bài tập tự luận)
+- Thông tin đề bài sẽ dùng chung cột `content` hoặc `videoUrl` (có thể đổi tên thành `attachmentUrl`) của bảng `Lesson`.
+- **`AssignmentSubmission`**: Lưu bài làm của học viên.
+  - `id`, `lesson` (ManyToOne), `student` (ManyToOne)
+  - `content` (Đoạn text học viên trả lời)
+  - `fileUrl` (Link file đính kèm nếu học viên nộp file)
+  - `status` (SUBMITTED, GRADED)
+  - `grade` (Điểm số tutor chấm)
+  - `feedback` (Nhận xét của tutor)
+
+---
+
+## 2. Backend APIs
+
+### 2.1 Quiz APIs
+- **Tutor**: 
+  - `POST /api/quizzes/{lessonId}/questions`: Thêm câu hỏi và đáp án cho Quiz.
+  - `PUT /api/quizzes/questions/{questionId}`: Cập nhật câu hỏi.
+  - `DELETE /api/quizzes/questions/{questionId}`: Xóa câu hỏi.
+- **Student**:
+  - `GET /api/quizzes/{lessonId}`: Lấy danh sách câu hỏi (KHÔNG trả về `isCorrect` để tránh gian lận).
+  - `POST /api/quizzes/{lessonId}/submit`: Nộp mảng đáp án học viên chọn -> Backend chấm điểm và trả về kết quả.
+
+### 2.2 Assignment APIs
+- **Student**:
+  - `POST /api/assignments/{lessonId}/submit`: Nộp bài (kèm text/file).
+  - `GET /api/assignments/{lessonId}/my-submission`: Lấy thông tin bài đã nộp của mình.
+- **Tutor**:
+  - `GET /api/assignments/courses/{courseId}/submissions`: Lấy danh sách các bài nộp của học viên trong khóa học.
+  - `POST /api/assignments/submissions/{submissionId}/grade`: Chấm điểm và gửi nhận xét.
+
+---
+
+## 3. Frontend UI (Next.js)
+
+### 3.1 Giao diện Tutor (Dashboard)
+- **Course Builder**: 
+  - Thêm nút tạo "Quiz" và "Assignment" trong Curriculum.
+  - **Quiz Editor**: Một modal/form cho phép Tutor soạn thảo các câu hỏi (Question) và thêm các đáp án (Choices), chọn đáp án đúng.
+  - **Assignment Editor**: Tận dụng Rich Text Editor hiện tại, thêm tùy chọn hướng dẫn làm bài.
+- **Grading Dashboard** (Tính năng mới):
+  - Một trang mới `/tutor/dashboard/assignments` hoặc nằm trong `/manage/[courseId]/submissions` để xem danh sách bài nộp.
+  - Giao diện xem bài làm của học viên, nhập điểm và gửi feedback.
+
+### 3.2 Giao diện Học viên (Learning Interface)
+- **Quiz View**: 
+  - Hiển thị từng câu hỏi dạng Radio button hoặc Checkbox.
+  - Nút "Nộp bài". 
+  - Hiển thị màn hình kết quả (Điểm số, Số câu đúng, Được qua bài hay không).
+- **Assignment View**:
+  - Hiển thị yêu cầu bài tập.
+  - Khu vực nộp bài: Khung nhập Text và Nút đính kèm File (Upload qua Supabase Storage).
+  - Trạng thái bài nộp: "Đang chờ chấm", "Đã có điểm" (Hiển thị điểm và feedback từ Tutor).
+
+---
+
+## 4. Trình tự triển khai dự kiến
+1. **Phase 1: Backend Database & Core Entities**: Cập nhật DB, Entity, Enum.
+2. **Phase 2: Quiz Backend + Frontend**: Hoàn thành toàn bộ luồng tạo Quiz (Tutor) và làm Quiz (Học viên).
+3. **Phase 3: Assignment Backend + Frontend**: Hoàn thành luồng nộp bài (Học viên) và chấm bài (Tutor).
+
+## Open Questions
+- Với Assignment, học viên có được phép nộp lại bài (Resubmit) nếu chưa có điểm hoặc điểm thấp không?
+- Với Quiz, có giới hạn thời gian làm bài (Time limit) không hay chỉ tính điểm dựa trên số câu trả lời đúng?

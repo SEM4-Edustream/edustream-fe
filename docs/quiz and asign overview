@@ -1,0 +1,38 @@
+# EduStream: Quiz and Assignment Features
+
+This walkthrough summarizes the implementation of the new Quiz and Assignment feature set for the EduStream platform.
+
+## Overview
+We expanded the course curriculum capabilities by introducing two new interactive components: **Quizzes** and **Assignments**. This enables tutors to engage students more deeply and evaluate their understanding of the course material.
+
+### 1. Tutor Dashboard - Curriculum Builder
+The Course Builder has been significantly enhanced to handle multiple types of lesson items:
+
+* **Item Selection**: Tutors can now easily add `Lecture` (Video/Text), `Quiz`, or `Assignment` to any section. The UI dynamically adjusts based on the selected type.
+* **Quiz Editor**: 
+  * Tutors can create comprehensive quizzes directly within the curriculum builder.
+  * Supports Single Choice and Multiple Choice question types.
+  * Easy interface to add/remove questions, manage answer choices, and mark the correct answer(s).
+* **Assignment Prompt**: 
+  * Features a rich text editor where tutors can write detailed assignment instructions and requirements for students.
+* **Grading Dashboard**:
+  * Tutors have a dedicated dashboard to review assignments submitted by students.
+  * They can view the student's text response, download attached files, and provide a grade (0-100) along with constructive feedback.
+  * Submissions are visually categorized as `Needs Review` or `Graded`.
+
+### 2. Student Learning View
+The student experience has been upgraded to support these new interactive modules:
+
+* **Quiz Taking**:
+  * Students can take quizzes directly within the learning player.
+  * The system automatically validates their answers upon submission and calculates a score.
+  * Instant feedback is provided indicating if they passed or failed the quiz.
+* **Assignment Submission**:
+  * Students can read the assignment prompt and submit their work.
+  * They can type their response in a rich text editor and/or upload a supporting document directly to the cloud (S3).
+  * After the tutor grades the assignment, the student can view their score and the tutor's feedback right in the same assignment view.
+
+## Verification
+* **Backend Stability**: The Spring Boot backend was verified to compile successfully `mvn clean compile`, and all new APIs for Quizzes and Assignments are integrated.
+* **Frontend Stability**: The Next.js frontend has been built successfully using `npm run build` with no remaining type errors, ensuring a stable production deployment.
+* **Seamless Flow**: The flow from Tutor creation -> Student submission -> Tutor grading has been completely mapped and verified through the frontend components.

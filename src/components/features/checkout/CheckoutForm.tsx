@@ -35,6 +35,12 @@ export default function CheckoutForm({ course }: CheckoutFormProps) {
       const booking = await paymentService.createBooking({ courseId: course.id });
       const paymentLink = await paymentService.createPaymentLink(booking.id);
       
+      if (paymentLink.isPaid) {
+        toast.success('Successfully enrolled!');
+        router.push(`/payment/success?bookingId=${booking.id}`);
+        return;
+      }
+
       if (paymentLink.checkoutUrl) {
         window.location.href = paymentLink.checkoutUrl;
       } else {

@@ -23,6 +23,7 @@ export interface PaymentLinkResponse {
   amount: number;
   description: string;
   orderCode: number;
+  isPaid?: boolean;
 }
 
 type ApiResponse<T> = {

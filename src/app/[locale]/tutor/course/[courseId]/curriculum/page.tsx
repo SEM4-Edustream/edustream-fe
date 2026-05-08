@@ -25,8 +25,10 @@ export default function CurriculumPage() {
   const [loading, setLoading] = useState(true);
   const [isAddingModule, setIsAddingModule] = useState(false);
   const [newModuleTitle, setNewModuleTitle] = useState('');
-  const [addingLessonToModule, setAddingLessonToModule] = useState<string | null>(null);
-  const [newLessonTitle, setNewLessonTitle] = useState('');
+  const [addingItemToModule, setAddingItemToModule] = useState<{moduleId: string, type: 'VIDEO' | 'QUIZ' | 'ASSIGNMENT'} | null>(null);
+  const [newItemTitle, setNewItemTitle] = useState('');
+  
+  const isLocked = course?.status && course.status !== 'DRAFT';
 
   const fetchCourse = async () => {
     try {
@@ -76,16 +78,20 @@ export default function CurriculumPage() {
     }
   };
 
-  const handleAddLesson = async (moduleId: string) => {
-    if (!newLessonTitle.trim()) return;
+  const handleAddItem = async (moduleId: string, type: 'VIDEO' | 'QUIZ' | 'ASSIGNMENT') => {
+    if (isLocked) {
+      toast.error("Khóa học đã khóa, vui lòng liên hệ Admin để sửa đổi Curriculum.");
+      return;
+    }
+    if (!newItemTitle.trim()) return;
 
     try {
       const module = course?.modules?.find(m => m.id === moduleId);
       const orderIndex = module?.lessons?.length || 0;
       
       const newLesson = await courseService.addLesson(moduleId, {
-        title: newLessonTitle,
-        type: 'VIDEO',
+        title: newItemTitle,
+        type: type,
         orderIndex
       });
 
@@ -100,14 +106,14 @@ export default function CurriculumPage() {
         };
       });
 
-      setNewLessonTitle('');
-      setAddingLessonToModule(null);
+      setNewItemTitle('');
+      setAddingItemToModule(null);
       window.dispatchEvent(new Event('course-updated'));
-      toast.success('Lesson added successfully');
+      toast.success(`${type === 'QUIZ' ? 'Quiz' : type === 'ASSIGNMENT' ? 'Assignment' : 'Lecture'} added successfully`);
     } catch (error: any) {
       console.error(error);
       const isLocked = error.response?.status === 400 && error.response?.data?.message?.includes('Action not allowed');
-      toast.error(isLocked ? "Khóa học đã khóa, vui lòng liên hệ Admin để sửa đổi Curriculum." : 'Failed to add lesson');
+      toast.error(isLocked ? "Khóa học đã khóa, vui lòng liên hệ Admin để sửa đổi Curriculum." : 'Failed to add item');
     }
   };
 
@@ -179,37 +185,63 @@ export default function CurriculumPage() {
                              </div>
                            ) : (
                              <div className="flex items-center justify-center p-6 border-2 border-dashed border-slate-200 rounded-md bg-white/50 text-xs font-bold text-slate-400 italic ml-8">
-                                No lectures added yet.
+                                No content added yet.
                              </div>
                            )}
 
-                           {addingLessonToModule === module.id ? (
+                           {addingItemToModule?.moduleId === module.id ? (
                               <div className="bg-white border border-slate-200 p-5 space-y-4 mt-2 ml-8 rounded-md shadow-md animate-in slide-in-from-top-2 duration-300 border-l-4 border-l-[#1c1d1f]">
                                  <div className="space-y-2">
-                                    <label className="text-xs font-bold text-[#1c1d1f] uppercase tracking-wider">New Lecture:</label>
+                                    <label className="text-xs font-bold text-[#1c1d1f] uppercase tracking-wider">
+                                      New {addingItemToModule.type === 'QUIZ' ? 'Quiz' : addingItemToModule.type === 'ASSIGNMENT' ? 'Assignment' : 'Lecture'}:
+                                    </label>
                                     <input 
                                       autoFocus
                                       placeholder="Enter a title"
                                       className="w-full text-sm p-2.5 border border-slate-300 rounded focus:border-[#1c1d1f] outline-none transition-colors"
-                                      value={newLessonTitle}
-                                      onChange={(e) => setNewLessonTitle(e.target.value)}
-                                      onKeyDown={(e) => e.key === 'Enter' && handleAddLesson(module.id)}
+                                      value={newItemTitle}
+                                      onChange={(e) => setNewItemTitle(e.target.value)}
+                                      onKeyDown={(e) => e.key === 'Enter' && handleAddItem(module.id, addingItemToModule.type)}
+                                      disabled={isLocked}
                                     />
                                  </div>
                                  <div className="flex justify-end items-center gap-4 pt-1">
-                                    <Button variant="ghost" size="sm" className="font-bold hover:bg-transparent px-0 text-slate-600 hover:text-[#1c1d1f]" onClick={() => {setAddingLessonToModule(null); setNewLessonTitle('');}}>Cancel</Button>
-                                    <Button size="sm" className="bg-[#1c1d1f] hover:bg-slate-800 text-white font-bold h-10 px-6 rounded-none" onClick={() => handleAddLesson(module.id)}>Add Lecture</Button>
+                                    <Button variant="ghost" size="sm" className="font-bold hover:bg-transparent px-0 text-slate-600 hover:text-[#1c1d1f]" onClick={() => {setAddingItemToModule(null); setNewItemTitle('');}}>Cancel</Button>
+                                    <Button disabled={isLocked} size="sm" className="bg-[#1c1d1f] hover:bg-slate-800 text-white font-bold h-10 px-6 rounded-none" onClick={() => handleAddItem(module.id, addingItemToModule.type)}>
+                                      Add {addingItemToModule.type === 'QUIZ' ? 'Quiz' : addingItemToModule.type === 'ASSIGNMENT' ? 'Assignment' : 'Lecture'}
+                                    </Button>
                                  </div>
                               </div>
                            ) : (
-                             <Button 
-                                onClick={() => setAddingLessonToModule(module.id)}
-                                variant="outline" 
-                                size="sm" 
-                                className="ml-8 border-dashed font-bold gap-2 text-[#5624d0] hover:text-[#5624d0] border-[#5624d0]/30 hover:border-[#5624d0] hover:bg-[#5624d0]/5"
-                             >
-                                <Plus className="w-4 h-4" /> Curriculum Item
-                             </Button>
+                             <div className="flex items-center gap-3 ml-8 mt-2">
+                               <Button 
+                                  onClick={() => !isLocked && setAddingItemToModule({ moduleId: module.id, type: 'VIDEO' })}
+                                  variant="outline" 
+                                  size="sm" 
+                                  disabled={isLocked}
+                                  className="border-dashed font-bold gap-2 text-[#5624d0] hover:text-[#5624d0] border-[#5624d0]/30 hover:border-[#5624d0] hover:bg-[#5624d0]/5"
+                               >
+                                  <Plus className="w-4 h-4" /> Lecture
+                               </Button>
+                               <Button 
+                                  onClick={() => !isLocked && setAddingItemToModule({ moduleId: module.id, type: 'QUIZ' })}
+                                  variant="outline" 
+                                  size="sm" 
+                                  disabled={isLocked}
+                                  className="border-dashed font-bold gap-2 text-[#5624d0] hover:text-[#5624d0] border-[#5624d0]/30 hover:border-[#5624d0] hover:bg-[#5624d0]/5"
+                               >
+                                  <Plus className="w-4 h-4" /> Quiz
+                               </Button>
+                               <Button 
+                                  onClick={() => !isLocked && setAddingItemToModule({ moduleId: module.id, type: 'ASSIGNMENT' })}
+                                  variant="outline" 
+                                  size="sm" 
+                                  disabled={isLocked}
+                                  className="border-dashed font-bold gap-2 text-[#5624d0] hover:text-[#5624d0] border-[#5624d0]/30 hover:border-[#5624d0] hover:bg-[#5624d0]/5"
+                               >
+                                  <Plus className="w-4 h-4" /> Assignment
+                               </Button>
+                             </div>
                            )}
                         </div>
                       </div>
