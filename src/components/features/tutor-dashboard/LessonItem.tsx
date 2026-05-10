@@ -259,7 +259,7 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
                  className="min-h-[300px]"
               />
               <div className="flex justify-between items-center pt-2">
-                 <Link href={`/tutor/dashboard/manage/${courseId}/assignments/${lesson.id}`}>
+                 <Link href={`/tutor/dashboard/communication/assignments/${courseId}/submissions/${lesson.id}`}>
                    <Button variant="outline" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50">
                       <ExternalLink className="w-4 h-4 mr-2" /> Grade Submissions
                    </Button>

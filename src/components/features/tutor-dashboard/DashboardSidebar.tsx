@@ -19,7 +19,7 @@ export default function DashboardSidebar() {
   const t = useTranslations('TutorDashboard');
 
   const menuItems = [
-    { title: t('courses'), href: "/tutor/dashboard", icon: PlaySquare, active: true },
+    { title: t('courses'), href: "/tutor/dashboard", icon: PlaySquare },
     { title: t('communication'), href: "/tutor/dashboard/communication", icon: MessageSquare },
     { title: t('performance'), href: "/tutor/dashboard/performance", icon: BarChart3 },
     { title: t('tools'), href: "/tutor/dashboard/tools", icon: Wrench },
@@ -53,7 +53,9 @@ export default function DashboardSidebar() {
         <nav className="flex-1">
           <ul className="space-y-0.5">
             {menuItems.map((item) => {
-              const isActive = item.active || pathname === item.href;
+              const isActive = item.href === "/tutor/dashboard" 
+                ? pathname === "/tutor/dashboard" || pathname === "/en/tutor/dashboard" || pathname === "/vi/tutor/dashboard"
+                : pathname.includes(item.href);
               return (
                 <li key={item.title}>
                   <Link

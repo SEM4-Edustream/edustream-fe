@@ -60,7 +60,7 @@ export default function AssignmentGradingPage() {
   };
 
   if (loading) {
-    return <div className="p-20 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-indigo-500" /></div>;
+    return <div className="p-20 flex justify-center h-full items-center"><Loader2 className="w-8 h-8 animate-spin text-indigo-500" /></div>;
   }
 
   return (

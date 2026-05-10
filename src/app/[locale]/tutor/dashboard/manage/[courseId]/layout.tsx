@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, usePathname } from 'next/navigation';
 import { ChevronLeft, MonitorPlay, Settings, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { courseService, CourseSummary } from '@/services/courseService';
@@ -24,6 +24,13 @@ export default function CourseEditorLayout({ children }: { children: React.React
     };
     fetchCourse();
   }, [courseId]);
+
+  const pathname = usePathname();
+  const isAssignmentPage = pathname.includes('/assignments/');
+
+  if (isAssignmentPage) {
+    return <div className="min-h-screen bg-white">{children}</div>;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-white">

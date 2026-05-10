@@ -4,8 +4,9 @@ import React from "react";
 import DashboardSidebar from "@/components/features/tutor-dashboard/DashboardSidebar";
 import DashboardHeader from "@/components/features/tutor-dashboard/DashboardHeader";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 export default function DashboardLayout({
   children,

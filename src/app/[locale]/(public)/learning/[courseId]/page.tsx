@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import QuizView from '@/components/features/learning/QuizView';
 import AssignmentView from '@/components/features/learning/AssignmentView';
+import AICoachChat from '@/components/features/learning/AICoachChat';
 
 export default function LearningPage() {
   const t = useTranslations('Learning');
@@ -496,6 +497,11 @@ export default function LearningPage() {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+      {/* AI Coach Assistant */}
+      <AICoachChat 
+        courseId={courseId} 
+        courseTitle={course?.title || ""} 
+      />
     </div>
   );
 }
