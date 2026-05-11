@@ -9,48 +9,41 @@ export interface VerificationReviewRequest {
 const adminService = {
   getTutorProfiles: async (status: string = 'PENDING') => {
     // Backend: GET /api/admin/tutor-profiles?status=PENDING
-    const response: any = await axiosInstance.get(`/api/admin/tutor-profiles`, {
+    return await axiosInstance.get(`/api/admin/tutor-profiles`, {
       params: { status }
     });
-    return response.result;
   },
 
   getAllCourses: async (params: { status?: string; page?: number; size?: number; sort?: string } = {}) => {
     // Backend: GET /api/admin/courses?status=...&page=...&size=...&sort=...
-    const response: any = await axiosInstance.get(`/api/admin/courses`, { params });
-    return response.result;
+    return await axiosInstance.get(`/api/admin/courses`, { params });
   },
 
   getTutorDetail: async (id: string) => {
     // Backend: GET /api/admin/tutor-profiles/{id}
-    const response: any = await axiosInstance.get(`/api/admin/tutor-profiles/${id}`);
-    return response.result;
+    return await axiosInstance.get(`/api/admin/tutor-profiles/${id}`);
   },
 
   reviewTutor: async (id: string, data: VerificationReviewRequest) => {
     // Backend: POST /api/admin/tutor-profiles/{id}/verify
-    const response: any = await axiosInstance.post(`/api/admin/tutor-profiles/${id}/verify`, data);
-    return response.result;
+    return await axiosInstance.post(`/api/admin/tutor-profiles/${id}/verify`, data);
   },
 
   getPendingCourses: async () => {
     // Backend: GET /api/admin/courses/pending
-    const response: any = await axiosInstance.get(`/api/admin/courses/pending`);
-    return response.result;
+    return await axiosInstance.get(`/api/admin/courses/pending`);
   },
 
   getCourseDetail: async (id: string) => {
     // Backend: GET /api/admin/courses/{id}
-    const response: any = await axiosInstance.get(`/api/admin/courses/${id}`);
-    return response.result;
+    return await axiosInstance.get(`/api/admin/courses/${id}`);
   },
 
   verifyCourse: async (id: string, isApprove: boolean) => {
     // Backend: POST /api/admin/courses/{id}/verify?isApprove=true/false
-    const response: any = await axiosInstance.post(`/api/admin/courses/${id}/verify`, null, {
+    return await axiosInstance.post(`/api/admin/courses/${id}/verify`, null, {
       params: { isApprove }
     });
-    return response.result;
   }
 };
 
