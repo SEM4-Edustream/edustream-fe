@@ -12,28 +12,15 @@ export interface CartItemResponse {
   courseReviewCount?: number;
 }
 
-type ApiResponse<T> = {
-  code?: number;
-  message?: string;
-  result?: T;
-};
-
-function unwrapResult<T>(payload: T | ApiResponse<T>) {
-  if (payload && typeof payload === 'object' && 'result' in payload) {
-    return (payload as ApiResponse<T>).result;
-  }
-  return payload as T;
-}
 
 export const cartService = {
   getCartItems: async (): Promise<CartItemResponse[]> => {
-    const response = await api.get<any>('/api/cart');
-    return (unwrapResult(response) as any) ?? [];
+    const response = await api.get<any>('/api/cart') as any;
+    return response ?? [];
   },
 
   addToCart: async (courseId: string): Promise<CartItemResponse> => {
-    const response = await api.post<any>(`/api/cart/${courseId}`);
-    return unwrapResult(response) as any;
+    return await api.post<any>(`/api/cart/${courseId}`) as any;
   },
 
   removeFromCart: async (courseId: string): Promise<void> => {
@@ -41,12 +28,11 @@ export const cartService = {
   },
 
   getCartCount: async (): Promise<number> => {
-    const response = await api.get<any>('/api/cart/count');
-    return (unwrapResult(response) as any) ?? 0;
+    const response = await api.get<any>('/api/cart/count') as any;
+    return response ?? 0;
   },
 
   checkoutCart: async (): Promise<any> => {
-    const response = await api.post<any>('/api/student/bookings/checkout-cart');
-    return unwrapResult(response) as any;
+    return await api.post<any>('/api/student/bookings/checkout-cart') as any;
   },
 };

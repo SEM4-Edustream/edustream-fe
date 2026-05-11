@@ -26,28 +26,14 @@ export interface PaymentLinkResponse {
   isPaid?: boolean;
 }
 
-type ApiResponse<T> = {
-  code?: number;
-  message?: string;
-  result?: T;
-};
-
-function unwrapResult<T>(payload: T | ApiResponse<T>) {
-  if (payload && typeof payload === 'object' && 'result' in payload) {
-    return (payload as ApiResponse<T>).result;
-  }
-  return payload as T;
-}
 
 export const paymentService = {
   createBooking: async (data: BookingRequest): Promise<BookingResponse> => {
-    const response = await api.post<any>('/api/student/bookings', data);
-    return unwrapResult(response) as unknown as BookingResponse;
+    return await api.post<any>('/api/student/bookings', data) as any;
   },
 
   createPaymentLink: async (bookingId: string): Promise<PaymentLinkResponse> => {
-    const response = await api.post<any>(`/api/student/payments/create-link/${bookingId}`);
-    return unwrapResult(response) as unknown as PaymentLinkResponse;
+    return await api.post<any>(`/api/student/payments/create-link/${bookingId}`) as any;
   },
 
   cancelBooking: async (bookingId: string): Promise<void> => {

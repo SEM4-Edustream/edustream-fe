@@ -12,28 +12,15 @@ export interface WishlistItemResponse {
   courseReviewCount?: number;
 }
 
-type ApiResponse<T> = {
-  code?: number;
-  message?: string;
-  result?: T;
-};
-
-function unwrapResult<T>(payload: T | ApiResponse<T>) {
-  if (payload && typeof payload === 'object' && 'result' in payload) {
-    return (payload as ApiResponse<T>).result;
-  }
-  return payload as T;
-}
 
 export const wishlistService = {
   getWishlistItems: async (): Promise<WishlistItemResponse[]> => {
-    const response = await api.get<any>('/api/wishlist');
-    return (unwrapResult(response) as any) ?? [];
+    const response = await api.get<any>('/api/wishlist') as any;
+    return response ?? [];
   },
 
   addToWishlist: async (courseId: string): Promise<WishlistItemResponse> => {
-    const response = await api.post<any>(`/api/wishlist/${courseId}`);
-    return unwrapResult(response) as any;
+    return await api.post<any>(`/api/wishlist/${courseId}`) as any;
   },
 
   removeFromWishlist: async (courseId: string): Promise<void> => {
@@ -41,7 +28,7 @@ export const wishlistService = {
   },
 
   getWishlistCount: async (): Promise<number> => {
-    const response = await api.get<any>('/api/wishlist/count');
-    return (unwrapResult(response) as any) ?? 0;
+    const response = await api.get<any>('/api/wishlist/count') as any;
+    return response ?? 0;
   },
 };

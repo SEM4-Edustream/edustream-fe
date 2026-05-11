@@ -15,28 +15,14 @@ export interface UserProfile {
   createdAt?: string;
 }
 
-type ApiResponse<T> = {
-  code?: number;
-  message?: string;
-  result?: T;
-};
-
-function unwrapResult<T>(payload: T | ApiResponse<T>) {
-  if (payload && typeof payload === 'object' && 'result' in payload) {
-    return (payload as ApiResponse<T>).result;
-  }
-  return payload as T;
-}
 
 export const profileService = {
   getProfile: async (): Promise<UserProfile | null> => {
-    const response: any = await api.get<ApiResponse<UserProfile> | UserProfile>('/users/my-info');
-    const baseInfo = unwrapResult(response);
+    const baseInfo = await api.get<UserProfile>('/users/my-info') as any;
     
     // Merge with tutor info to get headline and bio if they exist
     try {
-      const tutorResponse: any = await api.get<ApiResponse<any>>('/api/tutor-profiles/my-profile');
-      const tutorInfo = unwrapResult(tutorResponse);
+      const tutorInfo = await api.get<any>('/api/tutor-profiles/my-profile') as any;
       return { 
         ...baseInfo, 
         headline: tutorInfo?.headline || baseInfo?.headline, 
@@ -49,8 +35,7 @@ export const profileService = {
   },
 
   getTutorProfile: async () => {
-    const response: any = await api.get<ApiResponse<unknown> | unknown>('/api/tutor-profiles/my-profile');
-    return unwrapResult(response);
+    return await api.get<unknown>('/api/tutor-profiles/my-profile') as any;
   },
 
   updateProfile: async (payload: { fullName?: string; headline?: string; bio?: string }) => {
@@ -70,12 +55,11 @@ export const profileService = {
     }
     
     const results = await Promise.all(promises);
-    return results[0] ? unwrapResult(results[0] as any) : null;
+    return results[0] as any;
   },
 
   updateTutorProfile: async (payload: { headline?: string; bio?: string; videoIntroduction?: string }) => {
-    const response: any = await api.put<ApiResponse<unknown> | unknown>('/api/tutor-profiles/me', payload);
-    return unwrapResult(response);
+    return await api.put<unknown>('/api/tutor-profiles/me', payload) as any;
   },
 
   updateAvatar: async (file: File): Promise<string> => {
@@ -97,7 +81,6 @@ export const profileService = {
   },
 
   createTutorProfile: async (payload: { headline: string; bio: string; videoIntroduction?: string }) => {
-    const response: any = await api.post<ApiResponse<unknown> | unknown>('/api/tutor-profiles', payload);
-    return unwrapResult(response);
+    return await api.post<unknown>('/api/tutor-profiles', payload) as any;
   },
 };
