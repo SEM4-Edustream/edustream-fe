@@ -11,16 +11,17 @@ export interface NotificationResponse {
 }
 
 export const notificationService = {
-  getNotifications: async (page = 0, size = 10) => {
+  getNotifications: async (page = 0, size = 10): Promise<NotificationResponse[]> => {
     const res = await api.get<any>("/api/notifications", {
       params: { page, size, sort: 'createdAt,desc' }
-    });
-    return res.result?.content || res.content || [];
+    }) as any;
+    // Interceptor returns result, which is a Page object
+    return res?.content || res || [];
   },
 
-  getUnreadCount: async () => {
-    const res = await api.get<any>("/api/notifications/unread-count");
-    return res.result ?? res ?? 0;
+  getUnreadCount: async (): Promise<number> => {
+    const res = await api.get<any>("/api/notifications/unread-count") as any;
+    return typeof res === 'number' ? res : (res?.result ?? 0);
   },
 
   markAsRead: async (id: string) => {
