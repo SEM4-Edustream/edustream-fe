@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
@@ -30,6 +30,7 @@ import QuizView from '@/components/features/learning/QuizView';
 import AssignmentView from '@/components/features/learning/AssignmentView';
 import AICoachChat from '@/components/features/learning/AICoachChat';
 import StudentQASection from '@/components/features/learning/StudentQASection';
+import StudentAnnouncements from '@/components/features/learning/StudentAnnouncements';
 
 export default function LearningPage() {
   const t = useTranslations('Learning');
@@ -291,11 +292,7 @@ export default function LearningPage() {
             ) : activeLesson?.type === 'ASSIGNMENT' ? (
               <AssignmentView 
                 lesson={activeLesson} 
-                onComplete={() => {
-                  const newCompleted = new Set(completedLessons);
-                  newCompleted.add(activeLesson.id);
-                  setCompletedLessons(newCompleted);
-                }} 
+                onComplete={() => handleComplete()} 
               />
             ) : (
                <div className="w-full h-full flex items-center justify-center text-slate-500">
@@ -396,7 +393,13 @@ export default function LearningPage() {
                    </div>
                 )}
 
-                {(activeTab === 'announcements' || activeTab === 'reviews') && (
+                {activeTab === 'announcements' && (
+                   <div className="animate-in fade-in duration-500">
+                      <StudentAnnouncements courseId={courseId} />
+                   </div>
+                )}
+
+                {activeTab === 'reviews' && (
                    <div className="text-center py-20 bg-slate-50 rounded-2xl animate-in fade-in duration-500">
                       <MessageSquare className="w-12 h-12 text-slate-200 mx-auto mb-4" />
                       <p className="text-slate-400 font-medium">{t('coming_soon')}</p>

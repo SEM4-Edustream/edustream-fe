@@ -26,6 +26,8 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { courseService, CourseSummary, CategoryResponse } from '@/services/courseService';
+import fileService from '@/services/fileService';
+import axios from 'axios';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -95,28 +97,24 @@ export default function CourseBasicsPage() {
 
     try {
         setIsUploading(true);
-        // 1. Get presigned URL from Backend (Hypothetically using an endpoint for presigned urls)
-        // In this implementation, I'll assume we have a service for this
-        // const presignedUrl = await api.get(`/api/files/presigned?fileName=${file.name}&contentType=${file.type}`);
-        // For demonstration, I will simulate the flow.
+        toast.info('Uploading thumbnail to cloud...');
         
-        toast.info('Uploading thumbnail to S3...');
-        
-        // Simulating upload logic
-        // await axios.put(presignedUrl, file, { headers: { 'Content-Type': file.type } });
-        // const imageUrl = presignedUrl.split('?')[0];
+        const ext = file.name.split('.').pop();
+        const randomName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
 
-        // Mocking for now:
-        const reader = new FileReader();
-        reader.onloadend = () => {
-           setThumbnailPreview(reader.result as string);
-           // In real app, you would set the imageUrl from S3 to a hidden field or state
-        };
-        reader.readAsDataURL(file);
+        // Get pre-signed URL from backend using VIDEO bucket for public images
+        const presigned = await fileService.getPresignedUrl(randomName, file.type, "VIDEO");
+
+        // Upload directly to S3
+        await axios.put(presigned.uploadUrl, file, {
+          headers: { 'Content-Type': file.type }
+        });
         
-        toast.success('Thumbnail uploaded successfully (Simulated)');
-    } catch (error) {
-        toast.error('Failed to upload image');
+        setThumbnailPreview(presigned.fileUrl);
+        toast.success('Thumbnail uploaded successfully');
+    } catch (error: any) {
+        console.error(error);
+        toast.error('Failed to upload image. Vui lòng thử lại.');
     } finally {
         setIsUploading(false);
     }

@@ -14,8 +14,7 @@ const fileService = {
     const response: any = await axiosInstance.get(`/api/files/presigned-url`, {
       params: { fileName, contentType, type },
     });
-    // axiosInstance returns response.data directly due to interceptor
-    return response.result;
+    return response?.result || response;
   },
 
   // Step 2: Upload file directly to S3

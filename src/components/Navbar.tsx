@@ -24,6 +24,7 @@ import { wishlistService } from '@/services/wishlistService';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import LanguageSwitcher from './LanguageSwitcher';
+import NotificationBell from './layout/NotificationBell';
 
 const Navbar = () => {
   const t = useTranslations('Navbar');
@@ -382,9 +383,7 @@ const Navbar = () => {
                     )}
                   </AnimatePresence>
                 </div>
-                <button className="p-2.5 text-slate-600 hover:text-[#5624d0] transition-colors hidden sm:block">
-                  <Bell className="h-5 w-5" />
-                </button>
+                <NotificationBell />
                 
                 {/* Profile Avatar with Dropdown */}
                 <div className="relative ml-2 shrink-0">

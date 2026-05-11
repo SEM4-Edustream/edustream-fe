@@ -15,12 +15,16 @@ interface RichTextEditorProps {
 export function RichTextEditor({ value, onChange, placeholder, className }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
 
-  // Initialize content
+  // Initialize content and handle updates
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value) {
-      editorRef.current.innerHTML = value || '';
+      // Only update if the value is different from current innerHTML
+      // and we're not currently focused (to avoid cursor jump)
+      if (document.activeElement !== editorRef.current || !value) {
+        editorRef.current.innerHTML = value || '';
+      }
     }
-  }, []);
+  }, [value]);
 
   const handleInput = () => {
     if (editorRef.current) {

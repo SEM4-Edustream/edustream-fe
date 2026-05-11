@@ -30,13 +30,13 @@ export default function AssignmentView({ lesson, onComplete }: AssignmentViewPro
     try {
       setLoading(true);
       const res: any = await axiosInstance.get(`/api/assignments/${lesson.id}/my-submission`);
-      if (res.result) {
-        setSubmission(res.result);
-        setContent(res.result.content || '');
-        setFileUrl(res.result.fileUrl || '');
+      if (res) {
+        setSubmission(res);
+        setContent(res.content || '');
+        setFileUrl(res.fileUrl || '');
         
         // Auto mark as complete if graded
-        if (res.result.status === 'GRADED') {
+        if (res.status === 'GRADED') {
           onComplete();
         }
       } else {
@@ -87,7 +87,7 @@ export default function AssignmentView({ lesson, onComplete }: AssignmentViewPro
         content,
         fileUrl
       });
-      setSubmission(res.result);
+      setSubmission(res);
       toast.success('Assignment submitted successfully!');
     } catch (error) {
       toast.error('Failed to submit assignment');

@@ -54,6 +54,7 @@ export default function CourseEditorSidebar({ courseId, completionStatus, status
       items: [
         { name: 'Course landing page', href: `/tutor/course/${courseId}/basics`, icon: LayoutDashboard, key: 'basics' },
         { name: 'Pricing', href: `/tutor/course/${courseId}/pricing`, icon: BadgeDollarSign, key: 'pricing' },
+        { name: 'Announcements', href: `/tutor/course/${courseId}/announcements`, icon: Send, key: 'announcements' },
         { name: 'Course messages', href: `/tutor/course/${courseId}/messages`, icon: Settings, key: 'messages' },
       ]
     }
