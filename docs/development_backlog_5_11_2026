@@ -1,0 +1,142 @@
+# EduStream — Danh sách tính năng cần phát triển
+
+> Phân loại: 🔴 Cần gấp | 🟡 Quan trọng | 🟢 Nâng cao
+
+---
+
+## I. CHỨC NĂNG CÒN THIẾU / CHƯA HOÀN CHỈNH
+
+### 🔴 1. Communication Hub (Tutor Dashboard)
+- [ ] **Messages:** Hiện chỉ là placeholder, chưa có UI hoặc backend. Cần tích hợp hệ thống nhắn tin realtime giữa Tutor ↔ Học viên (WebSocket hoặc Polling).
+- [ ] **Announcements:** Giảng viên chưa thể gửi thông báo đến toàn bộ học viên trong một khóa học.
+- [ ] **Q&A:** Hiện chỉ có giao diện tĩnh, chưa có API để học viên đặt câu hỏi và giảng viên trả lời.
+
+### 🔴 2. Hệ thống Thông báo (Notifications)
+- [ ] Chưa có notification system nào. Học viên và giảng viên cần nhận thông báo khi:
+  - Bài tập được chấm điểm
+  - Khóa học được duyệt
+  - Có câu hỏi Q&A mới
+  - Thanh toán thành công
+- [ ] Đề xuất: Dùng WebSocket hoặc SSE (Server-Sent Events) phía Backend.
+
+### 🔴 3. Tìm kiếm & Bộ lọc nâng cao
+- [ ] Tìm kiếm khóa học chỉ theo `title`, chưa hỗ trợ:
+  - Lọc theo danh mục, mức giá, đánh giá sao, ngôn ngữ
+  - Sắp xếp theo độ phổ biến, mới nhất, giá thấp → cao
+  - Full-text search trong mô tả khóa học
+
+### 🔴 4. Trang Profile Giảng viên (Public)
+- [ ] Route `/tutors/{tutorId}` tồn tại nhưng cần xây dựng đầy đủ:
+  - Danh sách khóa học đang dạy
+  - Tổng số học viên, đánh giá trung bình
+  - Bio và thành tích
+
+---
+
+## II. TRẢI NGHIỆM HỌC TẬP
+
+### 🟡 5. AI Coach — Nâng cấp
+- [ ] **Lịch sử chat:** Chatbot hiện mất lịch sử khi đóng cửa sổ. Cần lưu trong `localStorage` hoặc Database.
+- [ ] **Streaming Response:** Hiện trả về toàn bộ câu trả lời cùng lúc, gây cảm giác "đứng". Cần implement Server-Sent Events để chữ chạy từng từ.
+- [ ] **Ngữ cảnh đa lượt (Multi-turn):** Chatbot hiện không nhớ lịch sử trong cùng một phiên. Cần gửi kèm các tin nhắn trước đó.
+- [ ] **Video Transcript:** Tích hợp nội dung từ video vào context AI.
+
+### 🟡 6. Trình phát Video
+- [ ] Chưa có custom video player. Hiện dùng thẻ `<video>` cơ bản, thiếu:
+  - Tốc độ phát (0.75x, 1x, 1.25x, 1.5x, 2x)
+  - Chú thích / Phụ đề (Subtitles)
+  - Lưu vị trí đang xem (Resume playback)
+  - Chất lượng video (360p / 720p / 1080p)
+
+### 🟡 7. Chứng chỉ hoàn thành (Certificate)
+- [ ] Khi học viên hoàn thành 100% khóa học, cần tạo và cấp **Certificate PDF** tự động.
+- [ ] Chứng chỉ cần có: Tên học viên, tên khóa học, ngày cấp, chữ ký giảng viên, mã QR xác thực.
+
+### 🟡 8. Ghi chú (Notes) — Hoàn thiện
+- [ ] Backend `/api/notes` đã có, nhưng Frontend đang bị comment `// fetchNotes(); // Temporarily disabled`.
+- [ ] Cần bật lại và hoàn thiện UI ghi chú trong trang học tập.
+
+---
+
+## III. QUẢN LÝ NỘI DUNG
+
+### 🟡 9. Quản lý Quiz — Nâng cấp
+- [ ] Hiện Quiz chỉ có trắc nghiệm 1 đáp án. Cần thêm:
+  - Nhiều đáp án đúng (Multiple choice)
+  - Câu hỏi tự luận (Essay)
+  - Giới hạn thời gian làm bài
+  - Giới hạn số lần thử
+
+### 🟡 10. Trang "My Learning" — Nâng cấp
+- [ ] Cần thêm:
+  - Thanh tiến độ % hoàn thành cho mỗi khóa học
+  - Bộ lọc: Đang học / Hoàn thành / Chưa bắt đầu
+  - Khóa học mới truy cập gần nhất (Continue Learning)
+
+### 🟢 11. Coupon & Giảm giá
+- [ ] Chưa có hệ thống mã giảm giá. Giảng viên cần có khả năng tạo coupon.
+- [ ] Học viên nhập mã tại trang checkout.
+
+---
+
+## IV. QUẢN TRỊ (ADMIN)
+
+### 🟡 12. Admin Dashboard — Thống kê
+- [ ] Cần trang tổng quan với:
+  - Tổng doanh thu theo tháng
+  - Số lượng khóa học mới / học viên mới
+  - Khóa học bán chạy nhất
+  - Biểu đồ tăng trưởng
+
+### 🟡 13. Quản lý Doanh thu (Revenue Management)
+- [ ] Tính năng chia sẻ doanh thu giữa Platform và Giảng viên chưa có.
+- [ ] Giảng viên cần xem được báo cáo thu nhập của mình.
+
+---
+
+## V. KỸ THUẬT & BẢO MẬT
+
+### 🔴 14. Refresh Token tự động
+- [ ] Khi Access Token hết hạn, Frontend cần tự động gọi `/api/auth/refresh` và thử lại request. Hiện tại người dùng sẽ bị đăng xuất đột ngột.
+
+### 🔴 15. Email Configuration
+- [ ] File `.env` hiện có `MAIL_USERNAME=your-email@gmail.com` — chưa được cấu hình. Chức năng gửi email (quên mật khẩu, xác thực) chưa hoạt động trên môi trường Production.
+
+### 🟡 16. Phân trang (Pagination) đầy đủ
+- [ ] Một số trang danh sách (Khóa học của giảng viên, Bài nộp) đang load tất cả (`size=100`). Cần xây dựng UI phân trang thực sự.
+
+### 🟡 17. Tối ưu hiệu năng
+- [ ] Lazy loading cho danh sách khóa học (Infinite scroll)
+- [ ] Image optimization (Next.js `<Image />` component) cho thumbnail
+- [ ] Caching API responses ở Frontend
+
+### 🟢 18. Đa ngôn ngữ (i18n) — Hoàn thiện
+- [ ] Dự án có cấu hình `[locale]` nhưng các bản dịch còn thiếu nhiều. Cần hoàn thiện file translation cho tiếng Việt và tiếng Anh.
+
+### 🟢 19. Dark Mode
+- [ ] Toàn bộ UI đang hard-code màu sáng. Thêm Dark Mode sẽ cải thiện trải nghiệm đáng kể.
+
+---
+
+## VI. MOBILE & PWA
+
+### 🟢 20. Responsive Mobile
+- [ ] Một số trang như Tutor Dashboard và Learning Page chưa được tối ưu cho màn hình nhỏ.
+- [ ] Sidebar trên mobile cần chuyển thành Drawer/Sheet.
+
+### 🟢 21. Progressive Web App (PWA)
+- [ ] Thêm `manifest.json` và Service Worker để học viên có thể "Cài đặt" EduStream lên điện thoại như một ứng dụng native.
+
+---
+
+## Tóm tắt ưu tiên
+
+| Ưu tiên | Tính năng | Lý do |
+|---------|-----------|-------|
+| 1️⃣ | Email Config (Production) | Chức năng cơ bản không hoạt động |
+| 2️⃣ | Refresh Token tự động | UX bị gián đoạn khi token hết hạn |
+| 3️⃣ | Q&A Backend | Placeholder không có giá trị |
+| 4️⃣ | Notifications | Thiếu feedback loop cho người dùng |
+| 5️⃣ | AI Chat Streaming + History | Nâng cấp tính năng nổi bật nhất |
+| 6️⃣ | Certificate | Tăng giá trị khóa học đáng kể |
+| 7️⃣ | Admin Dashboard Stats | Cần cho vận hành platform |
