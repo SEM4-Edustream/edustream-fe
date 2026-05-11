@@ -1,76 +1,12 @@
 import api from '@/lib/api';
+import { 
+  CategoryResponse, 
+  CourseModuleResponse, 
+  LessonResponse, 
+  CourseSummary, 
+  PageMeta
+} from '@/types/course';
 
-export interface CategoryResponse {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  subCategories?: CategoryResponse[];
-}
-
-export interface CourseModuleResponse {
-  id: string;
-  title: string;
-  description?: string;
-  orderIndex: number;
-  lessons?: LessonResponse[];
-}
-
-export interface LessonResponse {
-  id: string;
-  title: string;
-  content?: string;
-  type: 'VIDEO' | 'TEXT' | 'QUIZ' | 'ASSIGNMENT';
-  videoUrl?: string;
-  durationSeconds?: number;
-  orderIndex: number;
-}
-
-export interface CourseSummary {
-  id: string;
-  tutorProfileId?: string;
-  tutorName?: string;
-  tutorAvatar?: string;
-  title: string;
-  subtitle?: string;
-  description?: string;
-  language?: string;
-  level?: string;
-  category?: CategoryResponse;
-  learningObjectives?: string[];
-  prerequisites?: string[];
-  targetAudiences?: string[];
-  thumbnailUrl?: string;
-  price?: number;
-  status?: 'DRAFT' | 'PENDING' | 'PUBLISHED' | 'REJECTED' | 'SUSPENDED';
-  averageRating?: number;
-  reviewCount?: number;
-  modules?: CourseModuleResponse[];
-}
-
-export interface PageMeta<T> {
-  totalElements: number;
-  totalPages: number;
-  number: number;
-  size: number;
-  first: boolean;
-  last: boolean;
-  empty: boolean;
-  content: T[];
-}
-
-type ApiResponse<T> = {
-  code?: number;
-  message?: string;
-  result?: T;
-};
-
-function unwrapResult<T>(payload: T | ApiResponse<T>) {
-  if (payload && typeof payload === 'object' && 'result' in payload) {
-    return (payload as ApiResponse<T>).result;
-  }
-  return payload as T;
-}
 
 function normalizeCourse(course: CourseSummary): CourseSummary {
   if (!course) return course;
@@ -110,7 +46,7 @@ function normalizeEnrollment(enrollment: any): any {
 export const courseService = {
   getPublishedCourses: async (params?: { keyword?: string; page?: number; size?: number; sort?: string[] }): Promise<PageMeta<CourseSummary>> => {
     const response = await api.get<any>('/api/courses', { params });
-    const data = (unwrapResult(response) as any) ?? {
+    const data = (response as any) ?? {
       totalElements: 0,
       totalPages: 0,
       number: 0,
@@ -125,8 +61,7 @@ export const courseService = {
 
   getPublishedCourseDetail: async (id: string): Promise<CourseSummary | null> => {
     try {
-      const response = await api.get<any>(`/api/courses/${id}`);
-      const course = unwrapResult(response) as any;
+      const course = await api.get<any>(`/api/courses/${id}`);
       return course ? normalizeCourse(course) : null;
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
@@ -138,78 +73,67 @@ export const courseService = {
 
   getMyTutorCourses: async (params?: { status?: string; page?: number; size?: number; sort?: string }): Promise<PageMeta<CourseSummary>> => {
     const response = await api.get<any>('/api/tutor-courses', { params });
-    return normalizePage(unwrapResult(response) as any);
+    return normalizePage(response as any);
   },
 
   getCourseDetail: async (id: string): Promise<CourseSummary> => {
     const response = await api.get<any>(`/api/tutor-courses/${id}`);
-    return normalizeCourse(unwrapResult(response) as any);
+    return normalizeCourse(response as any);
   },
 
   getCategories: async (): Promise<CategoryResponse[]> => {
     const response = await api.get<any>('/api/categories');
-    return (unwrapResult(response) as any) ?? [];
+    return (response as any) ?? [];
   },
 
   createCourse: async (payload: any): Promise<CourseSummary> => {
-    const response = await api.post<any>('/api/tutor-courses', payload);
-    return unwrapResult(response) as any;
+    return await api.post<any>('/api/tutor-courses', payload);
   },
 
   updateCourse: async (id: string, payload: any): Promise<CourseSummary> => {
-    const response = await api.put<any>(`/api/tutor-courses/${id}`, payload);
-    return unwrapResult(response) as any;
+    return await api.put<any>(`/api/tutor-courses/${id}`, payload);
   },
 
   addModule: async (courseId: string, payload: { title: string; orderIndex: number }): Promise<CourseModuleResponse> => {
-    const response = await api.post<any>(`/api/tutor-courses/${courseId}/modules`, payload);
-    return unwrapResult(response) as any;
+    return await api.post<any>(`/api/tutor-courses/${courseId}/modules`, payload);
   },
 
   addLesson: async (moduleId: string, payload: any): Promise<LessonResponse> => {
-    const response = await api.post<any>(`/api/tutor-courses/modules/${moduleId}/lessons`, payload);
-    return unwrapResult(response) as any;
+    return await api.post<any>(`/api/tutor-courses/modules/${moduleId}/lessons`, payload);
   },
 
   updateLesson: async (moduleId: string, lessonId: string, payload: any): Promise<LessonResponse> => {
-    const response = await api.put<any>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`, payload);
-    return unwrapResult(response) as any;
+    return await api.put<any>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`, payload);
   },
 
   deleteLesson: async (moduleId: string, lessonId: string): Promise<void | any> => {
-    const response = await api.delete<any>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`);
-    return unwrapResult(response) as any;
+    return await api.delete<any>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`);
   },
 
   submitCourse: async (id: string): Promise<CourseSummary> => {
-    const response = await api.post<any>(`/api/tutor-courses/${id}/submit`);
-    return unwrapResult(response) as any;
+    return await api.post<any>(`/api/tutor-courses/${id}/submit`);
   },
 
   checkEnrollment: async (courseId: string): Promise<boolean> => {
     try {
-      const response = await api.get<any>('/api/student/enrollments/my-courses');
-      const enrollments = unwrapResult(response) as unknown as any[];
-      return enrollments.some(e => e.courseId === courseId);
+      const enrollments = await api.get<any[]>('/api/student/enrollments/my-courses');
+      return (enrollments || []).some(e => e.courseId === courseId);
     } catch (error) {
       return false;
     }
   },
 
   getMyEnrollments: async (): Promise<any[]> => {
-    const response = await api.get<any>('/api/student/enrollments/my-courses');
-    const data = unwrapResult(response) as unknown as any[];
+    const data = await api.get<any[]>('/api/student/enrollments/my-courses');
     return (data || []).map(normalizeEnrollment);
   },
 
   completeLesson: async (lessonId: string): Promise<void> => {
-    const response = await api.post<any>(`/api/progress/lessons/${lessonId}/complete`);
-    return unwrapResult(response) as any;
+    return await api.post<any>(`/api/progress/lessons/${lessonId}/complete`);
   },
 
   getCompletedLessons: async (courseId: string): Promise<string[]> => {
-    const response = await api.get<any>(`/api/progress/courses/${courseId}`);
-    return unwrapResult(response) as unknown as string[];
+    return await api.get<string[]>(`/api/progress/courses/${courseId}`);
   },
 };
 

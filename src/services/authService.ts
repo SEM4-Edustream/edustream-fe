@@ -12,31 +12,13 @@ export interface RegisterDTO {
   fullName?: string;
 }
 
-type ApiResponse<T> = {
-  code?: number;
-  message?: string;
-  result?: T;
-};
-
-function unwrapResult<T>(payload: T | ApiResponse<T>) {
-  if (payload && typeof payload === 'object') {
-    const result = payload as ApiResponse<T>;
-    if (result.result !== undefined) {
-      return result.result;
-    }
-  }
-
-  return payload as T;
-}
-
 export const authService = {
   login: async (username: string, password: string): Promise<LoginResponse> => {
-    const response: any = await axiosInstance.post<ApiResponse<LoginResponse> | LoginResponse>('/auth/login', {
+    const payload: any = await axiosInstance.post<LoginResponse>('/auth/login', {
       username,
       password,
     });
 
-    const payload = unwrapResult(response);
     if (!payload?.token) {
       throw new Error('Invalid credentials');
     }
@@ -45,32 +27,26 @@ export const authService = {
   },
 
   register: async (data: RegisterDTO) => {
-    const response: any = await axiosInstance.post<ApiResponse<unknown> | unknown>('/auth/register', data);
-    return unwrapResult(response);
+    return await axiosInstance.post<unknown>('/auth/register', data);
   },
 
   refresh: async (token: string) => {
-    const response: any = await axiosInstance.post<ApiResponse<LoginResponse> | LoginResponse>('/auth/refresh', { token });
-    return unwrapResult(response);
+    return await axiosInstance.post<LoginResponse>('/auth/refresh', { token });
   },
 
   logout: async (token: string) => {
-    const response: any = await axiosInstance.post<ApiResponse<unknown> | unknown>('/auth/logout', { token });
-    return unwrapResult(response);
+    return await axiosInstance.post<unknown>('/auth/logout', { token });
   },
 
   introspect: async (token: string) => {
-    const response: any = await axiosInstance.post<ApiResponse<{ valid: boolean }> | { valid: boolean }>('/auth/introspect', { token });
-    return unwrapResult(response);
+    return await axiosInstance.post<{ valid: boolean }>('/auth/introspect', { token });
   },
 
   forgotPassword: async (email: string) => {
-    const response: any = await axiosInstance.post<ApiResponse<void>>('/auth/forgot-password', { email });
-    return unwrapResult(response);
+    return await axiosInstance.post<void>('/auth/forgot-password', { email });
   },
 
   resetPassword: async (token: string, newPassword: string) => {
-    const response: any = await axiosInstance.post<ApiResponse<void>>('/auth/reset-password', { token, newPassword });
-    return unwrapResult(response);
+    return await axiosInstance.post<void>('/auth/reset-password', { token, newPassword });
   },
 };

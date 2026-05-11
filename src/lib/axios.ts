@@ -54,7 +54,12 @@ const processQueue = (error: any, token: string | null = null) => {
 // Interceptor for Responses: Handle global errors (e.g. 401)
 axiosInstance.interceptors.response.use(
   (response) => {
-    return response.data; // Maintain compatibility: services expect response.data
+    // Automatically unwrap 'result' from backend ApiResponse structure
+    const data = response.data;
+    if (data && typeof data === 'object' && 'result' in data) {
+      return data.result;
+    }
+    return data;
   },
   async (error) => {
     const originalRequest = error.config;
