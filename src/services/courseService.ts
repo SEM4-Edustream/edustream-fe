@@ -99,6 +99,14 @@ export const courseService = {
     return await api.post<any>(`/api/tutor-courses/${courseId}/modules`, payload) as any;
   },
 
+  updateModule: async (courseId: string, moduleId: string, payload: { title: string; orderIndex?: number }): Promise<CourseModuleResponse> => {
+    return await api.put<any>(`/api/tutor-courses/${courseId}/modules/${moduleId}`, payload) as any;
+  },
+
+  deleteModule: async (courseId: string, moduleId: string): Promise<void> => {
+    return await api.delete<any>(`/api/tutor-courses/${courseId}/modules/${moduleId}`) as any;
+  },
+
   addLesson: async (moduleId: string, payload: any): Promise<LessonResponse> => {
     return await api.post<any>(`/api/tutor-courses/modules/${moduleId}/lessons`, payload) as any;
   },

@@ -30,6 +30,10 @@ export default function CurriculumPage() {
   const [addingItemToModule, setAddingItemToModule] = useState<{moduleId: string, type: 'VIDEO' | 'QUIZ' | 'ASSIGNMENT'} | null>(null);
   const [newItemTitle, setNewItemTitle] = useState('');
   
+  // Module Editing States
+  const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
+  const [editingModuleTitle, setEditingModuleTitle] = useState('');
+  
   const isLocked = course?.status && course.status !== 'DRAFT';
 
   const fetchCourse = async () => {
@@ -109,6 +113,36 @@ export default function CurriculumPage() {
     }
   };
 
+  const handleUpdateModule = async (moduleId: string) => {
+    if (!editingModuleTitle.trim()) return;
+    try {
+      await courseService.updateModule(courseId, moduleId, { title: editingModuleTitle });
+      setCourse(prev => prev ? {
+        ...prev,
+        modules: prev.modules?.map(m => m.id === moduleId ? { ...m, title: editingModuleTitle } : m)
+      } : null);
+      setEditingModuleId(null);
+      toast.success('Section updated successfully');
+    } catch (error) {
+      toast.error('Failed to update section');
+    }
+  };
+
+  const handleDeleteModule = async (moduleId: string) => {
+    if (!window.confirm('Are you sure you want to delete this section? All lectures inside will be removed.')) return;
+    try {
+      await courseService.deleteModule(courseId, moduleId);
+      setCourse(prev => prev ? {
+        ...prev,
+        modules: prev.modules?.filter(m => m.id !== moduleId)
+      } : null);
+      toast.success('Section deleted successfully');
+    } catch (error: any) {
+      const isLocked = error.response?.status === 400 && error.response?.data?.message?.includes('Action not allowed');
+      toast.error(isLocked ? "Khóa học đã khóa, không thể xóa." : 'Failed to delete section');
+    }
+  };
+
   if (loading) return <div className="p-8 flex justify-center"><div className="w-8 h-8 border-2 border-[#5624d0] border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
@@ -145,14 +179,43 @@ export default function CurriculumPage() {
                               <span className="font-bold text-xs uppercase tracking-tighter text-slate-400">Section {index + 1}:</span>
                               <div className="flex items-center gap-2">
                                  <Layout className="w-4 h-4 text-slate-400" />
-                                 <span className="font-bold text-[#1c1d1f]">{module.title}</span>
-                                 <button className="p-1 hover:bg-slate-50 rounded transition-all opacity-0 group-hover:opacity-100">
-                                    <Pencil className="w-3.5 h-3.5 text-slate-400" />
-                                 </button>
+                                 {editingModuleId === module.id ? (
+                                    <div className="flex items-center gap-2">
+                                       <input 
+                                          autoFocus
+                                          className="text-sm font-bold p-1 border border-slate-300 rounded outline-none focus:border-[#1c1d1f]"
+                                          value={editingModuleTitle}
+                                          onChange={(e) => setEditingModuleTitle(e.target.value)}
+                                          onKeyDown={(e) => e.key === 'Enter' && handleUpdateModule(module.id)}
+                                          onBlur={() => setEditingModuleId(null)}
+                                       />
+                                       <Button size="sm" className="h-7 px-2 bg-[#1c1d1f]" onClick={() => handleUpdateModule(module.id)}>Save</Button>
+                                    </div>
+                                 ) : (
+                                    <>
+                                       <span className="font-bold text-[#1c1d1f]">{module.title}</span>
+                                       <button 
+                                          onClick={() => {
+                                             setEditingModuleId(module.id);
+                                             setEditingModuleTitle(module.title);
+                                          }}
+                                          className="p-1 hover:bg-slate-50 rounded transition-all opacity-0 group-hover:opacity-100"
+                                       >
+                                          <Pencil className="w-3.5 h-3.5 text-slate-400" />
+                                       </button>
+                                    </>
+                                 )}
                               </div>
                            </div>
                            <div className="flex items-center gap-1">
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4 text-slate-400" /></Button>
+                              <Button 
+                                 variant="ghost" 
+                                 size="sm" 
+                                 onClick={() => handleDeleteModule(module.id)}
+                                 className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-500 transition-colors"
+                              >
+                                 <Trash2 className="w-4 h-4 text-slate-400" />
+                              </Button>
                               <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><MoreVertical className="w-4 h-4 text-slate-400" /></Button>
                            </div>
                         </div>
