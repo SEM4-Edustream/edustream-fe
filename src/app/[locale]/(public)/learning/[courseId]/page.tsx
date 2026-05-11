@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
@@ -29,6 +29,7 @@ import { cn } from '@/lib/utils';
 import QuizView from '@/components/features/learning/QuizView';
 import AssignmentView from '@/components/features/learning/AssignmentView';
 import AICoachChat from '@/components/features/learning/AICoachChat';
+import StudentQASection from '@/components/features/learning/StudentQASection';
 
 export default function LearningPage() {
   const t = useTranslations('Learning');
@@ -42,7 +43,7 @@ export default function LearningPage() {
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
   const [isCompleting, setIsCompleting] = useState(false);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
-  const [activeTab, setActiveTab] = useState<'overview' | 'announcements' | 'reviews'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'qa' | 'announcements' | 'reviews'>('overview');
   const [notes, setNotes] = useState<NoteResponse[]>([]);
   const [isNotesLoading, setIsNotesLoading] = useState(false);
   const [noteContent, setNoteContent] = useState('');
@@ -338,9 +339,10 @@ export default function LearningPage() {
 
           {/* Additional Tabs (Overview, Q&A, etc.) */}
           <div className="max-w-4xl mx-auto w-full px-4 md:px-6 py-10 space-y-12 pb-32">
-             <div className="border-b border-slate-200 flex gap-8">
+             <div className="border-b border-slate-200 flex gap-8 overflow-x-auto">
                 {[
                   { id: 'overview', label: t('tabs.overview') },
+                  { id: 'qa', label: 'Q&A' },
                   { id: 'announcements', label: t('tabs.announcements') },
                   { id: 'reviews', label: t('tabs.reviews') }
                 ].map((tab) => (
@@ -383,7 +385,17 @@ export default function LearningPage() {
                 )}
 
                 {/* Notes tab content temporarily removed */}
-                
+
+                {activeTab === 'qa' && (
+                   <div className="animate-in fade-in duration-500">
+                     <StudentQASection
+                       courseId={courseId}
+                       activeLessonId={activeLesson?.id}
+                       activeLessonTitle={activeLesson?.title}
+                     />
+                   </div>
+                )}
+
                 {(activeTab === 'announcements' || activeTab === 'reviews') && (
                    <div className="text-center py-20 bg-slate-50 rounded-2xl animate-in fade-in duration-500">
                       <MessageSquare className="w-12 h-12 text-slate-200 mx-auto mb-4" />
