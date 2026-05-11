@@ -1,3 +1,5 @@
+export * from '@/types/course';
+
 import api from '@/lib/api';
 import { 
   CategoryResponse, 
