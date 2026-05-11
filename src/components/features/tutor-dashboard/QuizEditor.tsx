@@ -22,11 +22,13 @@ export default function QuizEditor({ lesson, moduleId }: QuizEditorProps) {
   const fetchQuestions = async () => {
     try {
       setLoading(true);
+      // axiosInstance interceptor unwraps response.data.result automatically
+      // so res is already the array of questions
       const res: any = await axiosInstance.get(`/api/quizzes/${lesson.id}/questions/tutor`);
-      setQuestions(res.result || []);
+      setQuestions(Array.isArray(res) ? res : (res?.content ?? res ?? []));
     } catch (error) {
       console.error('Failed to fetch quiz questions', error);
-      toast.error('Failed to fetch questions');
+      // Don't show error toast on empty quiz (404 is normal for new quizzes)
     } finally {
       setLoading(false);
     }

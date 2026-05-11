@@ -115,10 +115,7 @@ export default function CourseBasicsPage() {
           headers: { 'Content-Type': file.type }
         });
         
-        setThumbnailPreview(presigned.fileUrl);
-        toast.success('Thumbnail uploaded successfully');
-        
-        // Cập nhật ngầm ngay vào DB để tránh mất dữ liệu nếu user lỡ tải lại trang mà chưa Save
+        // Cập nhật ngầm ngay vào DB - toast.success chỉ hiện SAU KHI updateCourse thành công
         await courseService.updateCourse(courseId, {
           title: form.getValues().title || 'Untitled Course',
           subtitle: form.getValues().subtitle || undefined,
@@ -128,12 +125,23 @@ export default function CourseBasicsPage() {
           description: form.getValues().description,
           thumbnailUrl: presigned.fileUrl,
         });
+        
+        // Chỉ set preview và hiện success SAU KHI toàn bộ luồng hoàn thành
+        setThumbnailPreview(presigned.fileUrl);
         window.dispatchEvent(new Event('course-updated'));
+        toast.success('Thumbnail uploaded successfully');
         
     } catch (error: any) {
         console.error(error);
+        const isS3Error = error?.message === 'Network Error' && !error?.response;
         const isLocked = error.response?.status === 400 && error.response?.data?.message?.includes('Action not allowed');
-        toast.error(isLocked ? "Khóa học đã khóa, không thể đổi ảnh" : 'Failed to upload image. Vui lòng thử lại.');
+        if (isS3Error) {
+          toast.error('Upload failed: S3 không cho phép kết nối. Kiểm tra CORS bucket.');
+        } else if (isLocked) {
+          toast.error("Khóa học đã khóa, không thể đổi ảnh");
+        } else {
+          toast.error('Failed to upload image. Vui lòng thử lại.');
+        }
     } finally {
         setIsUploading(false);
     }
