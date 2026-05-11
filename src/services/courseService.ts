@@ -14,13 +14,13 @@ function normalizeCourse(course: CourseSummary): CourseSummary {
   if (!course) return course;
   
   const DEFAULT_THUMBNAIL = "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80";
-  const INVALID_DEMO_URL = "https://link-anh-bia-demo.com";
+
+  // Kiểm tra nếu thumbnailUrl trống hoặc chứa link demo không tồn tại
+  const isInvalidThumbnail = !course.thumbnailUrl || course.thumbnailUrl.includes('link-anh-bia-demo.com');
 
   return {
     ...course,
-    thumbnailUrl: (course.thumbnailUrl === INVALID_DEMO_URL || !course.thumbnailUrl) 
-      ? DEFAULT_THUMBNAIL 
-      : course.thumbnailUrl
+    thumbnailUrl: isInvalidThumbnail ? DEFAULT_THUMBNAIL : course.thumbnailUrl
   };
 }
 
@@ -35,13 +35,12 @@ function normalizePage(page: PageMeta<CourseSummary>): PageMeta<CourseSummary> {
 function normalizeEnrollment(enrollment: any): any {
   if (!enrollment) return enrollment;
   const DEFAULT_THUMBNAIL = "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80";
-  const INVALID_DEMO_URL = "https://link-anh-bia-demo.com";
   
+  const isInvalidThumbnail = !enrollment.courseThumbnail || enrollment.courseThumbnail.includes('link-anh-bia-demo.com');
+
   return {
     ...enrollment,
-    courseThumbnail: (enrollment.courseThumbnail === INVALID_DEMO_URL || !enrollment.courseThumbnail)
-      ? DEFAULT_THUMBNAIL
-      : enrollment.courseThumbnail
+    courseThumbnail: isInvalidThumbnail ? DEFAULT_THUMBNAIL : enrollment.courseThumbnail
   };
 }
 
