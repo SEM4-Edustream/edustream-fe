@@ -15,13 +15,11 @@ export interface AnnouncementRequest {
 }
 
 export const announcementService = {
-  getCourseAnnouncements: async (courseId: string) => {
-    const res = await api.get<any>(`/api/courses/${courseId}/announcements`);
-    return res || [];
+  getCourseAnnouncements: async (courseId: string): Promise<AnnouncementResponse[]> => {
+    return await api.get<any>(`/api/courses/${courseId}/announcements`) as any;
   },
 
-  createAnnouncement: async (courseId: string, data: AnnouncementRequest) => {
-    const res = await api.post<any>(`/api/courses/${courseId}/announcements`, data);
-    return res;
+  createAnnouncement: async (courseId: string, data: AnnouncementRequest): Promise<any> => {
+    return await api.post<any>(`/api/courses/${courseId}/announcements`, data) as any;
   }
 };
