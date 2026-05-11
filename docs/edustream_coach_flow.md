@@ -14,7 +14,7 @@ graph TD
     H --> I{OpenRouter API}
     I --> J[Model 1: gpt-oss-20b]
     I --> K[Model 2: qwen3-80b]
-    I --> L[Model 3: gemma-4-31b]
+    I --> L[Model 3: : gemma-4-31b]
     I --> M[Model 4: nemotron]
     J & K & L & M --> N[Câu trả lời AI]
     N --> O[Frontend hiển thị]

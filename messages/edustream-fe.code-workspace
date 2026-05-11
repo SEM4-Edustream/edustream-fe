@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../edustream1-be"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "edustream-fe"
+	}
+}
