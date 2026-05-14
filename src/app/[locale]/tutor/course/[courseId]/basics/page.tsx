@@ -84,6 +84,14 @@ export default function CourseBasicsPage() {
           price: courseData.price || 0,
           level: (courseData.level as 'BEGINNER' | 'INTERMEDIATE' | 'EXPERT' | 'ALL_LEVELS') || 'BEGINNER',
         });
+
+        // Đảm bảo giá trị được gán chính xác
+        if (courseData.category?.id) {
+          form.setValue('categoryId', courseData.category.id);
+        }
+        if (courseData.level) {
+          form.setValue('level', courseData.level as any);
+        }
       } catch (error) {
         console.error('Failed to fetch data', error);
       }
@@ -248,8 +256,9 @@ export default function CourseBasicsPage() {
                        <FormItem>
                          <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Category</FormLabel>
                          <Select 
+                           key={`cat-${categories.length}`}
                            onValueChange={field.onChange} 
-                           value={field.value}
+                           value={field.value || undefined}
                          >
                            <FormControl>
                              <SelectTrigger className="h-12 border-slate-300 focus:ring-[#1c1d1f]">
@@ -276,6 +285,7 @@ export default function CourseBasicsPage() {
                        <FormItem>
                          <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Target Student Level</FormLabel>
                          <Select 
+                           key={categories.length}
                            onValueChange={field.onChange} 
                            value={field.value || undefined}
                          >
