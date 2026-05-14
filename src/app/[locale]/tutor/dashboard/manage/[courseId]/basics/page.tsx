@@ -74,7 +74,9 @@ export default function CourseBasicsPage() {
         setThumbnailPreview(courseData.thumbnailUrl || null);
         
         console.log('Loaded course data:', courseData);
-        console.log('Category ID to set:', courseData.category?.id);
+        console.log('Course category from backend:', courseData.category);
+        console.log('Categories list length:', catData.length);
+        console.log('Is course category in list?', catData.some(c => c.id === courseData.category?.id));
         
         form.reset({
           title: courseData.title || '',
