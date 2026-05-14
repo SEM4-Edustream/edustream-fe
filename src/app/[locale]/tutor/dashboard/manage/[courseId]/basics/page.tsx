@@ -73,32 +73,20 @@ export default function CourseBasicsPage() {
         setCategories(catData);
         setThumbnailPreview(courseData.thumbnailUrl || null);
         
-        console.log('Loaded course data:', courseData);
-        console.log('Course category from backend:', courseData.category);
-        console.log('Category ID to set:', courseData.category?.id);
-        console.log('Categories list loaded:', catData.map(c => ({id: c.id, name: c.name})));
-        
-        const initialValues = {
+        form.reset({
           title: courseData.title || '',
           description: courseData.description || '',
           categoryId: courseData.category?.id || '',
           price: courseData.price || 0,
           thumbnailUrl: courseData.thumbnailUrl || '',
-        };
-        
-        console.log('Resetting form with values:', initialValues);
-        form.reset(initialValues);
-        
-        // Cố gắng set lại một lần nữa sau khi reset để chắc chắn
-        if (courseData.category?.id) {
-          form.setValue('categoryId', courseData.category.id);
-        }
+        });
       } catch (error) {
         console.error('Failed to fetch data', error);
       }
     };
     fetchData();
-  }, [courseId, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseId]);
 
   const onThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
