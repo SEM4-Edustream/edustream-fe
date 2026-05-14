@@ -45,15 +45,16 @@ export default function AuthenticatePage() {
 
           // Get the INTERNAL JWT from backend (HS512 format our backend understands)
           const internalToken = response.data?.result?.token;
+          const userId = response.data?.result?.userId;
           const isNewUser = response.data?.result?.isNewUser;
           
           if (internalToken) {
-            console.log('Got internal JWT from backend. isNewUser:', isNewUser);
+            console.log('Got internal JWT from backend. userId:', userId, 'isNewUser:', isNewUser);
             
             // Use AuthContext.login() so the entire app state updates immediately
             // This avoids needing a page reload for the profile icon to appear
             await login(internalToken, {
-              id: '',
+              id: userId || '',
               username: user.email?.split('@')[0] || '',
               role: 'STUDENT',
               email: user.email || '',

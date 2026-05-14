@@ -1,17 +1,47 @@
 "use client";
 
-import { Suspense } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import axiosInstance from '@/lib/axios';
+import { useState } from 'react';
 
 function SuccessLogic() {
   const t = useTranslations('Payment');
   const router = useRouter();
   const searchParams = useSearchParams();
   const courseId = searchParams.get('courseId');
+  const orderCode = searchParams.get('orderCode');
+  const [isVerifying, setIsVerifying] = useState(!!orderCode);
+
+  useEffect(() => {
+    if (orderCode) {
+      const verifyPayment = async () => {
+        try {
+          await axiosInstance.post(`/student/payments/verify/${orderCode}`);
+          console.log("Payment verified successfully via proactive check");
+        } catch (err) {
+          console.error("Proactive verification failed", err);
+        } finally {
+          setIsVerifying(false);
+        }
+      };
+      verifyPayment();
+    }
+  }, [orderCode]);
+
+  if (isVerifying) {
+    return (
+      <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 md:p-12 text-center max-w-lg w-full">
+        <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mx-auto mb-6" />
+        <h1 className="text-2xl font-bold text-slate-900 mb-4">Verifying your payment...</h1>
+        <p className="text-slate-600 mb-8">Please wait while we confirm your transaction with PayOS.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 md:p-12 text-center max-w-lg w-full">
