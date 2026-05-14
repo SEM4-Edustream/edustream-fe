@@ -6,14 +6,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Upload, ImageIcon, Loader2 } from 'lucide-react';
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
   FormMessage,
-  FormDescription 
+  FormDescription
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -71,11 +71,11 @@ export default function CourseBasicsPage() {
           courseService.getCourseDetail(courseId),
           courseService.getCategories(),
         ]);
-        
+
         setCourse(courseData);
         setCategories(catData);
         setThumbnailPreview(courseData.thumbnailUrl || null);
-        
+
         form.reset({
           title: courseData.title || '',
           subtitle: courseData.subtitle || '',
@@ -105,54 +105,54 @@ export default function CourseBasicsPage() {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-        toast.error('Please upload an image file');
-        return;
+      toast.error('Please upload an image file');
+      return;
     }
 
     try {
-        setIsUploading(true);
-        toast.info('Uploading thumbnail to cloud...');
-        
-        const ext = file.name.split('.').pop();
-        const randomName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
+      setIsUploading(true);
+      toast.info('Uploading thumbnail to cloud...');
 
-        // Get pre-signed URL from backend using VIDEO bucket for public images
-        const presigned = await fileService.getPresignedUrl(randomName, file.type, "VIDEO");
+      const ext = file.name.split('.').pop();
+      const randomName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
 
-        // Upload directly to S3
-        await axios.put(presigned.uploadUrl, file, {
-          headers: { 'Content-Type': file.type }
-        });
-        
-        // Cập nhật ngầm ngay vào DB - toast.success chỉ hiện SAU KHI updateCourse thành công
-        await courseService.updateCourse(courseId, {
-          title: form.getValues().title || 'Untitled Course',
-          subtitle: form.getValues().subtitle || undefined,
-          categoryId: form.getValues().categoryId || undefined,
-          price: form.getValues().price,
-          level: form.getValues().level || undefined,
-          description: form.getValues().description,
-          thumbnailUrl: presigned.fileUrl,
-        });
-        
-        // Chỉ set preview và hiện success SAU KHI toàn bộ luồng hoàn thành
-        setThumbnailPreview(presigned.fileUrl);
-        window.dispatchEvent(new Event('course-updated'));
-        toast.success('Thumbnail uploaded successfully');
-        
+      // Get pre-signed URL from backend using VIDEO bucket for public images
+      const presigned = await fileService.getPresignedUrl(randomName, file.type, "VIDEO");
+
+      // Upload directly to S3
+      await axios.put(presigned.uploadUrl, file, {
+        headers: { 'Content-Type': file.type }
+      });
+
+      // Cập nhật ngầm ngay vào DB - toast.success chỉ hiện SAU KHI updateCourse thành công
+      await courseService.updateCourse(courseId, {
+        title: form.getValues().title || 'Untitled Course',
+        subtitle: form.getValues().subtitle || undefined,
+        categoryId: form.getValues().categoryId || undefined,
+        price: form.getValues().price,
+        level: form.getValues().level || undefined,
+        description: form.getValues().description,
+        thumbnailUrl: presigned.fileUrl,
+      });
+
+      // Chỉ set preview và hiện success SAU KHI toàn bộ luồng hoàn thành
+      setThumbnailPreview(presigned.fileUrl);
+      window.dispatchEvent(new Event('course-updated'));
+      toast.success('Thumbnail uploaded successfully');
+
     } catch (error: any) {
-        console.error(error);
-        const isS3Error = error?.message === 'Network Error' && !error?.response;
-        const isLocked = error.response?.status === 400 && error.response?.data?.message?.includes('Action not allowed');
-        if (isS3Error) {
-          toast.error('Upload failed: S3 không cho phép kết nối. Kiểm tra CORS bucket.');
-        } else if (isLocked) {
-          toast.error("Khóa học đã khóa, không thể đổi ảnh");
-        } else {
-          toast.error('Failed to upload image. Vui lòng thử lại.');
-        }
+      console.error(error);
+      const isS3Error = error?.message === 'Network Error' && !error?.response;
+      const isLocked = error.response?.status === 400 && error.response?.data?.message?.includes('Action not allowed');
+      if (isS3Error) {
+        toast.error('Upload failed: S3 không cho phép kết nối. Kiểm tra CORS bucket.');
+      } else if (isLocked) {
+        toast.error("Khóa học đã khóa, không thể đổi ảnh");
+      } else {
+        toast.error('Failed to upload image. Vui lòng thử lại.');
+      }
     } finally {
-        setIsUploading(false);
+      setIsUploading(false);
     }
   };
 
@@ -170,9 +170,9 @@ export default function CourseBasicsPage() {
       console.error(error);
       const isLocked = error.response?.status === 400 && error.response?.data?.message?.includes('Action not allowed');
       if (isLocked) {
-         toast.error("Khóa học đã khóa (đang chờ duyệt hoặc đã xuất bản), vui lòng liên hệ Admin để thay đổi.");
+        toast.error("Khóa học đã khóa (đang chờ duyệt hoặc đã xuất bản), vui lòng liên hệ Admin để thay đổi.");
       } else {
-         toast.error('Failed to save settings');
+        toast.error('Failed to save settings');
       }
     } finally {
       setIsSaving(false);
@@ -206,7 +206,7 @@ export default function CourseBasicsPage() {
           </section>
 
           <section className="space-y-6">
-            <h3 className="text-lg font-bold text-[#1c1d1f]">Course Description</h3>
+            <h3 className="text-lg font-bold text-[#1c1d1f]">Course Subtitle</h3>
             <FormField
               control={form.control}
               name="subtitle"
@@ -224,17 +224,17 @@ export default function CourseBasicsPage() {
                 </FormItem>
               )}
             />
-
+            <h3 className="text-lg font-bold text-[#1c1d1f]">Course Description</h3>
             <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea 
-                      {...field} 
-                      className="min-h-[200px] border-slate-300 focus-visible:ring-[#1c1d1f]" 
-                      placeholder="Insert your course description" 
+                    <Textarea
+                      {...field}
+                      className="min-h-[200px] border-slate-300 focus-visible:ring-[#1c1d1f]"
+                      placeholder="Insert your course description"
                     />
                   </FormControl>
                   <FormDescription>Describe what students will learn and why they should take your course.</FormDescription>
@@ -245,132 +245,132 @@ export default function CourseBasicsPage() {
           </section>
 
           <section className="grid lg:grid-cols-2 gap-12 pb-10 border-b border-slate-100">
-             <div className="space-y-8">
-                <h3 className="text-lg font-bold text-[#1c1d1f]">Basic Info</h3>
-                
-                <div className="space-y-6">
-                   <FormField
-                     control={form.control}
-                     name="categoryId"
-                     render={({ field }) => (
-                       <FormItem>
-                         <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Category</FormLabel>
-                         <Select 
-                           key={`cat-${categories.length}`}
-                           onValueChange={field.onChange} 
-                           value={field.value || undefined}
-                         >
-                           <FormControl>
-                             <SelectTrigger className="h-12 border-slate-300 focus:ring-[#1c1d1f]">
-                               <SelectValue placeholder="Select a category" />
-                             </SelectTrigger>
-                           </FormControl>
-                           <SelectContent>
-                             {categories.map((cat) => (
-                               <SelectItem key={cat.id} value={cat.id}>
-                                 {cat.name}
-                               </SelectItem>
-                             ))}
-                           </SelectContent>
-                         </Select>
-                         <FormMessage />
-                       </FormItem>
-                     )}
-                   />
+            <div className="space-y-8">
+              <h3 className="text-lg font-bold text-[#1c1d1f]">Basic Info</h3>
 
-                   <FormField
-                     control={form.control}
-                     name="level"
-                     render={({ field }) => (
-                       <FormItem>
-                         <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Target Student Level</FormLabel>
-                         <Select 
-                           key={categories.length}
-                           onValueChange={field.onChange} 
-                           value={field.value || undefined}
-                         >
-                           <FormControl>
-                             <SelectTrigger className="h-12 border-slate-300 focus:ring-[#1c1d1f]">
-                               <SelectValue placeholder="Select a level" />
-                             </SelectTrigger>
-                           </FormControl>
-                           <SelectContent>
-                             <SelectItem value="BEGINNER">Beginner</SelectItem>
-                             <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
-                             <SelectItem value="EXPERT">Expert</SelectItem>
-                             <SelectItem value="ALL_LEVELS">All Levels</SelectItem>
-                           </SelectContent>
-                         </Select>
-                         <FormMessage />
-                       </FormItem>
-                     )}
-                   />
+              <div className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="categoryId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Category</FormLabel>
+                      <Select
+                        key={`cat-${categories.length}`}
+                        onValueChange={field.onChange}
+                        value={field.value || undefined}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="h-12 border-slate-300 focus:ring-[#1c1d1f]">
+                            <SelectValue placeholder="Select a category" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {categories.map((cat) => (
+                            <SelectItem key={cat.id} value={cat.id}>
+                              {cat.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                   <FormField
-                     control={form.control}
-                     name="price"
-                     render={({ field }) => (
-                       <FormItem>
-                         <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Tier Price (USD)</FormLabel>
-                         <FormControl>
-                           <div className="relative">
-                              <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400">$</span>
-                              <Input type="number" {...field} className="h-12 border-slate-300 pl-8 focus-visible:ring-[#1c1d1f]" />
-                           </div>
-                         </FormControl>
-                         <FormMessage />
-                       </FormItem>
-                     )}
-                   />
-                </div>
-             </div>
+                <FormField
+                  control={form.control}
+                  name="level"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Target Student Level</FormLabel>
+                      <Select
+                        key={categories.length}
+                        onValueChange={field.onChange}
+                        value={field.value || undefined}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="h-12 border-slate-300 focus:ring-[#1c1d1f]">
+                            <SelectValue placeholder="Select a level" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="BEGINNER">Beginner</SelectItem>
+                          <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
+                          <SelectItem value="EXPERT">Expert</SelectItem>
+                          <SelectItem value="ALL_LEVELS">All Levels</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-             <div className="space-y-6">
-                <h3 className="text-lg font-bold text-[#1c1d1f]">Course Image</h3>
-                <div className="border border-slate-200 p-1 bg-white shadow-sm relative group aspect-video flex items-center justify-center overflow-hidden rounded-sm">
-                   {thumbnailPreview ? (
-                      <img src={thumbnailPreview} alt="Preview" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                   ) : (
-                      <div className="bg-slate-50 w-full h-full flex flex-col items-center justify-center gap-3">
-                        <ImageIcon className="w-12 h-12 text-slate-200" />
-                        <span className="text-xs font-medium text-slate-400">No image uploaded</span>
-                      </div>
-                   )}
-                   <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer backdrop-blur-[2px]">
-                      <div className="bg-white text-[#1c1d1f] px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                        {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                        {isUploading ? 'Uploading...' : 'Update Image'}
-                      </div>
-                      <input type="file" className="hidden" accept="image/*" onChange={onThumbnailChange} disabled={isUploading} />
-                   </label>
-                </div>
-             </div>
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Tier Price (USD)</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400">$</span>
+                          <Input type="number" {...field} className="h-12 border-slate-300 pl-8 focus-visible:ring-[#1c1d1f]" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <h3 className="text-lg font-bold text-[#1c1d1f]">Course Image</h3>
+              <div className="border border-slate-200 p-1 bg-white shadow-sm relative group aspect-video flex items-center justify-center overflow-hidden rounded-sm">
+                {thumbnailPreview ? (
+                  <img src={thumbnailPreview} alt="Preview" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                ) : (
+                  <div className="bg-slate-50 w-full h-full flex flex-col items-center justify-center gap-3">
+                    <ImageIcon className="w-12 h-12 text-slate-200" />
+                    <span className="text-xs font-medium text-slate-400">No image uploaded</span>
+                  </div>
+                )}
+                <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer backdrop-blur-[2px]">
+                  <div className="bg-white text-[#1c1d1f] px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                    {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                    {isUploading ? 'Uploading...' : 'Update Image'}
+                  </div>
+                  <input type="file" className="hidden" accept="image/*" onChange={onThumbnailChange} disabled={isUploading} />
+                </label>
+              </div>
+            </div>
           </section>
 
           {/* Fixed Footer without Dashboard overlap */}
           <footer className="fixed bottom-0 left-0 lg:left-64 right-0 h-20 bg-white border-t border-slate-200 z-40">
-             <div className="max-w-4xl mx-auto h-full px-8 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                   <div className={cn(
-                     "w-2 h-2 rounded-full animate-pulse",
-                     isSaving ? "bg-amber-400" : "bg-slate-300"
-                   )} />
-                   <span className="text-sm font-bold text-slate-500">
-                      {isSaving ? 'Saving changes...' : 'All changes saved'}
-                   </span>
-                </div>
-                <Button 
-                  type="submit" 
-                  disabled={isSaving}
-                  className="bg-[#1c1d1f] hover:bg-slate-800 text-white font-bold h-12 px-10 rounded-none transition-all shadow-lg active:scale-[0.98]"
-                >
-                   {isSaving ? (
-                     <span className="flex items-center gap-2">
-                        <Loader2 className="w-4 h-4 animate-spin" /> Saving...
-                     </span>
-                   ) : 'Save Updates'}
-                </Button>
-             </div>
+            <div className="max-w-4xl mx-auto h-full px-8 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={cn(
+                  "w-2 h-2 rounded-full animate-pulse",
+                  isSaving ? "bg-amber-400" : "bg-slate-300"
+                )} />
+                <span className="text-sm font-bold text-slate-500">
+                  {isSaving ? 'Saving changes...' : 'All changes saved'}
+                </span>
+              </div>
+              <Button
+                type="submit"
+                disabled={isSaving}
+                className="bg-[#1c1d1f] hover:bg-slate-800 text-white font-bold h-12 px-10 rounded-none transition-all shadow-lg active:scale-[0.98]"
+              >
+                {isSaving ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" /> Saving...
+                  </span>
+                ) : 'Save Updates'}
+              </Button>
+            </div>
           </footer>
         </form>
       </Form>

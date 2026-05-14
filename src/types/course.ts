@@ -44,6 +44,8 @@ export interface CourseSummary {
   averageRating?: number;
   reviewCount?: number;
   modules?: CourseModuleResponse[];
+  welcomeMessage?: string;
+  congratulationsMessage?: string;
 }
 
 export type CourseResponse = CourseSummary;
