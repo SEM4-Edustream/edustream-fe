@@ -36,6 +36,7 @@ const basicsSchema = z.object({
   description: z.string().max(2000, 'Description is too long').optional().or(z.literal('')),
   categoryId: z.string().min(1, 'Category is required'),
   price: z.coerce.number().min(0, 'Price must be positive'),
+  thumbnailUrl: z.string().optional().or(z.literal('')),
 });
 
 type BasicsFormValues = z.infer<typeof basicsSchema>;
@@ -56,6 +57,7 @@ export default function CourseBasicsPage() {
       description: '',
       categoryId: '',
       price: 0,
+      thumbnailUrl: '',
     },
   });
 
@@ -79,6 +81,7 @@ export default function CourseBasicsPage() {
           description: courseData.description || '',
           categoryId: courseData.category?.id || '',
           price: courseData.price || 0,
+          thumbnailUrl: courseData.thumbnailUrl || '',
         });
       } catch (error) {
         console.error('Failed to fetch data', error);
@@ -122,6 +125,7 @@ export default function CourseBasicsPage() {
         }
         
         setThumbnailPreview(presigned.fileUrl);
+        form.setValue('thumbnailUrl', presigned.fileUrl);
         toast.success('Thumbnail uploaded successfully');
     } catch (error: any) {
         console.error("Upload error details:", error);
@@ -133,11 +137,9 @@ export default function CourseBasicsPage() {
 
   const onSubmit = async (values: BasicsFormValues) => {
     try {
+      console.log("Submitting course updates:", values);
       setIsSaving(true);
-      await courseService.updateCourse(courseId, {
-        ...values,
-        thumbnailUrl: thumbnailPreview || undefined, // Use the preview as mock if original file wasn't persistent
-      });
+      await courseService.updateCourse(courseId, values);
       toast.success('Settings saved successfully');
     } catch (error: any) {
       console.error("Save error:", error);
@@ -258,7 +260,9 @@ export default function CourseBasicsPage() {
                         <span className="text-xs font-medium text-slate-400">No image uploaded</span>
                       </div>
                    )}
-                   <label className={cn(
+                   <label 
+                     onClick={(e) => e.stopPropagation()}
+                     className={cn(
                        "absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center backdrop-blur-[2px]",
                        isLocked ? "cursor-not-allowed opacity-40 group-hover:opacity-40" : "cursor-pointer"
                     )}>
