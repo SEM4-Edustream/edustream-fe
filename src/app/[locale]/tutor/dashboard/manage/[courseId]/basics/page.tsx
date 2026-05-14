@@ -47,6 +47,7 @@ export default function CourseBasicsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const isLocked = course?.status && course.status !== 'DRAFT';
 
   const form = useForm<BasicsFormValues>({
     resolver: zodResolver(basicsSchema) as any,
@@ -257,13 +258,16 @@ export default function CourseBasicsPage() {
                         <span className="text-xs font-medium text-slate-400">No image uploaded</span>
                       </div>
                    )}
-                   <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer backdrop-blur-[2px]">
-                      <div className="bg-white text-[#1c1d1f] px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                        {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                        {isUploading ? 'Uploading...' : 'Update Image'}
-                      </div>
-                      <input type="file" className="hidden" accept="image/*" onChange={onThumbnailChange} disabled={isUploading} />
-                   </label>
+                   <label className={cn(
+                       "absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center backdrop-blur-[2px]",
+                       isLocked ? "cursor-not-allowed opacity-40 group-hover:opacity-40" : "cursor-pointer"
+                    )}>
+                       <div className="bg-white text-[#1c1d1f] px-6 py-2.5 text-sm font-bold flex items-center gap-2 shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                         {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                         {isUploading ? 'Uploading...' : 'Update Image'}
+                       </div>
+                       {!isLocked && <input type="file" className="hidden" accept="image/*" onChange={onThumbnailChange} disabled={isUploading} />}
+                    </label>
                 </div>
                 <div className="bg-slate-50 p-4 border-l-4 border-slate-200">
                    <p className="text-xs text-slate-600 leading-relaxed italic">
@@ -288,8 +292,8 @@ export default function CourseBasicsPage() {
                 </div>
                 <Button 
                   type="submit" 
-                  disabled={isSaving}
-                  className="bg-[#1c1d1f] hover:bg-slate-800 text-white font-bold h-12 px-10 rounded-none transition-all shadow-lg active:scale-[0.98]"
+                  disabled={isSaving || isLocked}
+                  className="bg-[#1c1d1f] hover:bg-slate-800 text-white font-bold h-12 px-10 rounded-none transition-all shadow-lg active:scale-[0.98] disabled:bg-slate-300 disabled:cursor-not-allowed"
                 >
                    {isSaving ? (
                      <span className="flex items-center gap-2">
