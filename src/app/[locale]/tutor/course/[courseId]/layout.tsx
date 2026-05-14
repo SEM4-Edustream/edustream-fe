@@ -75,7 +75,18 @@ export default function CourseEditorLayout({ children }: { children: React.React
                   {course?.status || 'Draft'}
                </span>
                <span className="text-[10px] text-slate-400 font-medium italic">
-                  0min of video content uploaded
+                  {(() => {
+                    const totalSeconds = course?.modules?.reduce((acc, module) => {
+                      return acc + (module.lessons?.reduce((lAcc, lesson) => lAcc + (lesson.durationSeconds || 0), 0) || 0);
+                    }, 0) || 0;
+                    
+                    if (totalSeconds === 0) return "0min of video content uploaded";
+                    
+                    const hours = Math.floor(totalSeconds / 3600);
+                    const minutes = Math.floor((totalSeconds % 3600) / 60);
+                    
+                    return `${hours > 0 ? `${hours}h ` : ""}${minutes}min of video content uploaded`;
+                  })()}
                </span>
             </div>
           </div>

@@ -115,7 +115,19 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
       // 1. Get pre-signed URL
       const presigned = await fileService.getPresignedUrl(randomName, file.type, "VIDEO");
 
-      // 2. Upload cleanly via raw Axios to track progress
+      // 2. Extract Duration from file
+      const videoElement = document.createElement('video');
+      videoElement.preload = 'metadata';
+      const durationPromise = new Promise<number>((resolve) => {
+        videoElement.onloadedmetadata = () => {
+          window.URL.revokeObjectURL(videoElement.src);
+          resolve(Math.round(videoElement.duration));
+        };
+      });
+      videoElement.src = URL.createObjectURL(file);
+      const duration = await durationPromise;
+
+      // 3. Upload cleanly via raw Axios to track progress
       await axios.put(presigned.uploadUrl, file, {
         headers: { 'Content-Type': file.type },
         onUploadProgress: (progressEvent) => {
@@ -126,14 +138,14 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
         }
       });
 
-      // 3. Update Lesson Backend with the final fileUrl
+      // 4. Update Lesson Backend with the final fileUrl and duration
       await courseService.updateLesson(moduleId, lesson.id, {
         title: lesson.title,
         type: 'VIDEO',
         videoUrl: presigned.fileUrl,
         content: lesson.content,
         orderIndex: lesson.orderIndex,
-        durationSeconds: lesson.durationSeconds // optional, could parse from video if needed
+        durationSeconds: duration
       });
 
       window.dispatchEvent(new Event('course-updated'));
@@ -186,6 +198,12 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
               {lesson.type === 'QUIZ' ? 'Quiz' : lesson.type === 'ASSIGNMENT' ? 'Assignment' : 'Lecture'} {index + 1}: {lesson.title}
             </span>
             
+            {lesson.type === 'VIDEO' && lesson.durationSeconds ? (
+              <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded ml-2">
+                {Math.floor(lesson.durationSeconds / 60)}:{(lesson.durationSeconds % 60).toString().padStart(2, '0')}
+              </span>
+            ) : null}
+
             {hasContent && !isExpanded && (
                <CheckCircle2 className="w-4 h-4 text-green-600 ml-2 animate-in zoom-in" />
             )}
