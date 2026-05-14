@@ -89,7 +89,8 @@ export default function CourseBasicsPage() {
       }
     };
     fetchData();
-  }, [courseId, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseId]);
 
   const onThumbnailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

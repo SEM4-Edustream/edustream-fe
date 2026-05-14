@@ -155,14 +155,6 @@ export default function CourseBasicsPage() {
         <p className="text-slate-500">Your course landing page is crucial to your success on EduStream. If it's done right, it can also help you gain visibility in search engines like Google.</p>
       </div>
 
-      {/* DEBUG INFO - Will be removed later */}
-      <div className="bg-red-50 text-red-800 p-4 rounded-md border border-red-200 text-xs font-mono whitespace-pre-wrap break-all">
-        <strong>DEBUG INFO (Please send this back to AI):</strong><br/>
-        - courseData.category: {JSON.stringify(course?.category)}<br/>
-        - categories length: {categories.length}<br/>
-        - form categoryId value: {form.watch('categoryId')}<br/>
-      </div>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
           <section className="space-y-6">
