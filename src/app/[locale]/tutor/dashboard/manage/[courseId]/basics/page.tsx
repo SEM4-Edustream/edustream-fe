@@ -105,16 +105,26 @@ export default function CourseBasicsPage() {
         // Get pre-signed URL from backend using VIDEO bucket for public images
         const presigned = await fileService.getPresignedUrl(randomName, file.type, "VIDEO");
 
-        // Upload directly to S3
-        await axios.put(presigned.uploadUrl, file, {
-          headers: { 'Content-Type': file.type }
+        // Upload directly to S3 using fetch instead of axios to avoid unwanted header injections
+        const response = await fetch(presigned.uploadUrl, {
+            method: 'PUT',
+            body: file,
+            headers: {
+                'Content-Type': file.type,
+            },
         });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("S3 Upload Failed:", response.status, errorText);
+            throw new Error(`S3 Upload Failed: ${response.status} - ${errorText}`);
+        }
         
         setThumbnailPreview(presigned.fileUrl);
         toast.success('Thumbnail uploaded successfully');
     } catch (error: any) {
-        console.error(error);
-        toast.error('Failed to upload image. Vui lòng thử lại.');
+        console.error("Upload error details:", error);
+        toast.error('Failed to upload image. Vui lòng kiểm tra console.');
     } finally {
         setIsUploading(false);
     }

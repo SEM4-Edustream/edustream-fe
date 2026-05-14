@@ -19,12 +19,20 @@ const fileService = {
 
   // Step 2: Upload file directly to S3
   uploadFileToS3: async (uploadUrl: string, file: File) => {
-    // Use raw axios for S3 to avoid injecting Bearer token which S3 will reject
-    const response = await axios.put(uploadUrl, file, {
+    // Use fetch for S3 to avoid injecting Bearer token or unwanted default headers from Axios
+    const response = await fetch(uploadUrl, {
+      method: 'PUT',
+      body: file,
       headers: {
         "Content-Type": file.type,
       },
     });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`S3 Upload Failed: ${response.status} - ${errorText}`);
+    }
+
     return response;
   }
 };
