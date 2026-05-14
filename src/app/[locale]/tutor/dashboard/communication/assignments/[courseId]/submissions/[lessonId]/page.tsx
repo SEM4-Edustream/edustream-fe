@@ -26,7 +26,7 @@ export default function AssignmentGradingPage() {
     try {
       setLoading(true);
       const res: any = await axiosInstance.get(`/api/assignments/${lessonId}/submissions?page=0&size=100`);
-      setSubmissions(res.result.content || []);
+      setSubmissions(res.content || []);
     } catch (error) {
       toast.error('Failed to load submissions');
     } finally {
@@ -50,8 +50,8 @@ export default function AssignmentGradingPage() {
       toast.success('Graded successfully!');
       
       // Update locally
-      setSubmissions(prev => prev.map(s => s.id === selectedSub.id ? res.result : s));
-      setSelectedSub(res.result);
+      setSubmissions(prev => prev.map(s => s.id === selectedSub.id ? res : s));
+      setSelectedSub(res);
     } catch (error) {
       toast.error('Failed to save grade');
     } finally {

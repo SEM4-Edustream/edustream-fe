@@ -26,7 +26,7 @@ export default function QuizView({ lessonId, onComplete }: QuizViewProps) {
       setResult(null);
       setAnswers({});
       const res: any = await axiosInstance.get(`/api/quizzes/${lessonId}/questions`);
-      setQuestions(res.result || []);
+      setQuestions(res || []);
     } catch (error) {
       console.error(error);
       toast.error('Failed to load quiz');
@@ -56,13 +56,13 @@ export default function QuizView({ lessonId, onComplete }: QuizViewProps) {
     try {
       setSubmitting(true);
       const res: any = await axiosInstance.post(`/api/quizzes/${lessonId}/submit`, { answers });
-      setResult(res.result);
+      setResult(res);
       
-      if (res.result.passed) {
-        toast.success(`You passed with a score of ${res.result.score}%!`);
+      if (res.passed) {
+        toast.success(`You passed with a score of ${res.score}%!`);
         onComplete();
       } else {
-        toast.error(`You failed with a score of ${res.result.score}%. Please try again.`);
+        toast.error(`You failed with a score of ${res.score}%. Please try again.`);
       }
     } catch (error) {
       console.error(error);
