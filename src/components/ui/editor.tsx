@@ -4,6 +4,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
+import { useEffect } from 'react';
 import { 
   Bold, 
   Italic, 
@@ -142,7 +143,6 @@ export default function Editor({ value, onChange, placeholder, disabled }: Edito
 
   // Keep content in sync if value changes externally (though onUpdate handles most cases)
   // We use a useEffect but only update if the content is truly different to avoid cursor jumps
-  import { useEffect } from 'react';
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
       editor.commands.setContent(value);
