@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import Editor from '@/components/ui/editor';
 import {
   Select,
   SelectContent,
@@ -51,6 +52,7 @@ export default function CourseBasicsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const isLocked = course?.status && course.status !== 'DRAFT';
 
   const form = useForm<BasicsFormValues>({
     resolver: zodResolver(basicsSchema) as any,
@@ -231,10 +233,11 @@ export default function CourseBasicsPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
-                      {...field}
-                      className="min-h-[200px] border-slate-300 focus-visible:ring-[#1c1d1f]"
+                    <Editor 
+                      value={field.value || ''} 
+                      onChange={field.onChange}
                       placeholder="Insert your course description"
+                      disabled={isLocked}
                     />
                   </FormControl>
                   <FormDescription>Describe what students will learn and why they should take your course.</FormDescription>
@@ -311,7 +314,7 @@ export default function CourseBasicsPage() {
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Tier Price (USD)</FormLabel>
+                      <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Tier Price (VND)</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400">$</span>

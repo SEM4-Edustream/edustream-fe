@@ -15,6 +15,7 @@ import {
   FormDescription 
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
+import Editor from '@/components/ui/editor';
 import { Button } from '@/components/ui/button';
 import { Loader2, Mail, PartyPopper } from 'lucide-react';
 import { courseService, CourseSummary } from '@/services/courseService';
@@ -107,9 +108,9 @@ export default function CourseMessagesPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea 
-                      {...field} 
-                      className="min-h-[150px] border-slate-300 focus-visible:ring-[#1c1d1f] rounded-none resize-none" 
+                    <Editor 
+                      value={field.value || ''} 
+                      onChange={field.onChange}
                       placeholder="e.g. Welcome to the course! I'm excited to have you here..." 
                       disabled={isLocked}
                     />
@@ -137,9 +138,9 @@ export default function CourseMessagesPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea 
-                      {...field} 
-                      className="min-h-[150px] border-slate-300 focus-visible:ring-[#1c1d1f] rounded-none resize-none" 
+                    <Editor 
+                      value={field.value || ''} 
+                      onChange={field.onChange}
                       placeholder="e.g. Congratulations on finishing the course! You've made great progress..." 
                       disabled={isLocked}
                     />
