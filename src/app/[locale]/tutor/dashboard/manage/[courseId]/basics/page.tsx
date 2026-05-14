@@ -75,16 +75,24 @@ export default function CourseBasicsPage() {
         
         console.log('Loaded course data:', courseData);
         console.log('Course category from backend:', courseData.category);
-        console.log('Categories list length:', catData.length);
-        console.log('Is course category in list?', catData.some(c => c.id === courseData.category?.id));
+        console.log('Category ID to set:', courseData.category?.id);
+        console.log('Categories list loaded:', catData.map(c => ({id: c.id, name: c.name})));
         
-        form.reset({
+        const initialValues = {
           title: courseData.title || '',
           description: courseData.description || '',
           categoryId: courseData.category?.id || '',
           price: courseData.price || 0,
           thumbnailUrl: courseData.thumbnailUrl || '',
-        });
+        };
+        
+        console.log('Resetting form with values:', initialValues);
+        form.reset(initialValues);
+        
+        // Cố gắng set lại một lần nữa sau khi reset để chắc chắn
+        if (courseData.category?.id) {
+          form.setValue('categoryId', courseData.category.id);
+        }
       } catch (error) {
         console.error('Failed to fetch data', error);
       }
