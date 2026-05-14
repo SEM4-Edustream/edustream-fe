@@ -62,8 +62,14 @@ export default function CourseMessagesPage() {
     try {
       setIsSaving(true);
       await courseService.updateCourse(courseId, {
+        title: course?.title || '',
+        subtitle: course?.subtitle,
+        description: course?.description,
+        thumbnailUrl: course?.thumbnailUrl,
+        price: course?.price,
+        level: course?.level as any,
+        categoryId: course?.category?.id,
         ...values,
-        title: course?.title || '', // Keep existing title
       });
       toast.success('Course messages updated successfully');
       window.dispatchEvent(new Event('course-updated'));
