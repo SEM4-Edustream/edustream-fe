@@ -110,24 +110,13 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
       setUploadProgress(0);
 
       const ext = file.name.split('.').pop();
-      const randomName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
+      // Gắn lessonId vào đầu tên file để Lambda có thể nhận diện được
+      const randomName = `${lesson.id}_${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
 
       // 1. Get pre-signed URL
       const presigned = await fileService.getPresignedUrl(randomName, file.type, "VIDEO");
 
-      // 2. Extract Duration from file
-      const videoElement = document.createElement('video');
-      videoElement.preload = 'metadata';
-      const durationPromise = new Promise<number>((resolve) => {
-        videoElement.onloadedmetadata = () => {
-          window.URL.revokeObjectURL(videoElement.src);
-          resolve(Math.round(videoElement.duration));
-        };
-      });
-      videoElement.src = URL.createObjectURL(file);
-      const duration = await durationPromise;
-
-      // 3. Upload cleanly via raw Axios to track progress
+      // 2. Upload cleanly via raw Axios to track progress
       await axios.put(presigned.uploadUrl, file, {
         headers: { 'Content-Type': file.type },
         onUploadProgress: (progressEvent) => {
@@ -138,14 +127,14 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
         }
       });
 
-      // 4. Update Lesson Backend with the final fileUrl and duration
+      // 3. Update Lesson Backend with the final fileUrl (duration will be updated asynchronously by Lambda)
       await courseService.updateLesson(moduleId, lesson.id, {
         title: lesson.title,
         type: 'VIDEO',
         videoUrl: presigned.fileUrl,
         content: lesson.content,
         orderIndex: lesson.orderIndex,
-        durationSeconds: duration
+        durationSeconds: lesson.durationSeconds // Giữ nguyên duration cũ, chờ Lambda cập nhật
       });
 
       window.dispatchEvent(new Event('course-updated'));

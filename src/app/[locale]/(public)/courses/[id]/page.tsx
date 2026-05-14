@@ -61,12 +61,12 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
               </div>
             )}
 
-            {/* 3. Description */}
             <div className="space-y-6 pt-10 border-t border-slate-100">
               <h2 className="text-2xl font-bold text-slate-900 uppercase tracking-tight">Description</h2>
-               <div className="prose prose-slate max-w-none text-slate-700 font-normal leading-loose whitespace-pre-wrap">
-                {course.description || 'No description available for this course yet.'}
-               </div>
+               <div 
+                 className="prose prose-slate max-w-none text-slate-700 font-normal leading-loose"
+                 dangerouslySetInnerHTML={{ __html: course.description || 'No description available for this course yet.' }}
+               />
             </div>
 
             {/* 4. Target Audience */}
