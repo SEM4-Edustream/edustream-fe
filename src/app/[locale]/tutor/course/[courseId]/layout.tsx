@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { ChevronLeft, Settings, Eye, Loader2 } from 'lucide-react';
@@ -15,6 +15,23 @@ export default function CourseEditorLayout({ children }: { children: React.React
   const router = useRouter();
   const [course, setCourse] = useState<CourseSummary | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const totalVideoDuration = useMemo(() => {
+    if (!course?.modules) return 0;
+    return course.modules.reduce((total, module) => {
+      const moduleDuration = module.lessons?.reduce((mTotal, lesson) => {
+        return mTotal + (lesson.durationSeconds || 0);
+      }, 0) || 0;
+      return total + moduleDuration;
+    }, 0);
+  }, [course]);
+
+  const formatTotalDuration = (totalSeconds: number) => {
+    if (totalSeconds === 0) return "0min";
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    return `${hours > 0 ? `${hours}h ` : ""}${minutes}min`;
+  };
 
   useEffect(() => {
     if (!isAuthLoading && !isAuthenticated) {
@@ -74,19 +91,8 @@ export default function CourseEditorLayout({ children }: { children: React.React
                <span className="bg-slate-700 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-tight">
                   {course?.status || 'Draft'}
                </span>
-               <span className="text-[10px] text-slate-400 font-medium italic">
-                  {(() => {
-                    const totalSeconds = course?.modules?.reduce((acc, module) => {
-                      return acc + (module.lessons?.reduce((lAcc, lesson) => lAcc + (lesson.durationSeconds || 0), 0) || 0);
-                    }, 0) || 0;
-                    
-                    if (totalSeconds === 0) return "0min of video content uploaded";
-                    
-                    const hours = Math.floor(totalSeconds / 3600);
-                    const minutes = Math.floor((totalSeconds % 3600) / 60);
-                    
-                    return `${hours > 0 ? `${hours}h ` : ""}${minutes}min of video content uploaded`;
-                  })()}
+               <span className="text-[10px] text-slate-300 font-medium italic">
+                  {isLoading ? "Calculating..." : `${formatTotalDuration(totalVideoDuration)} of video content uploaded`}
                </span>
             </div>
           </div>
