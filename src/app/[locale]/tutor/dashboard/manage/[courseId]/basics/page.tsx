@@ -211,6 +211,7 @@ export default function CourseBasicsPage() {
                        <FormItem>
                          <FormLabel className="font-bold text-xs uppercase tracking-wider text-slate-500">Category</FormLabel>
                          <Select 
+                           key={categories.length}
                            onValueChange={field.onChange} 
                            value={field.value || undefined}
                          >
