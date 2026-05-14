@@ -139,7 +139,9 @@ export default function CourseBasicsPage() {
       });
       toast.success('Settings saved successfully');
     } catch (error: any) {
-      toast.error('Failed to save settings');
+      console.error("Save error:", error);
+      const errorMessage = error.response?.data?.message || 'Failed to save settings. Vui lòng kiểm tra lại thông tin.';
+      toast.error(errorMessage);
     } finally {
       setIsSaving(false);
     }
