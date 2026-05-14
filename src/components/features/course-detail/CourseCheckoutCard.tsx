@@ -163,9 +163,6 @@ export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) 
             <span className="text-slate-400 line-through font-bold text-sm">
                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format((course.price || 0) * 1.5)}
             </span>
-            <span className="text-emerald-600 font-bold text-xs uppercase tracking-tighter bg-emerald-50 px-2 py-0.5 rounded">
-               33% off
-            </span>
           </div>
         </div>
 
@@ -217,11 +214,6 @@ export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) 
           )}
         </div>
 
-        <div className="text-center">
-           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.1em] leading-none border-b-2 border-slate-100 pb-1">
-              30-Day Money-Back Guarantee
-           </span>
-        </div>
 
         {/* Course Features List */}
         <div className="space-y-4 pt-2">
@@ -241,7 +233,6 @@ export default function CourseCheckoutCard({ course }: CourseCheckoutCardProps) 
              )}
              <FeatureItem icon={<Infinity className="w-4 h-4" />} text="Full lifetime access" />
              <FeatureItem icon={<Smartphone className="w-4 h-4" />} text="Access on mobile and TV" />
-             <FeatureItem icon={<Award className="w-4 h-4" />} text="Certificate of completion" />
           </ul>
         </div>
 

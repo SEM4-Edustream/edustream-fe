@@ -26,17 +26,17 @@ function SuccessLogic() {
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         {courseId ? (
           <Button 
-            onClick={() => router.push(`/courses/${courseId}`)}
+            onClick={() => router.push(`/learning/${courseId}`)}
             className="h-12 px-8 font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex items-center justify-center"
           >
-            {t('go_to_course')} <ArrowRight className="w-4 h-4 ml-2" />
+            Go to Course <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         ) : (
           <Button 
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/my-learning')}
             className="h-12 px-8 font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex items-center justify-center"
           >
-            {t('view_my_learning')}
+            My Learning
           </Button>
         )}
       </div>
