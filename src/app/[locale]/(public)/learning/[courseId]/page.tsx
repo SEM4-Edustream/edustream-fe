@@ -463,7 +463,7 @@ export default function LearningPage() {
                       <div className="flex flex-col md:flex-row gap-10 items-center bg-slate-50/50 rounded-3xl p-8 border border-slate-100">
                          <div className="text-center space-y-2">
                             <div className="text-6xl font-black text-slate-900 tracking-tighter">
-                               {course.rating?.toFixed(1) || '0.0'}
+                               {course.averageRating?.toFixed(1) || '0.0'}
                             </div>
                             <div className="flex justify-center gap-1">
                                {[1, 2, 3, 4, 5].map((s) => (
@@ -471,7 +471,7 @@ export default function LearningPage() {
                                     key={s} 
                                     className={cn(
                                       "w-5 h-5", 
-                                      s <= Math.round(course.rating || 0) ? "text-amber-400 fill-amber-400" : "text-slate-200"
+                                      s <= Math.round(course.averageRating || 0) ? "text-amber-400 fill-amber-400" : "text-slate-200"
                                     )} 
                                   />
                                ))}
