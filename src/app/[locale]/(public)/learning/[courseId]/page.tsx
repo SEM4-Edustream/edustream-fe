@@ -842,7 +842,6 @@ export default function LearningPage() {
                       <h3 className="text-xl font-bold text-slate-900 mb-2">Đánh giá thành công!</h3>
                       <p className="text-slate-500">Cảm ơn bạn rất nhiều vì những ý kiến quý báu này.</p>
                    </div>
-                   </div>
                 )}
 
                 <div className="flex items-center justify-between p-6 bg-slate-100 rounded-2xl">
