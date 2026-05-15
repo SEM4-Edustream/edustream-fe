@@ -35,9 +35,9 @@ export default function TutorReviewsPage() {
     setLoading(true);
     try {
       const response = await analyticsService.getTutorReviews({ page: pageNumber, size: 10 });
-      setReviews(response.data);
-      setTotalPages(response.meta.totalPages);
-      setTotalElements(response.meta.totalElements);
+      setReviews(response.content);
+      setTotalPages(response.totalPages);
+      setTotalElements(response.totalElements);
     } catch (error) {
       console.error("Failed to fetch reviews", error);
     } finally {

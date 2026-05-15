@@ -37,14 +37,12 @@ export interface TutorReview {
   createdAt: string;
 }
 
-export interface PageResponse<T> {
-  data: T[];
-  meta: {
-    totalElements: number;
-    totalPages: number;
-    size: number;
-    number: number;
-  };
+export interface PageMeta<T> {
+  content: T[];
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  pageNumber: number;
 }
 
 export interface CourseStat {
@@ -100,7 +98,7 @@ export const analyticsService = {
     return await axiosInstance.get<any, PageMeta<TutorStudent>>(`/api/tutor/analytics/students`, { params });
   },
 
-  getTutorReviews: async (params: { page?: number; size?: number } = {}): Promise<PageResponse<TutorReview>> => {
-    return await axiosInstance.get<any, PageResponse<TutorReview>>(`/api/tutor/analytics/reviews`, { params });
+  getTutorReviews: async (params: { page?: number; size?: number } = {}): Promise<PageMeta<TutorReview>> => {
+    return await axiosInstance.get<any, PageMeta<TutorReview>>(`/api/tutor/analytics/reviews`, { params });
   }
 };
