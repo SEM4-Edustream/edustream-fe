@@ -51,6 +51,7 @@ export default function LearningPage() {
   const [isSubmittingNote, setIsSubmittingNote] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
+  const [showCongratulations, setShowCongratulations] = useState(false);
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -163,8 +164,14 @@ export default function LearningPage() {
       
       toast.success("Lesson completed!");
       
-      // Logic to move to next lesson automatically
-      moveToNextLesson();
+      // Check if all lessons are completed
+      const totalLessons = (course.modules || []).reduce((acc, m) => acc + (m.lessons?.length || 0), 0);
+      if (newCompleted.size === totalLessons) {
+          setShowCongratulations(true);
+      } else {
+          // Logic to move to next lesson automatically
+          moveToNextLesson();
+      }
     } catch (error: any) {
       if (error.response?.status === 400 && error.response?.data?.message?.includes('ALREADY_COMPLETED')) {
           setCompletedLessons(prev => new Set(prev).add(activeLesson.id));
@@ -513,6 +520,89 @@ export default function LearningPage() {
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
       {/* AI Coach Assistant */}
+      {/* Congratulations Modal */}
+      <AnimatePresence>
+        {showCongratulations && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowCongratulations(false)}
+              className="absolute inset-0 bg-slate-900/80 backdrop-blur-md" 
+            />
+            
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden overflow-y-auto max-h-[90vh] no-scrollbar"
+            >
+              <div className="bg-indigo-600 p-12 text-center text-white relative">
+                <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none overflow-hidden">
+                   <div className="absolute -top-10 -left-10 w-40 h-40 bg-white rounded-full blur-3xl" />
+                   <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-white rounded-full blur-3xl" />
+                </div>
+                
+                <div className="w-24 h-24 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-8 backdrop-blur-md ring-1 ring-white/30 animate-bounce">
+                  <Trophy className="w-12 h-12 text-white" />
+                </div>
+                <h2 className="text-4xl font-black mb-4 tracking-tight">Congratulations!</h2>
+                <p className="text-indigo-100 text-lg font-medium max-w-md mx-auto">
+                   Bạn đã xuất sắc hoàn thành tất cả các bài học trong khóa học này!
+                </p>
+              </div>
+
+              <div className="p-10 md:p-12 space-y-10">
+                <div className="space-y-4">
+                  <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest text-center">A message from your instructor</h3>
+                  <div className="bg-slate-50 rounded-2xl p-8 border border-slate-100 relative italic text-slate-700 leading-loose text-center text-lg font-medium">
+                     <span className="text-6xl text-slate-200 absolute -top-4 -left-2 select-none font-serif">"</span>
+                     {course.congratulationsMessage || "Chúc mừng bạn đã hoàn thành khóa học! Hy vọng những kiến thức này sẽ giúp ích cho sự nghiệp của bạn."}
+                     <span className="text-6xl text-slate-200 absolute -bottom-12 -right-2 select-none font-serif">"</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-6 bg-slate-900 rounded-2xl text-white">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/20">
+                       <img 
+                         src={course.tutorAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${course.tutorName}`} 
+                         alt={course.tutorName} 
+                         className="w-full h-full object-cover" 
+                       />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg">{course.tutorName}</h4>
+                      <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Course Instructor</p>
+                    </div>
+                  </div>
+                  <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 hidden sm:flex">
+                     View Certificate
+                  </Button>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <Button 
+                    onClick={() => router.push('/my-learning')}
+                    className="flex-1 h-14 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-lg shadow-lg shadow-indigo-100"
+                  >
+                    Go to My Learning
+                  </Button>
+                  <Button 
+                    variant="ghost"
+                    onClick={() => setShowCongratulations(false)}
+                    className="flex-1 h-14 text-slate-500 font-bold rounded-xl text-lg hover:bg-slate-50"
+                  >
+                    Keep Exploring
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <AICoachChat 
         courseId={courseId} 
         courseTitle={course?.title || ""} 
