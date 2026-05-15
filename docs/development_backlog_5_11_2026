@@ -12,7 +12,7 @@
 - [ ] **Q&A:** Hiện chỉ có giao diện tĩnh, chưa có API để học viên đặt câu hỏi và giảng viên trả lời.
 
 ### 🔴 2. Hệ thống Thông báo (Notifications)
-- [ ] Chưa có notification system nào. Học viên và giảng viên cần nhận thông báo khi:
+- [ ] Chưa có notification system nào. Học viên vfix: make course approval notifications more reliableà giảng viên cần nhận thông báo khi:
   - Bài tập được chấm điểm
   - Khóa học được duyệt
   - Có câu hỏi Q&A mới

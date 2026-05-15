@@ -6,7 +6,7 @@ import SockJS from 'sockjs-client';
 import { useAuth } from '@/context/AuthContext';
 
 export const useWebsocket = (topic: string, onMessage: (message: any) => void) => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, token } = useAuth();
   const stompClient = useRef<Client | null>(null);
   const [connected, setConnected] = useState(false);
 
@@ -17,6 +17,9 @@ export const useWebsocket = (topic: string, onMessage: (message: any) => void) =
     
     const client = new Client({
       webSocketFactory: () => socket,
+      connectHeaders: token ? {
+        Authorization: `Bearer ${token}`,
+      } : {},
       debug: (str) => {
         if (process.env.NODE_ENV === 'development') console.log('WS Debug:', str);
       },
