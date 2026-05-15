@@ -119,7 +119,7 @@ export default function DashboardStats() {
       </div>
 
       {/* Top Course Highlight */}
-      {stats.topCourseName !== "N/A" && (
+      {stats.topCourses && stats.topCourses.length > 0 && (
         <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden group shadow-2xl shadow-indigo-100/20">
           <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
             <Trophy className="w-40 h-40" />
@@ -133,17 +133,17 @@ export default function DashboardStats() {
               </div>
               <div className="space-y-2">
                 <h2 className="text-3xl font-black tracking-tight max-w-xl leading-tight">
-                  {stats.topCourseName}
+                  {stats.topCourses[0].title}
                 </h2>
                 <p className="text-slate-400 font-medium">
-                  Leading with <span className="text-white font-bold">{stats.topCourseEnrollments} students</span> enrolled. Great job!
+                  Leading with <span className="text-white font-bold">{stats.topCourses[0].enrollmentCount} students</span> enrolled. Great job!
                 </p>
               </div>
             </div>
             
             <div className="shrink-0 flex items-center gap-4">
                <div className="text-center p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm min-w-[120px]">
-                  <p className="text-2xl font-black">{stats.topCourseEnrollments}</p>
+                  <p className="text-2xl font-black">{stats.topCourses[0].enrollmentCount}</p>
                   <p className="text-[10px] font-bold text-indigo-300 uppercase">Students</p>
                </div>
                <div className="text-center p-4 bg-indigo-600 rounded-2xl min-w-[120px]">
