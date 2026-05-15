@@ -5,12 +5,17 @@ import {
   ChevronDown, 
   Info, 
   HelpCircle,
-  FileDown,
-  ChevronRight
+  ChevronRight,
+  TrendingUp,
+  Star,
+  Users,
+  Clock,
+  MessageSquare,
+  UserPlus
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { analyticsService, TutorAnalytics } from '@/services/analyticsService';
 import { cn } from '@/lib/utils';
+import { formatDistanceToNow } from 'date-fns';
 
 export default function TutorPerformanceOverview() {
   const [stats, setStats] = useState<TutorAnalytics | null>(null);
@@ -36,7 +41,10 @@ export default function TutorPerformanceOverview() {
       <div className="p-10 space-y-8 animate-pulse">
         <div className="h-12 w-48 bg-slate-100 rounded-lg" />
         <div className="h-32 bg-slate-50 rounded-xl" />
-        <div className="h-64 bg-slate-50 rounded-xl" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+           <div className="h-64 bg-slate-50 rounded-xl" />
+           <div className="h-64 bg-slate-50 rounded-xl" />
+        </div>
       </div>
     );
   }
@@ -56,16 +64,13 @@ export default function TutorPerformanceOverview() {
         <p className="text-sm text-slate-500 font-medium">Get top insights about your performance</p>
       </div>
 
-      {/* Main Container - Bordered box from image */}
+      {/* Main Stats Bar */}
       <div className="border border-slate-200 rounded-md overflow-hidden shadow-sm">
-        
-        {/* Stats Tabs Header */}
         <div className="flex border-b border-slate-200 bg-white">
-          {/* Revenue Tab */}
           <button 
             onClick={() => setActiveTab('revenue')}
             className={cn(
-              "flex-1 p-6 text-left border-b-4 transition-all relative group",
+              "flex-1 p-6 text-left border-b-4 transition-all",
               activeTab === 'revenue' ? "border-[#1c1d1f]" : "border-transparent hover:bg-slate-50"
             )}
           >
@@ -80,11 +85,10 @@ export default function TutorPerformanceOverview() {
             </div>
           </button>
 
-          {/* Enrollments Tab */}
           <button 
             onClick={() => setActiveTab('enrollments')}
             className={cn(
-              "flex-1 p-6 text-left border-b-4 transition-all relative group",
+              "flex-1 p-6 text-left border-b-4 transition-all",
               activeTab === 'enrollments' ? "border-[#1c1d1f]" : "border-transparent hover:bg-slate-50"
             )}
           >
@@ -102,11 +106,10 @@ export default function TutorPerformanceOverview() {
             </div>
           </button>
 
-          {/* Rating Tab */}
           <button 
             onClick={() => setActiveTab('rating')}
             className={cn(
-              "flex-1 p-6 text-left border-b-4 transition-all relative group",
+              "flex-1 p-6 text-left border-b-4 transition-all",
               activeTab === 'rating' ? "border-[#1c1d1f]" : "border-transparent hover:bg-slate-50"
             )}
           >
@@ -125,36 +128,88 @@ export default function TutorPerformanceOverview() {
           </button>
         </div>
 
-        {/* Content Area with Filters */}
-        <div className="p-8 bg-white min-h-[400px] flex flex-col">
-           {/* Filters Bar */}
-           <div className="flex items-center justify-end gap-3 mb-10">
-              <div className="flex items-center gap-2">
-                 <span className="text-xs font-bold text-slate-900">Date range:</span>
-                 <button className="flex items-center gap-2 px-3 py-2 border border-slate-900 text-xs font-bold rounded-sm hover:bg-slate-50 transition-colors">
-                    Last 12 months
-                    <ChevronDown className="w-4 h-4" />
-                 </button>
+        {/* Empty placeholder for where the chart was */}
+        <div className="p-12 bg-white border-b border-slate-100 flex flex-col items-center justify-center text-center">
+           <TrendingUp className="w-12 h-12 text-slate-200 mb-4" />
+           <p className="text-sm font-medium text-slate-500 italic">Biểu đồ đang được cập nhật...</p>
+        </div>
+
+        <div className="p-6 bg-slate-50/50">
+           <button className="flex items-center gap-1 text-sm font-bold text-[#5624d0] hover:text-[#401b9c] transition-colors">
+              Revenue Report
+              <ChevronRight className="w-4 h-4" />
+           </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        {/* Top Courses */}
+        <div className="space-y-6">
+           <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-slate-900">Top 3 Khóa học</h2>
+              <button className="text-sm font-bold text-indigo-600 hover:underline">Xem tất cả</button>
+           </div>
+           <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+              <div className="divide-y divide-slate-100">
+                {stats?.topCourses.map((course, idx) => (
+                  <div key={course.courseId} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-xs">
+                        #{idx + 1}
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-bold text-slate-900 truncate max-w-[200px]">{course.title}</p>
+                        <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                          <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {course.enrollmentCount} học viên</span>
+                          <span className="flex items-center gap-1 text-amber-500"><Star className="w-3 h-3 fill-current" /> {course.averageRating.toFixed(1)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-300" />
+                  </div>
+                ))}
+                {(!stats?.topCourses || stats.topCourses.length === 0) && (
+                  <div className="p-8 text-center text-slate-400 text-sm italic">Chưa có dữ liệu khóa học</div>
+                )}
               </div>
-              <button className="flex items-center gap-2 px-4 py-2 bg-[#1c1d1f] text-white text-xs font-bold rounded-sm hover:bg-slate-800 transition-colors">
-                 Export
-                 <ChevronDown className="w-4 h-4" />
-              </button>
-           </div>
-
-           {/* Empty State / Chart Placeholder */}
-           <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4">
-              <p className="text-sm font-medium text-slate-500">No data to display</p>
-           </div>
-
-           {/* Footer Link */}
-           <div className="border-t border-slate-100 pt-6 mt-10">
-              <button className="flex items-center gap-1 text-sm font-bold text-[#5624d0] hover:text-[#401b9c] transition-colors">
-                 Revenue Report
-                 <ChevronRight className="w-4 h-4" />
-              </button>
            </div>
         </div>
+
+        {/* Recent Activity */}
+        <div className="space-y-6">
+           <h2 className="text-xl font-bold text-slate-900">Hoạt động gần đây</h2>
+           <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+              <div className="divide-y divide-slate-100">
+                {stats?.recentActivities.map((activity, idx) => (
+                  <div key={idx} className="p-4 flex gap-4 hover:bg-slate-50 transition-colors">
+                    <div className={cn(
+                      "w-10 h-10 rounded-full flex items-center justify-center shrink-0",
+                      activity.type === 'ENROLLMENT' ? "bg-blue-50 text-blue-600" : "bg-amber-50 text-amber-600"
+                    )}>
+                      {activity.type === 'ENROLLMENT' ? <UserPlus className="w-5 h-5" /> : <MessageSquare className="w-5 h-5" />}
+                    </div>
+                    <div className="space-y-1 flex-1">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-bold text-slate-900">{activity.studentName}</p>
+                        <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500">
+                        {activity.detail} <span className="font-bold text-slate-700">"{activity.courseTitle}"</span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                {(!stats?.recentActivities || stats.recentActivities.length === 0) && (
+                  <div className="p-8 text-center text-slate-400 text-sm italic">Chưa có hoạt động nào</div>
+                )}
+              </div>
+           </div>
+        </div>
+
       </div>
 
     </div>

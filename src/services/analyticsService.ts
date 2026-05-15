@@ -5,10 +5,34 @@ export interface TutorAnalytics {
   revenueThisMonth: number;
   revenueLastMonth: number;
   revenueGrowth: number;
-  topCourseName: string;
-  topCourseEnrollments: number;
+  totalLifetimeRevenue: number;
   averageProgress: number;
   averageRating: number;
+  topCourses: CourseStat[];
+  recentActivities: ActivityLog[];
+  revenueByCourse: CourseRevenue[];
+}
+
+export interface CourseStat {
+  courseId: string;
+  title: string;
+  enrollmentCount: number;
+  averageRating: number;
+}
+
+export interface ActivityLog {
+  type: 'ENROLLMENT' | 'REVIEW';
+  studentName: string;
+  courseTitle: string;
+  detail: string;
+  timestamp: string;
+}
+
+export interface CourseRevenue {
+  courseId: string;
+  title: string;
+  totalRevenue: number;
+  totalSales: number;
 }
 
 export interface TutorStudent {
