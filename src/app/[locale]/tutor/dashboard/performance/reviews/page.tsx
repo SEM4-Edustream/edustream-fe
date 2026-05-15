@@ -4,18 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { 
   Star, 
   Search, 
-  Filter, 
   MessageSquare, 
   ChevronRight, 
   ChevronLeft,
   BookOpen,
   Calendar,
-  User,
   MoreVertical,
   Flag,
   Reply
 } from 'lucide-react';
-import { analyticsService, TutorReview, PageMeta } from '@/services/analyticsService';
+import { analyticsService, TutorReview } from '@/services/analyticsService';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -166,7 +164,7 @@ export default function TutorReviewsPage() {
 
                 <div className="space-y-2">
                    <p className="text-slate-600 text-sm leading-relaxed italic">
-                     "{review.comment}"
+                     &quot;{review.comment}&quot;
                    </p>
                    <div className="flex items-center gap-2 py-1 px-3 bg-slate-50 rounded-lg w-fit">
                       <BookOpen className="w-3.5 h-3.5 text-indigo-500" />

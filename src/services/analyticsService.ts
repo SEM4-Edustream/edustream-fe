@@ -91,14 +91,14 @@ export interface PageMeta<T> {
 
 export const analyticsService = {
   getTutorAnalytics: async (): Promise<TutorAnalytics> => {
-    return await axiosInstance.get<any, TutorAnalytics>(`/api/tutor/analytics`);
+    return await axiosInstance.get<TutorAnalytics, TutorAnalytics>(`/api/tutor/analytics`);
   },
 
   getTutorStudents: async (params: { courseId?: string; page?: number; size?: number } = {}): Promise<PageMeta<TutorStudent>> => {
-    return await axiosInstance.get<any, PageMeta<TutorStudent>>(`/api/tutor/analytics/students`, { params });
+    return await axiosInstance.get<PageMeta<TutorStudent>, PageMeta<TutorStudent>>(`/api/tutor/analytics/students`, { params });
   },
 
   getTutorReviews: async (params: { page?: number; size?: number } = {}): Promise<PageMeta<TutorReview>> => {
-    return await axiosInstance.get<any, PageMeta<TutorReview>>(`/api/tutor/analytics/reviews`, { params });
+    return await axiosInstance.get<PageMeta<TutorReview>, PageMeta<TutorReview>>(`/api/tutor/analytics/reviews`, { params });
   }
 };

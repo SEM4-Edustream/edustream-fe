@@ -3,13 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { 
   ChevronDown, 
-  DollarSign,
   TrendingUp,
   TrendingDown,
   BookOpen,
-  ArrowRight,
   Download,
-  Calendar,
   Wallet,
   HelpCircle,
   ChevronRight,
