@@ -12,7 +12,14 @@ export default function PerformanceLayout({
 }) {
   const pathname = usePathname();
 
-  const navItems = [
+  interface NavItem {
+    title: string;
+    href: string;
+    badge?: string;
+    subItems?: boolean;
+  }
+
+  const navItems: NavItem[] = [
     { title: "Overview", href: "/tutor/dashboard/performance" },
     { title: "Revenue", href: "/tutor/dashboard/performance/revenue" },
     { title: "Students", href: "/tutor/dashboard/performance/students" },
