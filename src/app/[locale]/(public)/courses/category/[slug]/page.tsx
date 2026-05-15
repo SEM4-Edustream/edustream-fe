@@ -45,6 +45,7 @@ function CoursePageContent() {
       try {
         const result = await searchCourses({
           keyword: searchParams.get('keyword') || '',
+          category: routeCategorySlug,
           page: searchParams.get('page') || '0',
           sort: searchParams.get('sort') || 'newest',
         });
@@ -54,12 +55,7 @@ function CoursePageContent() {
         // Client-side filtering for Level and Price if API doesn't support them yet
         const level = searchParams.get('level');
         const price = searchParams.get('price');
-        const searchCategoryParam = searchParams.get('category');
-        const currentCategorySlug = searchCategoryParam || routeCategorySlug;
 
-        if (currentCategorySlug) {
-          filteredContent = filteredContent.filter(c => c.category?.slug === currentCategorySlug);
-        }
         if (level) {
           filteredContent = filteredContent.filter(c => c.level === level);
         }

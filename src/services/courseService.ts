@@ -159,10 +159,11 @@ export async function getPublicCourses(size = 6): Promise<CourseSummary[]> {
   return page.content ?? [];
 }
 
-export async function searchCourses(searchParams: { keyword?: string; page?: string; size?: string; sort?: string }) {
-  const params: { keyword?: string; page?: number; size?: number; sort?: string[] } = {};
+export async function searchCourses(searchParams: { keyword?: string; category?: string; page?: string; size?: string; sort?: string }) {
+  const params: { keyword?: string; category?: string; page?: number; size?: number; sort?: string[] } = {};
 
   if (searchParams.keyword) params.keyword = searchParams.keyword;
+  if (searchParams.category) params.category = searchParams.category;
   if (searchParams.page) params.page = Number(searchParams.page) || 0;
   if (searchParams.size) params.size = Number(searchParams.size) || 12;
   if (!searchParams.size) params.size = 12;
