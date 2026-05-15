@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { 
   ChevronDown, 
-  Info, 
   HelpCircle,
   ChevronRight,
   TrendingUp,
@@ -13,9 +12,18 @@ import {
   MessageSquare,
   UserPlus
 } from 'lucide-react';
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from 'recharts';
 import { analyticsService, TutorAnalytics } from '@/services/analyticsService';
 import { cn } from '@/lib/utils';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
 
 export default function TutorPerformanceOverview() {
   const [stats, setStats] = useState<TutorAnalytics | null>(null);
@@ -48,6 +56,12 @@ export default function TutorPerformanceOverview() {
       </div>
     );
   }
+
+  // Format chart data
+  const formattedChartData = stats?.chartData.map(d => ({
+    name: `${d.month}/${d.year}`,
+    revenue: d.revenue
+  })) || [];
 
   return (
     <div className="p-10 max-w-6xl mx-auto space-y-10">
@@ -128,10 +142,60 @@ export default function TutorPerformanceOverview() {
           </button>
         </div>
 
-        {/* Empty placeholder for where the chart was */}
-        <div className="p-12 bg-white border-b border-slate-100 flex flex-col items-center justify-center text-center">
-           <TrendingUp className="w-12 h-12 text-slate-200 mb-4" />
-           <p className="text-sm font-medium text-slate-500 italic">Biểu đồ đang được cập nhật...</p>
+        {/* Revenue Chart */}
+        <div className="p-8 bg-white border-b border-slate-100">
+           <div className="h-[300px] w-full">
+              {formattedChartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={formattedChartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#a435f0" stopOpacity={0.1}/>
+                        <stop offset="95%" stopColor="#a435f0" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis 
+                      dataKey="name" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
+                      dy={10}
+                    />
+                    <YAxis 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
+                      tickFormatter={(value) => `$${value}`}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#1c1d1f', 
+                        border: 'none', 
+                        borderRadius: '8px',
+                        color: '#fff',
+                        fontSize: '12px'
+                      }}
+                      itemStyle={{ color: '#a435f0' }}
+                      cursor={{ stroke: '#a435f0', strokeWidth: 1 }}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="revenue" 
+                      stroke="#a435f0" 
+                      strokeWidth={3}
+                      fillOpacity={1} 
+                      fill="url(#colorRevenue)" 
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center text-slate-400 italic">
+                   <TrendingUp className="w-12 h-12 mb-4 opacity-20" />
+                   Chưa có đủ dữ liệu để hiển thị biểu đồ
+                </div>
+              )}
+           </div>
         </div>
 
         <div className="p-6 bg-slate-50/50">

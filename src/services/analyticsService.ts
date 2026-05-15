@@ -11,6 +11,13 @@ export interface TutorAnalytics {
   topCourses: CourseStat[];
   recentActivities: ActivityLog[];
   revenueByCourse: CourseRevenue[];
+  chartData: ChartData[];
+}
+
+export interface ChartData {
+  month: number;
+  year: number;
+  revenue: number;
 }
 
 export interface CourseStat {
