@@ -26,6 +26,27 @@ export interface DailyChartData {
   revenue: number;
 }
 
+export interface TutorReview {
+  id: string;
+  courseId: string;
+  courseTitle: string;
+  studentName: string;
+  studentAvatar: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface PageResponse<T> {
+  data: T[];
+  meta: {
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
+  };
+}
+
 export interface CourseStat {
   courseId: string;
   title: string;
@@ -77,5 +98,9 @@ export const analyticsService = {
 
   getTutorStudents: async (params: { courseId?: string; page?: number; size?: number } = {}): Promise<PageMeta<TutorStudent>> => {
     return await axiosInstance.get<any, PageMeta<TutorStudent>>(`/api/tutor/analytics/students`, { params });
+  },
+
+  getTutorReviews: async (params: { page?: number; size?: number } = {}): Promise<PageResponse<TutorReview>> => {
+    return await axiosInstance.get<any, PageResponse<TutorReview>>(`/api/tutor/analytics/reviews`, { params });
   }
 };
