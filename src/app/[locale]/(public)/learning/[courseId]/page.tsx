@@ -58,6 +58,8 @@ export default function LearningPage() {
   const [reviewComment, setReviewComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [hasSubmittedReview, setHasSubmittedReview] = useState(false);
+  const [courseReviews, setCourseReviews] = useState<any[]>([]);
+  const [isReviewsLoading, setIsReviewsLoading] = useState(false);
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -93,6 +95,25 @@ export default function LearningPage() {
     // fetchNotes(); // Temporarily disabled
     document.title = "Learning | EduStream";
   }, [courseId]);
+
+  const fetchReviews = async () => {
+    try {
+      setIsReviewsLoading(true);
+      const data = await reviewService.getCourseReviews(courseId);
+      // Backend returns Page object
+      setCourseReviews(data.result?.content || data.content || []);
+    } catch (error) {
+      console.error("Failed to fetch reviews", error);
+    } finally {
+      setIsReviewsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'reviews') {
+      fetchReviews();
+    }
+  }, [activeTab]);
 
   const fetchNotes = async () => {
     try {
@@ -437,9 +458,110 @@ export default function LearningPage() {
                 )}
 
                 {activeTab === 'reviews' && (
-                   <div className="text-center py-20 bg-slate-50 rounded-2xl animate-in fade-in duration-500">
-                      <MessageSquare className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                      <p className="text-slate-400 font-medium">{t('coming_soon')}</p>
+                   <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
+                      {/* Review Summary Header */}
+                      <div className="flex flex-col md:flex-row gap-10 items-center bg-slate-50/50 rounded-3xl p-8 border border-slate-100">
+                         <div className="text-center space-y-2">
+                            <div className="text-6xl font-black text-slate-900 tracking-tighter">
+                               {course.rating?.toFixed(1) || '0.0'}
+                            </div>
+                            <div className="flex justify-center gap-1">
+                               {[1, 2, 3, 4, 5].map((s) => (
+                                  <Star 
+                                    key={s} 
+                                    className={cn(
+                                      "w-5 h-5", 
+                                      s <= Math.round(course.rating || 0) ? "text-amber-400 fill-amber-400" : "text-slate-200"
+                                    )} 
+                                  />
+                               ))}
+                            </div>
+                            <p className="text-sm font-bold text-amber-600 uppercase tracking-widest">{t('course_rating')}</p>
+                         </div>
+
+                         <div className="flex-1 space-y-3 w-full">
+                            {[5, 4, 3, 2, 1].map((s) => (
+                               <div key={s} className="flex items-center gap-4 group">
+                                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                                     <motion.div 
+                                       initial={{ width: 0 }}
+                                       animate={{ width: `${s === 5 ? 70 : s === 4 ? 20 : 5}%` }}
+                                       transition={{ duration: 1, ease: "easeOut" }}
+                                       className="h-full bg-slate-900" 
+                                     />
+                                  </div>
+                                  <div className="flex items-center gap-1 min-w-[60px] justify-end">
+                                     <div className="flex">
+                                        {[1, 2, 3, 4, 5].map((i) => (
+                                          <Star key={i} className={cn("w-3 h-3", i <= s ? "text-amber-400 fill-amber-400" : "text-slate-200")} />
+                                        ))}
+                                     </div>
+                                     <span className="text-xs font-bold text-slate-400">{s === 5 ? '70' : s === 4 ? '20' : '5'}%</span>
+                                  </div>
+                               </div>
+                            ))}
+                         </div>
+                      </div>
+
+                      {/* Review List */}
+                      <div className="space-y-8">
+                         <h3 className="text-xl font-bold text-slate-900">Student Feedback</h3>
+                         
+                         {isReviewsLoading ? (
+                            <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                               <Loader2 className="w-10 h-10 animate-spin text-indigo-500" />
+                               <p className="text-slate-400 font-medium">Loading reviews...</p>
+                            </div>
+                         ) : courseReviews.length === 0 ? (
+                            <div className="text-center py-20 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                               <MessageSquare className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                               <p className="text-slate-400 font-medium">Chưa có đánh giá nào cho khóa học này.</p>
+                            </div>
+                         ) : (
+                            <div className="grid gap-6">
+                               {courseReviews.map((review) => (
+                                  <motion.div 
+                                    key={review.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="p-6 bg-white rounded-2xl border border-slate-100 hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-500/5 transition-all group"
+                                  >
+                                     <div className="flex items-start justify-between mb-4">
+                                        <div className="flex items-center gap-4">
+                                           <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-50 group-hover:border-indigo-100 transition-colors">
+                                              <img 
+                                                src={review.studentAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${review.studentName}`} 
+                                                alt={review.studentName} 
+                                                className="w-full h-full object-cover" 
+                                              />
+                                           </div>
+                                           <div>
+                                              <h4 className="font-bold text-slate-900">{review.studentName}</h4>
+                                              <div className="flex gap-0.5 mt-1">
+                                                 {[1, 2, 3, 4, 5].map((s) => (
+                                                   <Star 
+                                                     key={s} 
+                                                     className={cn(
+                                                       "w-3 h-3", 
+                                                       s <= review.rating ? "text-amber-400 fill-amber-400" : "text-slate-100"
+                                                     )} 
+                                                   />
+                                                 ))}
+                                              </div>
+                                           </div>
+                                        </div>
+                                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                                           {formatDistanceToNow(new Date(review.createdAt), { addSuffix: true, locale: vi })}
+                                        </div>
+                                     </div>
+                                     <p className="text-slate-600 leading-relaxed pl-16">
+                                        {review.comment}
+                                     </p>
+                                  </motion.div>
+                               ))}
+                            </div>
+                         )}
+                      </div>
                    </div>
                 )}
              </div>
@@ -601,21 +723,34 @@ export default function LearningPage() {
                         <p className="text-slate-500 text-sm">Chia sẻ cảm nhận của bạn để giúp chúng tôi cải thiện hơn nhé!</p>
                       </div>
 
-                      <div className="flex justify-center gap-2">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            onMouseEnter={() => setRating(star)}
-                            className="transition-transform active:scale-90"
-                          >
-                            <Star 
-                              className={cn(
-                                "w-10 h-10 transition-colors",
-                                star <= rating ? "text-amber-400 fill-amber-400" : "text-slate-200"
-                              )} 
-                            />
-                          </button>
-                        ))}
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="flex justify-center gap-2">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              onClick={() => setRating(star)}
+                              onMouseEnter={() => !hasSubmittedReview && setRating(star)}
+                              className="transition-transform active:scale-90"
+                            >
+                              <Star 
+                                className={cn(
+                                  "w-12 h-12 transition-all duration-300",
+                                  star <= rating 
+                                  ? "text-amber-400 fill-amber-400 filter drop-shadow-[0_0_8px_rgba(251,191,36,0.5)] scale-110" 
+                                  : "text-slate-200 hover:text-slate-300"
+                                )} 
+                              />
+                            </button>
+                          ))}
+                        </div>
+                        <motion.span 
+                          key={rating}
+                          initial={{ opacity: 0, y: 5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-sm font-black text-amber-500 uppercase tracking-widest"
+                        >
+                          {rating === 5 ? "Tuyệt vời!" : rating === 4 ? "Rất tốt" : rating === 3 ? "Bình thường" : rating === 2 ? "Kém" : "Rất kém"}
+                        </motion.span>
                       </div>
 
                       <div className="space-y-2">
@@ -623,20 +758,20 @@ export default function LearningPage() {
                           value={reviewComment}
                           onChange={(e) => setReviewComment(e.target.value)}
                           placeholder="Khóa học này như thế nào đối với bạn?..."
-                          className="w-full h-32 p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-slate-700 font-medium placeholder:text-slate-400"
+                          className="w-full h-32 p-6 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-slate-700 font-medium placeholder:text-slate-400 bg-slate-50/50"
                         />
                       </div>
 
                       <Button
                         onClick={handleReviewSubmit}
                         disabled={isSubmittingReview}
-                        className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-lg shadow-xl"
+                        className="w-full h-16 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-lg shadow-2xl shadow-slate-200 transition-all active:scale-[0.98]"
                       >
                         {isSubmittingReview ? (
                            <span className="flex items-center gap-2">
                               <Loader2 className="w-5 h-5 animate-spin" /> Đang gửi đánh giá...
                            </span>
-                        ) : "Gửi đánh giá & Tiếp tục"}
+                        ) : "Gửi đánh giá & Hoàn thành"}
                       </Button>
                    </div>
                 ) : (
