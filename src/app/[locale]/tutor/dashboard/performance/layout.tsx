@@ -17,9 +17,6 @@ export default function PerformanceLayout({
     { title: "Revenue", href: "/tutor/dashboard/performance/revenue" },
     { title: "Students", href: "/tutor/dashboard/performance/students" },
     { title: "Reviews", href: "/tutor/dashboard/performance/reviews" },
-    { title: "Engagement", href: "/tutor/dashboard/performance/engagement", subItems: true },
-    { title: "Content Quality", href: "/tutor/dashboard/performance/quality", badge: "New" },
-    { title: "Traffic & conversion", href: "/tutor/dashboard/performance/traffic" },
   ];
 
   return (
