@@ -225,57 +225,6 @@ export default function TutorRevenuePerformancePage() {
            </div>
         </div>
 
-        {/* Wallet Section - Improved UI */}
-        <div className="p-8 bg-slate-900 text-white relative overflow-hidden group">
-           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform duration-700">
-              <Wallet className="w-48 h-48" />
-           </div>
-           
-           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
-              <div className="space-y-6 flex-1 w-full lg:w-auto">
-                 <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 group-hover:bg-indigo-600 transition-colors">
-                       <CreditCard className="w-7 h-7 text-white" />
-                    </div>
-                    <div className="space-y-1">
-                       <p className="text-xs font-bold text-indigo-300 uppercase tracking-widest">{t('wallet_status')}</p>
-                       <h2 className="text-3xl font-black">{t('available_balance')}: <span className="text-emerald-400">${balance.toFixed(2)}</span></h2>
-                    </div>
-                 </div>
-
-                 {/* Progress Bar for Withdrawal */}
-                 <div className="space-y-2 max-w-md">
-                    <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                       <div className="flex items-center gap-2">
-                          <Target className="w-3 h-3" />
-                          {balance >= MIN_WITHDRAW ? 'Sẵn sàng rút tiền' : t('min_withdraw_desc', { amount: `$${remaining.toFixed(2)}` })}
-                       </div>
-                       <span>{Math.round(progressPercent)}%</span>
-                    </div>
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                       <div 
-                         className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-1000 ease-out"
-                         style={{ width: `${progressPercent}%` }}
-                       />
-                    </div>
-                 </div>
-              </div>
-              
-              <div className="flex flex-col items-center lg:items-end gap-3 shrink-0">
-                 <Button 
-                   disabled={balance < MIN_WITHDRAW}
-                   className={cn(
-                     "font-black text-xs uppercase tracking-widest px-10 py-7 transition-all",
-                     balance >= MIN_WITHDRAW 
-                        ? "bg-white text-slate-900 hover:bg-indigo-500 hover:text-white" 
-                        : "bg-white/10 text-white/30 border border-white/10 cursor-not-allowed"
-                   )}
-                 >
-                    {t('withdraw_btn')} {balance < MIN_WITHDRAW && `(${t('coming_soon')})`}
-                 </Button>
-                 <p className="text-[10px] text-slate-500 font-bold italic">{t('integration_notice')}</p>
-              </div>
-           </div>
         </div>
       </div>
 
