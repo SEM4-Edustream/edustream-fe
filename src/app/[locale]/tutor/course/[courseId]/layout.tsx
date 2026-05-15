@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { useParams, useRouter } from 'next/navigation';
 import { ChevronLeft, Settings, Eye, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -99,9 +99,11 @@ export default function CourseEditorLayout({ children }: { children: React.React
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" className="text-white font-bold hover:bg-slate-800 hidden lg:flex gap-2 h-10 px-4 rounded-none border border-white/20 hover:border-white">
-             <Eye className="w-4 h-4" /> Preview
-          </Button>
+          <Link href={`/tutor/course/${courseId}/preview`} target="_blank">
+            <Button variant="ghost" className="text-white font-bold hover:bg-slate-800 hidden lg:flex gap-2 h-10 px-4 rounded-none border border-white/20 hover:border-white">
+               <Eye className="w-4 h-4" /> Preview
+            </Button>
+          </Link>
           <Button variant="ghost" className="text-white h-10 w-10 p-0 hover:bg-slate-800 rounded-none border border-transparent hover:border-white/20">
              <Settings className="w-5 h-5" />
           </Button>
