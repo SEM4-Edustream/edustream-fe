@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Bell, Check, Loader2, MessageSquare, CreditCard, BookOpen, Settings, ExternalLink } from 'lucide-react';
+import { Bell, Check, Loader2, MessageSquare, CreditCard, BookOpen, Settings, ExternalLink, Layout } from 'lucide-react';
 import { notificationService, NotificationResponse } from '@/services/notificationService';
 import { cn } from '@/lib/utils';
 import { useRouter } from '@/i18n/routing';
@@ -106,6 +106,7 @@ export default function NotificationBell() {
       case 'Q_AND_A': return <MessageSquare className="w-4 h-4 text-indigo-500" />;
       case 'SYSTEM': return <Settings className="w-4 h-4 text-amber-500" />;
       case 'COURSE_UPDATE': return <ExternalLink className="w-4 h-4 text-purple-500" />;
+      case 'COURSE_STATUS': return <Layout className="w-4 h-4 text-slate-500" />;
       default: return <Bell className="w-4 h-4 text-slate-400" />;
     }
   };

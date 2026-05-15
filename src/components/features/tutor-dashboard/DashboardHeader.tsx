@@ -2,8 +2,6 @@
 
 import React from "react";
 import { 
-  Search, 
-  Bell, 
   ChevronRight, 
   User as UserIcon,
   Search as SearchIcon
@@ -11,9 +9,9 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import NotificationBell from "@/components/layout/NotificationBell";
 import { Link } from "@/i18n/routing";
 import {
   DropdownMenu,
@@ -52,16 +50,8 @@ export default function DashboardHeader() {
   return (
     <header className="h-16 bg-white sticky top-0 z-30 px-8 flex items-center justify-end border-b border-slate-200 shadow-sm">
       <div className="flex items-center gap-6">
-        {/* Student Switcher Link */}
-        <Link href="/" className="text-sm font-medium text-[#1c1d1f] hover:text-[#5624d0] transition-colors">
-          {tTutor('switch_to_student')}
-        </Link>
-
         {/* Notifications */}
-        <button className="relative w-10 h-10 flex items-center justify-center hover:bg-slate-50 rounded-full transition-colors">
-          <Bell className="w-5 h-5 text-[#1c1d1f]" />
-          <span className="absolute top-2 right-2.5 w-2 h-2 bg-[#5624d0] rounded-full border-2 border-white" />
-        </button>
+        <NotificationBell />
 
         <LanguageSwitcher />
 
