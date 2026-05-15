@@ -52,6 +52,12 @@ export default function LearningPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [showCongratulations, setShowCongratulations] = useState(false);
+  const [rating, setRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [hasSubmittedReview, setHasSubmittedReview] = useState(false);
+  
+  const { reviewService } = require('@/services/reviewService');
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -149,6 +155,28 @@ export default function LearningPage() {
     if (newSet.has(moduleId)) newSet.delete(moduleId);
     else newSet.add(moduleId);
     setExpandedModules(newSet);
+  };
+
+  const handleReviewSubmit = async () => {
+    if (!reviewComment.trim()) {
+      toast.error("Vui lòng để lại lời bình luận nhé!");
+      return;
+    }
+    
+    try {
+      setIsSubmittingReview(true);
+      await reviewService.createReview(courseId, {
+        rating,
+        comment: reviewComment
+      });
+      setHasSubmittedReview(true);
+      toast.success("Cảm ơn bạn đã đánh giá khóa học!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Không thể gửi đánh giá lúc này.");
+    } finally {
+      setIsSubmittingReview(false);
+    }
   };
 
   const handleComplete = async () => {
@@ -563,9 +591,65 @@ export default function LearningPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-6 bg-slate-900 rounded-2xl text-white">
+                {/* REVIEW FORM SECTION */}
+                {!hasSubmittedReview ? (
+                   <div className="space-y-8 pt-6 border-t border-slate-100">
+                      <div className="text-center">
+                        <h3 className="text-xl font-bold text-slate-900 mb-2">Đánh giá khóa học của bạn</h3>
+                        <p className="text-slate-500 text-sm">Chia sẻ cảm nhận của bạn để giúp chúng tôi cải thiện hơn nhé!</p>
+                      </div>
+
+                      <div className="flex justify-center gap-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            onMouseEnter={() => setRating(star)}
+                            className="transition-transform active:scale-90"
+                          >
+                            <Star 
+                              className={cn(
+                                "w-10 h-10 transition-colors",
+                                star <= rating ? "text-amber-400 fill-amber-400" : "text-slate-200"
+                              )} 
+                            />
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="space-y-2">
+                        <textarea
+                          value={reviewComment}
+                          onChange={(e) => setReviewComment(e.target.value)}
+                          placeholder="Khóa học này như thế nào đối với bạn?..."
+                          className="w-full h-32 p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none text-slate-700 font-medium placeholder:text-slate-400"
+                        />
+                      </div>
+
+                      <Button
+                        onClick={handleReviewSubmit}
+                        disabled={isSubmittingReview}
+                        className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-lg shadow-xl"
+                      >
+                        {isSubmittingReview ? (
+                           <span className="flex items-center gap-2">
+                              <Loader2 className="w-5 h-5 animate-spin" /> Đang gửi đánh giá...
+                           </span>
+                        ) : "Gửi đánh giá & Tiếp tục"}
+                      </Button>
+                   </div>
+                ) : (
+                   <div className="pt-6 border-t border-slate-100 text-center animate-in zoom-in duration-500">
+                      <div className="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <CheckCircle2 className="w-8 h-8" />
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900 mb-2">Đánh giá thành công!</h3>
+                      <p className="text-slate-500">Cảm ơn bạn rất nhiều vì những ý kiến quý báu này.</p>
+                   </div>
+                )}
+
+                <div className="flex items-center justify-between p-6 bg-slate-100 rounded-2xl">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/20">
+                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-sm">
                        <img 
                          src={course.tutorAvatar || `https://api.dicebear.com/7.x/initials/svg?seed=${course.tutorName}`} 
                          alt={course.tutorName} 
@@ -573,13 +657,10 @@ export default function LearningPage() {
                        />
                     </div>
                     <div>
-                      <h4 className="font-bold text-lg">{course.tutorName}</h4>
+                      <h4 className="font-bold text-lg text-slate-900">{course.tutorName}</h4>
                       <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Course Instructor</p>
                     </div>
                   </div>
-                  <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 hidden sm:flex">
-                     View Certificate
-                  </Button>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
