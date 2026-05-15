@@ -218,7 +218,11 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh, provide
               {lesson.type === 'QUIZ' ? 'Quiz' : lesson.type === 'ASSIGNMENT' ? 'Assignment' : 'Lecture'} {index + 1}: {lesson.title}
             </span>
             
-            {lesson.type === 'VIDEO' && lesson.videoUrl ? (
+            {isUploading ? (
+              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-1.5 py-0.5 rounded ml-2 flex items-center gap-1.5">
+                <Loader2 className="w-3 h-3 animate-spin" /> Uploading {uploadProgress}%
+              </span>
+            ) : lesson.type === 'VIDEO' && lesson.videoUrl ? (
               lesson.durationSeconds ? (
                 <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded ml-2">
                   {Math.floor(lesson.durationSeconds / 60)}:{(lesson.durationSeconds % 60).toString().padStart(2, '0')}

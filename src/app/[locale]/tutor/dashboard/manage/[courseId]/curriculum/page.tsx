@@ -13,7 +13,8 @@ import {
   Trash2,
   FileText,
   Video,
-  Layout
+  Layout,
+  Clock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { courseService, CourseSummary, CourseModuleResponse } from '@/services/courseService';
@@ -143,6 +144,17 @@ export default function CurriculumPage() {
     }
   };
 
+  const calculateModuleDuration = (module: CourseModuleResponse) => {
+    const totalSeconds = (module.lessons || []).reduce((acc, lesson) => acc + (lesson.durationSeconds || 0), 0);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    if (minutes > 0) return `${minutes}m ${seconds}s`;
+    return `${seconds}s`;
+  };
+
   if (loading) return <div className="p-8 flex justify-center"><div className="w-8 h-8 border-2 border-[#5624d0] border-t-transparent rounded-full animate-spin" /></div>;
 
   return (
@@ -207,17 +219,23 @@ export default function CurriculumPage() {
                                  )}
                               </div>
                            </div>
-                           <div className="flex items-center gap-1">
-                              <Button 
-                                 variant="ghost" 
-                                 size="sm" 
-                                 onClick={() => handleDeleteModule(module.id)}
-                                 className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-500 transition-colors"
-                              >
-                                 <Trash2 className="w-4 h-4 text-slate-400" />
-                              </Button>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><MoreVertical className="w-4 h-4 text-slate-400" /></Button>
-                           </div>
+                           <div className="flex items-center gap-4">
+                               <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100">
+                                  <Clock className="w-3 h-3" />
+                                  <span>{calculateModuleDuration(module)}</span>
+                               </div>
+                               <div className="flex items-center gap-1">
+                                  <Button 
+                                     variant="ghost" 
+                                     size="sm" 
+                                     onClick={() => handleDeleteModule(module.id)}
+                                     className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-500 transition-colors"
+                                  >
+                                     <Trash2 className="w-4 h-4 text-slate-400" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0"><MoreVertical className="w-4 h-4 text-slate-400" /></Button>
+                               </div>
+                            </div>
                         </div>
 
                         {/* Lessons List */}
