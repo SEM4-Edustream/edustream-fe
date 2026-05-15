@@ -7,7 +7,6 @@ import {
   Target, 
   ListTree, 
   LayoutDashboard, 
-  BadgeDollarSign, 
   Settings,
   CircleCheck,
   Circle,
@@ -53,7 +52,6 @@ export default function CourseEditorSidebar({ courseId, completionStatus, status
       group: 'Publish your course',
       items: [
         { name: 'Course landing page', href: `/tutor/course/${courseId}/basics`, icon: LayoutDashboard, key: 'basics' },
-        { name: 'Pricing', href: `/tutor/course/${courseId}/pricing`, icon: BadgeDollarSign, key: 'pricing' },
         { name: 'Course messages', href: `/tutor/course/${courseId}/messages`, icon: Settings, key: 'messages' },
       ]
     }
