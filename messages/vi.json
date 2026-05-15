@@ -270,6 +270,28 @@
     "performance": "Hiệu suất",
     "tools": "Công cụ",
     "resources": "Tài nguyên",
-    "switch_to_student": "Học viên"
+    "switch_to_student": "Học viên",
+    "Revenue": {
+      "title": "Doanh thu",
+      "subtitle": "Theo dõi và phân tích thu nhập từ việc giảng dạy",
+      "all_time": "Toàn thời gian",
+      "this_month": "Doanh thu tháng này",
+      "vs_last_month": "So với {amount} tháng trước",
+      "lifetime": "Tổng doanh thu tích lũy",
+      "total_orders": "Tổng số đơn hàng",
+      "orders_desc": "Số lượng khóa học đã bán thành công",
+      "wallet_status": "Trạng thái ví",
+      "available_balance": "Số dư khả dụng",
+      "withdraw_btn": "Yêu cầu rút tiền",
+      "coming_soon": "Sắp ra mắt",
+      "min_withdraw_desc": "Cần thêm {amount} để đủ điều kiện rút tiền",
+      "integration_notice": "* Chức năng thanh toán đang được tích hợp",
+      "course_breakdown": "Chi tiết theo khóa học",
+      "units_sold": "Số lượng bán",
+      "total_revenue": "Tổng doanh thu",
+      "details": "Chi tiết",
+      "no_data": "Chưa có dữ liệu bán hàng",
+      "chart_title": "Xu hướng doanh thu 30 ngày qua"
+    }
   }
 }

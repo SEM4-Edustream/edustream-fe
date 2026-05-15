@@ -12,11 +12,17 @@ export interface TutorAnalytics {
   recentActivities: ActivityLog[];
   revenueByCourse: CourseRevenue[];
   chartData: ChartData[];
+  dailyChartData: DailyChartData[];
 }
 
 export interface ChartData {
   month: number;
   year: number;
+  revenue: number;
+}
+
+export interface DailyChartData {
+  date: string;
   revenue: number;
 }
 

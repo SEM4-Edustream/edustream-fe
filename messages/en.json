@@ -270,6 +270,28 @@
     "performance": "Performance",
     "tools": "Tools",
     "resources": "Resources",
-    "switch_to_student": "Student"
+    "switch_to_student": "Student",
+    "Revenue": {
+      "title": "Revenue",
+      "subtitle": "Track and analyze your teaching earnings",
+      "all_time": "All time",
+      "this_month": "This month",
+      "vs_last_month": "Vs {amount} last month",
+      "lifetime": "Total lifetime revenue",
+      "total_orders": "Total orders",
+      "orders_desc": "Successfully sold courses",
+      "wallet_status": "Wallet Status",
+      "available_balance": "Available Balance",
+      "withdraw_btn": "Request Withdrawal",
+      "coming_soon": "Coming Soon",
+      "min_withdraw_desc": "Earn {amount} more to be eligible for withdrawal",
+      "integration_notice": "* Payment integration is underway",
+      "course_breakdown": "Course Breakdown",
+      "units_sold": "Units Sold",
+      "total_revenue": "Total Revenue",
+      "details": "Details",
+      "no_data": "No sales data available",
+      "chart_title": "30-Day Revenue Trend"
+    }
   }
 }
