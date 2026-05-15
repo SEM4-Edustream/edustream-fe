@@ -7,15 +7,9 @@ import {
   Users, 
   CheckSquare, 
   LayoutDashboard, 
-  Settings, 
   LogOut,
   ShieldCheck,
-  BarChart3, 
   PlaySquare,
-  CalendarDays,
-  FileStack,
-  FileClock,
-  GraduationCap,
   ChevronDown,
   Circle
 } from "lucide-react";
@@ -36,7 +30,6 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { title: "Tutor Monthly Stats", href: "/admin/tutor-stats", icon: BarChart3 },
   { 
     title: "Course", 
     icon: PlaySquare,
@@ -47,10 +40,6 @@ const menuItems: MenuItem[] = [
   },
   { title: "User", href: "/admin/users", icon: Users },
   { title: "Tutor Verification", href: "/admin/tutor-verification", icon: CheckSquare },
-  { title: "Bookings", href: "/admin/bookings", icon: CalendarDays },
-  { title: "Material", href: "/admin/materials", icon: FileStack },
-  { title: "Leave Request", href: "/admin/leave-requests", icon: FileClock },
-  { title: "Schedule Changes", href: "/admin/schedules", icon: CalendarDays },
 ];
 
 export default function AdminSidebar() {
