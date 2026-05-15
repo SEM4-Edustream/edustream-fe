@@ -35,6 +35,9 @@ export default function NotificationBell() {
 
   useEffect(() => {
     fetchUnreadCount();
+    // Poll for unread count every 30 seconds as a fallback
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -102,6 +105,7 @@ export default function NotificationBell() {
       case 'ENROLLMENT': return <BookOpen className="w-4 h-4 text-blue-500" />;
       case 'Q_AND_A': return <MessageSquare className="w-4 h-4 text-indigo-500" />;
       case 'SYSTEM': return <Settings className="w-4 h-4 text-amber-500" />;
+      case 'COURSE_UPDATE': return <ExternalLink className="w-4 h-4 text-purple-500" />;
       default: return <Bell className="w-4 h-4 text-slate-400" />;
     }
   };
