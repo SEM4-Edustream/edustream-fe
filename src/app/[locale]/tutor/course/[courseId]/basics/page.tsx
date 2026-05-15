@@ -113,7 +113,7 @@ export default function CourseBasicsPage() {
 
     try {
       setIsUploading(true);
-      toast.info('Uploading thumbnail to cloud...');
+      toast.info('Uploading thumbnail...');
 
       const ext = file.name.split('.').pop();
       const randomName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;

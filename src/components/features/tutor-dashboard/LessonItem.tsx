@@ -385,7 +385,7 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh, provide
                {isUploading && (
                   <div className="space-y-2 mt-4 animate-in fade-in">
                      <div className="flex items-center justify-between text-xs font-bold text-slate-600">
-                        <span className="flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Uploading directly to AWS S3...</span>
+                        <span className="flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Uploading video...</span>
                         <span>{uploadProgress}%</span>
                      </div>
                      <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">

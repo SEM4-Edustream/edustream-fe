@@ -179,9 +179,6 @@ export default function CurriculumPage() {
             <h2 className="text-2xl font-bold text-[#1c1d1f]">Curriculum</h2>
             <p className="text-sm text-slate-500">Start putting together your course by creating sections, lectures and quizzes.</p>
          </div>
-         <Button variant="outline" className="font-bold gap-2 self-start md:self-auto border-slate-300">
-            <Plus className="w-4 h-4" /> Bulk Upload
-         </Button>
       </div>
 
       <div className="bg-slate-50 border border-slate-200 p-6 rounded-lg space-y-6 shadow-sm">
