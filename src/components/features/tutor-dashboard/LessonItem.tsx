@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Plus, 
   Trash2, 
@@ -51,6 +51,17 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh, provide
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const hasContent = !!lesson.videoUrl || !!lesson.content;
+
+  // Tự động poll (hỏi lại API) mỗi 5 giây nếu video đang chờ xử lý duration
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (lesson.type === 'VIDEO' && lesson.videoUrl && !lesson.durationSeconds) {
+      timeout = setTimeout(() => {
+        onRefresh();
+      }, 5000);
+    }
+    return () => clearTimeout(timeout);
+  }, [lesson.type, lesson.videoUrl, lesson.durationSeconds, onRefresh]);
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -136,7 +147,7 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh, provide
         videoUrl: presigned.fileUrl,
         content: lesson.content,
         orderIndex: lesson.orderIndex,
-        durationSeconds: lesson.durationSeconds // Giữ nguyên duration cũ, chờ Lambda cập nhật
+        durationSeconds: undefined // Xóa để Backend không ghi đè, chờ Lambda update
       });
 
       window.dispatchEvent(new Event('course-updated'));
@@ -195,13 +206,19 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh, provide
               {lesson.type === 'QUIZ' ? 'Quiz' : lesson.type === 'ASSIGNMENT' ? 'Assignment' : 'Lecture'} {index + 1}: {lesson.title}
             </span>
             
-            {lesson.type === 'VIDEO' && lesson.durationSeconds ? (
-              <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded ml-2">
-                {Math.floor(lesson.durationSeconds / 60)}:{(lesson.durationSeconds % 60).toString().padStart(2, '0')}
-              </span>
+            {lesson.type === 'VIDEO' && lesson.videoUrl ? (
+              lesson.durationSeconds ? (
+                <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded ml-2">
+                  {Math.floor(lesson.durationSeconds / 60)}:{(lesson.durationSeconds % 60).toString().padStart(2, '0')}
+                </span>
+              ) : (
+                <span className="text-[10px] font-bold text-indigo-400 bg-indigo-50 border border-indigo-100 px-1.5 py-0.5 rounded ml-2 flex items-center gap-1">
+                  <Loader2 className="w-3 h-3 animate-spin" /> Processing...
+                </span>
+              )
             ) : null}
 
-            {hasContent && !isExpanded && (
+            {hasContent && !isExpanded && lesson.durationSeconds && (
                <CheckCircle2 className="w-4 h-4 text-green-600 ml-2 animate-in zoom-in" />
             )}
           </div>
@@ -287,7 +304,9 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh, provide
                           title: lesson.title,
                           type: 'ASSIGNMENT',
                           content: textContent,
-                          orderIndex: lesson.orderIndex
+                          orderIndex: lesson.orderIndex,
+                          videoUrl: undefined,
+                          durationSeconds: 0
                         });
                         toast.success('Assignment saved successfully');
                       } catch (e) {
