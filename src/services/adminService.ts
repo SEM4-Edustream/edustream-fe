@@ -45,6 +45,16 @@ const adminService = {
     return await axiosInstance.post<any, CourseSummary>(`/api/admin/courses/${id}/verify`, null, {
       params: { isApprove }
     });
+  },
+
+  getUsers: async (role: string): Promise<any[]> => {
+    // Backend: GET /api/admin/users?role=...
+    const response = await axiosInstance.get<any, any>(`/api/admin/users`, {
+      params: { role }
+    });
+    // The axios interceptor returns the data part usually, 
+    // but we need to check if it's wrapped in result
+    return response.result || response;
   }
 };
 
