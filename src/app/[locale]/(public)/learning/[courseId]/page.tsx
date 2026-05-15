@@ -18,7 +18,8 @@ import {
   Settings,
   MessageSquare,
   Trophy,
-  Loader2
+  Loader2,
+  Star
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { courseService, CourseSummary, LessonResponse } from '@/services/courseService';
@@ -31,6 +32,7 @@ import AssignmentView from '@/components/features/learning/AssignmentView';
 import AICoachChat from '@/components/features/learning/AICoachChat';
 import StudentQASection from '@/components/features/learning/StudentQASection';
 import StudentAnnouncements from '@/components/features/learning/StudentAnnouncements';
+import { reviewService } from '@/services/reviewService';
 
 export default function LearningPage() {
   const t = useTranslations('Learning');
@@ -56,8 +58,6 @@ export default function LearningPage() {
   const [reviewComment, setReviewComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [hasSubmittedReview, setHasSubmittedReview] = useState(false);
-  
-  const { reviewService } = require('@/services/reviewService');
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -193,6 +193,8 @@ export default function LearningPage() {
       toast.success("Lesson completed!");
       
       // Check if all lessons are completed
+      if (!course) return;
+      
       const totalLessons = (course.modules || []).reduce((acc, m) => acc + (m.lessons?.length || 0), 0);
       if (newCompleted.size === totalLessons) {
           setShowCongratulations(true);
