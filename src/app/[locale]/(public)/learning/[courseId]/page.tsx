@@ -686,8 +686,8 @@ export default function LearningPage() {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-      {/* AI Coach Assistant */}
-      {/* Congratulations Modal */}
+      
+      {/* Congratulations & Rating Modal Section */}
       <AnimatePresence>
         {showCongratulations && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -730,7 +730,6 @@ export default function LearningPage() {
                   </div>
                 </div>
 
-                {/* REVIEW FORM SECTION */}
                 {!hasSubmittedReview ? (
                    <div className="space-y-8 pt-6 border-t border-slate-100">
                       <AnimatePresence mode="wait">
