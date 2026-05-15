@@ -16,6 +16,7 @@ import { CourseSort } from '@/components/features/course/CourseSort';
 import { Search, SlidersHorizontal, X, Info, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 function CoursePageContent() {
   const t = useTranslations('CourseListing');

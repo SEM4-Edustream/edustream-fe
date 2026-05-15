@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Link, useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
 
 function CoursePageContent() {
   const t = useTranslations('CourseListing');
