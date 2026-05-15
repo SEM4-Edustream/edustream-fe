@@ -230,9 +230,9 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh, provide
               )
             ) : null}
 
-            {hasContent && !isExpanded && lesson.durationSeconds && (
+            {hasContent && !isExpanded && (lesson.type !== 'VIDEO' || (lesson.durationSeconds && lesson.durationSeconds > 0)) ? (
                <CheckCircle2 className="w-4 h-4 text-green-600 ml-2 animate-in zoom-in" />
-            )}
+            ) : null}
           </div>
         </div>
         
