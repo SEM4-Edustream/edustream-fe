@@ -15,7 +15,7 @@ import {
   Flag,
   Reply
 } from 'lucide-react';
-import { analyticsService, TutorReview, PageResponse } from '@/services/analyticsService';
+import { analyticsService, TutorReview, PageMeta } from '@/services/analyticsService';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '@/components/ui/button';
