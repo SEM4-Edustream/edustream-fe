@@ -33,6 +33,8 @@ import AICoachChat from '@/components/features/learning/AICoachChat';
 import StudentQASection from '@/components/features/learning/StudentQASection';
 import StudentAnnouncements from '@/components/features/learning/StudentAnnouncements';
 import { reviewService } from '@/services/reviewService';
+import { formatDistanceToNow } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 export default function LearningPage() {
   const t = useTranslations('Learning');
