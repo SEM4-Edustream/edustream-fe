@@ -71,10 +71,17 @@ export function CourseCardDescription({ children }: { children: React.ReactNode 
 }
 
 // 6. Author
-export function CourseCardAuthor({ name }: { name: string }) {
+export function CourseCardAuthor({ name, avatar }: { name: string, avatar?: string }) {
   return (
-    <div className="text-[12px] text-[#6a6f73] truncate mb-1">
-      {name || 'EduStream Tutor'}
+    <div className="flex items-center gap-2 mb-1">
+      {avatar && (
+        <div className="w-5 h-5 rounded-full overflow-hidden shrink-0 border border-slate-100">
+          <img src={avatar} alt={name} className="w-full h-full object-cover" />
+        </div>
+      )}
+      <div className="text-[12px] text-[#6a6f73] truncate">
+        {name || 'EduStream Tutor'}
+      </div>
     </div>
   );
 }

@@ -13,7 +13,7 @@ import {
 import { CourseGrid } from '@/components/features/course/CourseGrid';
 import { CourseFilters } from '@/components/features/course/CourseFilters';
 import { CourseSort } from '@/components/features/course/CourseSort';
-import { Search, SlidersHorizontal, X, Info } from 'lucide-react';
+import { Search, SlidersHorizontal, X, Info, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -29,6 +29,8 @@ function CoursePageContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('keyword') || '');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) || 0);
 
   const matchedCategory = categories.find(c => c.slug === routeCategorySlug);
   const currentCategoryName = matchedCategory ? matchedCategory.name : (routeCategorySlug.charAt(0).toUpperCase() + routeCategorySlug.slice(1));
@@ -50,21 +52,9 @@ function CoursePageContent() {
           sort: searchParams.get('sort') || 'newest',
         });
         
-        let filteredContent = result.content;
-
-        // Client-side filtering for Level and Price if API doesn't support them yet
-        const level = searchParams.get('level');
-        const price = searchParams.get('price');
-
-        if (level) {
-          filteredContent = filteredContent.filter(c => c.level === level);
-        }
-        if (price) {
-          if (price === 'FREE') filteredContent = filteredContent.filter(c => !c.price || c.price === 0);
-          if (price === 'PAID') filteredContent = filteredContent.filter(c => c.price && c.price > 0);
-        }
-
-        setCourses(filteredContent);
+        setCourses(result.content);
+        setTotalPages(result.totalPages);
+        setCurrentPage(result.number);
       } catch (error) {
         console.error('Failed to fetch courses:', error);
       } finally {
@@ -74,6 +64,12 @@ function CoursePageContent() {
 
     fetchCourses();
   }, [searchParams, routeCategorySlug]);
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', page.toString());
+    router.push(`/courses/category/${routeCategorySlug}?${params.toString()}`);
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,6 +134,45 @@ function CoursePageContent() {
 
             {/* Grid/List */}
             <CourseGrid courses={courses} isLoading={isLoading} viewMode="list" />
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-12 flex items-center justify-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-10 h-10 rounded-full border-slate-200"
+                  disabled={currentPage === 0}
+                  onClick={() => handlePageChange(currentPage - 1)}
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </Button>
+                
+                {[...Array(totalPages)].map((_, i) => (
+                  <Button
+                    key={i}
+                    variant={currentPage === i ? "default" : "outline"}
+                    className={cn(
+                      "w-10 h-10 rounded-full font-bold",
+                      currentPage === i ? "bg-indigo-600 hover:bg-indigo-700" : "border-slate-200 text-slate-600"
+                    )}
+                    onClick={() => handlePageChange(i)}
+                  >
+                    {i + 1}
+                  </Button>
+                ))}
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-10 h-10 rounded-full border-slate-200"
+                  disabled={currentPage === totalPages - 1}
+                  onClick={() => handlePageChange(currentPage + 1)}
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </Button>
+              </div>
+            )}
           </main>
         </div>
       </div>

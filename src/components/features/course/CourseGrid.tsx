@@ -85,7 +85,7 @@ export function CourseGrid({ courses, isLoading, viewMode = 'grid' }: CourseGrid
                     </p>
                   )}
                     
-                  <CourseCard.Author name={course.tutorName || 'EduStream Instructor'} />
+                  <CourseCard.Author name={course.tutorName || 'EduStream Instructor'} avatar={course.tutorAvatar} />
                     
                   <CourseCard.Rating value={course.averageRating || 0} count={course.reviewCount || 0} />
                     
