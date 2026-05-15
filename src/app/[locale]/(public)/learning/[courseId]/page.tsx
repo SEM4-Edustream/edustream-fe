@@ -60,6 +60,7 @@ export default function LearningPage() {
   const [reviewComment, setReviewComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [hasSubmittedReview, setHasSubmittedReview] = useState(false);
+  const [reviewStep, setReviewStep] = useState<1 | 2>(1);
   const [courseReviews, setCourseReviews] = useState<any[]>([]);
   const [isReviewsLoading, setIsReviewsLoading] = useState(false);
 
@@ -286,9 +287,21 @@ export default function LearningPage() {
         </div>
         
         <div className="flex items-center gap-2 md:gap-4">
-          <div className="hidden lg:flex items-center gap-2 text-xs font-bold text-slate-400">
-             <Trophy className="w-4 h-4" />
-             <span>{t('your_progress')}: {completedLessons.size} / {(course.modules || []).reduce((acc, m) => acc + (m.lessons?.length || 0), 0)}</span>
+          <div className="hidden lg:flex items-center gap-6 text-xs font-bold text-slate-400">
+             <div className="flex items-center gap-2">
+                <Trophy className="w-4 h-4" />
+                <span>{t('your_progress')}: {completedLessons.size} / {(course.modules || []).reduce((acc, m) => acc + (m.lessons?.length || 0), 0)}</span>
+             </div>
+             
+             {completedLessons.size === (course.modules || []).reduce((acc, m) => acc + (m.lessons?.length || 0), 0) && (
+               <button 
+                 onClick={() => setShowCongratulations(true)}
+                 className="flex items-center gap-1.5 text-white hover:text-indigo-400 transition-colors border border-white/20 px-3 py-1 rounded-md bg-white/5"
+               >
+                 <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                 <span>Leave a rating</span>
+               </button>
+             )}
           </div>
           <Button 
             variant="ghost" 
@@ -720,61 +733,106 @@ export default function LearningPage() {
                 {/* REVIEW FORM SECTION */}
                 {!hasSubmittedReview ? (
                    <div className="space-y-8 pt-6 border-t border-slate-100">
-                      <div className="text-center">
-                        <h3 className="text-xl font-bold text-slate-900 mb-2">Đánh giá khóa học của bạn</h3>
-                        <p className="text-slate-500 text-sm">Chia sẻ cảm nhận của bạn để giúp chúng tôi cải thiện hơn nhé!</p>
-                      </div>
+                      <AnimatePresence mode="wait">
+                        {reviewStep === 1 ? (
+                          <motion.div 
+                            key="step1"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="space-y-8"
+                          >
+                            <div className="text-center">
+                              <h3 className="text-xl font-bold text-slate-900 mb-2">Bạn đánh giá khóa học này thế nào?</h3>
+                              <p className="text-slate-500 text-sm">Chọn số sao tương ứng với trải nghiệm của bạn</p>
+                            </div>
 
-                      <div className="flex flex-col items-center gap-4">
-                        <div className="flex justify-center gap-2">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              key={star}
-                              onClick={() => setRating(star)}
-                              onMouseEnter={() => !hasSubmittedReview && setRating(star)}
-                              className="transition-transform active:scale-90"
+                            <div className="flex justify-center gap-3">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <button
+                                  key={star}
+                                  onClick={() => {
+                                    setRating(star);
+                                    setReviewStep(2);
+                                  }}
+                                  onMouseEnter={() => setRating(star)}
+                                  className="transition-transform active:scale-90"
+                                >
+                                  <Star 
+                                    className={cn(
+                                      "w-14 h-14 transition-all duration-300",
+                                      star <= rating 
+                                      ? "text-amber-400 fill-amber-400 filter drop-shadow-[0_0_12px_rgba(251,191,36,0.4)] scale-110" 
+                                      : "text-slate-200 hover:text-slate-300"
+                                    )} 
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                            
+                            <div className="text-center h-6">
+                               <span className="text-sm font-black text-amber-500 uppercase tracking-widest">
+                                 {rating > 0 && (rating === 5 ? "Tuyệt vời!" : rating === 4 ? "Rất tốt" : rating === 3 ? "Bình thường" : rating === 2 ? "Kém" : "Rất kém")}
+                               </span>
+                            </div>
+                          </motion.div>
+                        ) : (
+                          <motion.div 
+                            key="step2"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="space-y-6"
+                          >
+                            <button 
+                              onClick={() => setReviewStep(1)}
+                              className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
                             >
-                              <Star 
-                                className={cn(
-                                  "w-12 h-12 transition-all duration-300",
-                                  star <= rating 
-                                  ? "text-amber-400 fill-amber-400 filter drop-shadow-[0_0_8px_rgba(251,191,36,0.5)] scale-110" 
-                                  : "text-slate-200 hover:text-slate-300"
-                                )} 
-                              />
+                               <ChevronLeft className="w-3 h-3" /> Quay lại
                             </button>
-                          ))}
-                        </div>
-                        <motion.span 
-                          key={rating}
-                          initial={{ opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="text-sm font-black text-amber-500 uppercase tracking-widest"
-                        >
-                          {rating === 5 ? "Tuyệt vời!" : rating === 4 ? "Rất tốt" : rating === 3 ? "Bình thường" : rating === 2 ? "Kém" : "Rất kém"}
-                        </motion.span>
-                      </div>
 
-                      <div className="space-y-2">
-                        <textarea
-                          value={reviewComment}
-                          onChange={(e) => setReviewComment(e.target.value)}
-                          placeholder="Khóa học này như thế nào đối với bạn?..."
-                          className="w-full h-32 p-6 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-slate-700 font-medium placeholder:text-slate-400 bg-slate-50/50"
-                        />
-                      </div>
+                            <div className="text-center">
+                              <h3 className="text-xl font-bold text-slate-900 mb-1">Tại sao bạn đánh giá {rating} sao?</h3>
+                              <p className="text-amber-500 font-black text-xs uppercase tracking-widest">
+                                 {rating === 5 ? "Amazing, above expectations!" : rating === 4 ? "Good, met expectations" : "Could be better"}
+                              </p>
+                            </div>
 
-                      <Button
-                        onClick={handleReviewSubmit}
-                        disabled={isSubmittingReview}
-                        className="w-full h-16 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-lg shadow-2xl shadow-slate-200 transition-all active:scale-[0.98]"
-                      >
-                        {isSubmittingReview ? (
-                           <span className="flex items-center gap-2">
-                              <Loader2 className="w-5 h-5 animate-spin" /> Đang gửi đánh giá...
-                           </span>
-                        ) : "Gửi đánh giá & Hoàn thành"}
-                      </Button>
+                            <div className="flex justify-center gap-1.5">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star 
+                                  key={star}
+                                  className={cn(
+                                    "w-6 h-6",
+                                    star <= rating ? "text-amber-400 fill-amber-400" : "text-slate-200"
+                                  )} 
+                                />
+                              ))}
+                            </div>
+
+                            <div className="space-y-2">
+                              <textarea
+                                value={reviewComment}
+                                onChange={(e) => setReviewComment(e.target.value)}
+                                placeholder="Hãy chia sẻ thêm về trải nghiệm của bạn... Điều gì làm bạn hài lòng hoặc chưa hài lòng?"
+                                className="w-full h-40 p-6 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-slate-700 font-medium placeholder:text-slate-400 bg-slate-50/50"
+                              />
+                            </div>
+
+                            <Button
+                              onClick={handleReviewSubmit}
+                              disabled={isSubmittingReview}
+                              className="w-full h-16 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl text-lg shadow-2xl shadow-slate-200 transition-all active:scale-[0.98]"
+                            >
+                              {isSubmittingReview ? (
+                                 <span className="flex items-center gap-2">
+                                    <Loader2 className="w-5 h-5 animate-spin" /> Đang lưu...
+                                 </span>
+                              ) : "Lưu và Hoàn thành"}
+                            </Button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                    </div>
                 ) : (
                    <div className="pt-6 border-t border-slate-100 text-center animate-in zoom-in duration-500">
@@ -783,6 +841,7 @@ export default function LearningPage() {
                       </div>
                       <h3 className="text-xl font-bold text-slate-900 mb-2">Đánh giá thành công!</h3>
                       <p className="text-slate-500">Cảm ơn bạn rất nhiều vì những ý kiến quý báu này.</p>
+                   </div>
                    </div>
                 )}
 
