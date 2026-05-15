@@ -47,9 +47,58 @@ export default function CurriculumPage() {
     if (courseId) fetchCourse();
   }, [courseId]);
 
-  const onDragEnd = (result: DropResult) => {
-    console.log('Drag ended:', result);
-    toast.info('Reordering feature is being updated with backend...');
+  const onDragEnd = async (result: DropResult) => {
+    const { destination, source, type } = result;
+
+    if (!destination) return;
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+
+    if (type === 'module') {
+      // Reorder modules
+      if (!course?.modules) return;
+      const items = Array.from(course.modules);
+      const [reorderedItem] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, reorderedItem);
+
+      // Optimistic update
+      const updatedModules = items.map((m, index) => ({ ...m, orderIndex: index }));
+      setCourse({ ...course, modules: updatedModules });
+
+      try {
+        await courseService.reorderModules(courseId, updatedModules.map(m => ({ id: m.id, orderIndex: m.orderIndex })));
+        // toast.success('Sections reordered'); // Optional success toast
+      } catch (error) {
+        console.error(error);
+        toast.error('Failed to reorder sections');
+        fetchCourse(); // Revert on failure
+      }
+    } else if (type === 'lesson') {
+      // Reorder lessons
+      if (!course?.modules) return;
+      const moduleId = source.droppableId;
+      const module = course.modules.find(m => m.id === moduleId);
+      if (!module || !module.lessons) return;
+
+      const items = Array.from(module.lessons);
+      const [reorderedItem] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, reorderedItem);
+
+      // Optimistic update
+      const updatedLessons = items.map((l, index) => ({ ...l, orderIndex: index }));
+      const updatedModules = course.modules.map(m => 
+        m.id === moduleId ? { ...m, lessons: updatedLessons } : m
+      );
+      setCourse({ ...course, modules: updatedModules });
+
+      try {
+        await courseService.reorderLessons(moduleId, updatedLessons.map(l => ({ id: l.id, orderIndex: l.orderIndex })));
+        // toast.success('Lectures reordered');
+      } catch (error) {
+        console.error(error);
+        toast.error('Failed to reorder lectures');
+        fetchCourse(); // Revert
+      }
+    }
   };
 
   const handleAddModule = async () => {
@@ -141,7 +190,7 @@ export default function CurriculumPage() {
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-6">
                 {course?.modules?.map((module, index) => (
-                  <Draggable key={module.id} draggableId={module.id} index={index}>
+                  <Draggable key={module.id} draggableId={module.id} index={index} isDragDisabled={isLocked}>
                     {(provided) => (
                       <div 
                          ref={provided.innerRef} 
@@ -172,17 +221,26 @@ export default function CurriculumPage() {
                         {/* Lessons List */}
                         <div className="p-4 space-y-4 bg-slate-50/30">
                            {module.lessons && module.lessons.length > 0 ? (
-                             <div className="space-y-3">
-                               {module.lessons.map((lesson, lIndex) => (
-                                 <LessonItem
-                                   key={lesson.id}
-                                   lesson={lesson}
-                                   moduleId={module.id}
-                                   index={lIndex}
-                                   onRefresh={fetchCourse}
-                                 />
-                               ))}
-                             </div>
+                             <Droppable droppableId={module.id} type="lesson">
+                               {(provided) => (
+                                 <div className="space-y-3" {...provided.droppableProps} ref={provided.innerRef}>
+                                   {(module.lessons || []).map((lesson, lIndex) => (
+                                     <Draggable key={lesson.id} draggableId={lesson.id} index={lIndex} isDragDisabled={isLocked}>
+                                       {(provided) => (
+                                         <LessonItem
+                                           lesson={lesson}
+                                           moduleId={module.id}
+                                           index={lIndex}
+                                           onRefresh={fetchCourse}
+                                           provided={provided}
+                                         />
+                                       )}
+                                     </Draggable>
+                                   ))}
+                                   {provided.placeholder}
+                                 </div>
+                               )}
+                             </Droppable>
                            ) : (
                              <div className="flex items-center justify-center p-6 border-2 border-dashed border-slate-200 rounded-md bg-white/50 text-xs font-bold text-slate-400 italic ml-8">
                                 No content added yet.

@@ -119,6 +119,14 @@ export const courseService = {
     return await api.delete<any>(`/api/tutor-courses/modules/${moduleId}/lessons/${lessonId}`) as any;
   },
 
+  reorderModules: async (courseId: string, requests: { id: string; orderIndex: number }[]): Promise<void> => {
+    await api.put(`/api/tutor-courses/${courseId}/modules/reorder`, requests);
+  },
+
+  reorderLessons: async (moduleId: string, requests: { id: string; orderIndex: number }[]): Promise<void> => {
+    await api.put(`/api/tutor-courses/modules/${moduleId}/lessons/reorder`, requests);
+  },
+
   submitCourse: async (id: string): Promise<CourseSummary> => {
     return await api.post<any>(`/api/tutor-courses/${id}/submit`) as any;
   },

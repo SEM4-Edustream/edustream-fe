@@ -23,15 +23,17 @@ import QuizEditor from './QuizEditor';
 import { useParams } from 'next/navigation';
 import { Link } from '@/i18n/routing';
 import { courseService, LessonResponse } from '@/services/courseService';
+import { DraggableProvided } from '@hello-pangea/dnd';
 
 interface LessonItemProps {
   lesson: LessonResponse;
   moduleId: string;
   index: number;
   onRefresh: () => void;
+  provided?: DraggableProvided;
 }
 
-export default function LessonItem({ lesson, moduleId, index, onRefresh }: LessonItemProps) {
+export default function LessonItem({ lesson, moduleId, index, onRefresh, provided }: LessonItemProps) {
   const { courseId } = useParams() as { courseId: string };
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -151,7 +153,10 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
   };
 
   return (
-    <div className={cn(
+    <div 
+      ref={provided?.innerRef}
+      {...provided?.draggableProps}
+      className={cn(
       "bg-white border transition-all rounded-sm shadow-sm ml-8 overflow-hidden",
       isExpanded ? "border-slate-800" : "border-slate-200 hover:border-slate-300",
       isDeleting && "opacity-50 pointer-events-none"
@@ -166,6 +171,9 @@ export default function LessonItem({ lesson, moduleId, index, onRefresh }: Lesso
       >
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-3">
+            <div {...provided?.dragHandleProps} className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 mr-1" onClick={(e) => e.stopPropagation()}>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+            </div>
             {lesson.type === 'VIDEO' ? (
               <div className={cn("w-7 h-7 rounded flex items-center justify-center transition-colors", hasContent ? "bg-indigo-100 text-indigo-700" : "bg-slate-100 text-slate-500")}>
                 <Video className="w-3.5 h-3.5" />
