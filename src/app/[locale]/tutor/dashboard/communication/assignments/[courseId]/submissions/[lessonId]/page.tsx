@@ -52,8 +52,9 @@ export default function AssignmentGradingPage() {
       // Update locally
       setSubmissions(prev => prev.map(s => s.id === selectedSub.id ? res : s));
       setSelectedSub(res);
-    } catch (error) {
-      toast.error('Failed to save grade');
+    } catch (error: any) {
+      const message = error.response?.data?.message || 'Failed to save grade';
+      toast.error(message);
     } finally {
       setIsGrading(false);
     }

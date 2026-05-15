@@ -16,6 +16,7 @@ import CourseItem from "@/components/features/tutor-dashboard/CourseItem";
 import DashboardResources from "@/components/features/tutor-dashboard/DashboardResources";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import DashboardStats from "@/components/features/tutor-dashboard/DashboardStats";
 
 export default function TutorDashboardCourses() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
@@ -93,7 +94,10 @@ export default function TutorDashboardCourses() {
           </TabsList>
         </div>
 
-        <TabsContent value="courses" className="pt-8 space-y-8 outline-none">
+        <TabsContent value="courses" className="pt-8 space-y-12 outline-none">
+          {/* Dashboard Stats Section */}
+          <DashboardStats />
+
           {/* 3. courses--search-row (Search + Sort + New Course) */}
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6 pb-2">
             <div className="flex flex-wrap items-center gap-4 w-full">

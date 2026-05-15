@@ -77,8 +77,9 @@ export default function AdminCourseVerificationPage() {
       setCourses(prev => prev.filter(c => c.id !== selectedCourseId));
       setSelectedCourseId(null);
       setCourseDetail(null);
-    } catch (error) {
-      toast.error('Failed to process review action');
+    } catch (error: any) {
+      const message = error.response?.data?.message || 'Failed to process review action';
+      toast.error(message);
     } finally {
       setIsProcessing(false);
     }
