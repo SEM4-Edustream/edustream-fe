@@ -4,7 +4,7 @@ export interface NotificationResponse {
   id: string;
   title: string;
   message: string;
-  type: 'SYSTEM' | 'ENROLLMENT' | 'PAYMENT' | 'Q_AND_A' | 'ANNOUNCEMENT';
+  type: 'SYSTEM' | 'ENROLLMENT' | 'PAYMENT' | 'Q_AND_A' | 'ANNOUNCEMENT' | 'COURSE_STATUS';
   referenceUrl?: string;
   isRead: boolean;
   createdAt: string;

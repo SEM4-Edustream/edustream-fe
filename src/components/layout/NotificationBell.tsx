@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Bell, Check, Loader2, MessageSquare, CreditCard, BookOpen, Settings, ExternalLink, Layout } from 'lucide-react';
+import { Bell, Check, Loader2, MessageSquare, CreditCard, BookOpen, Settings, ExternalLink, Layout, BadgeCheck } from 'lucide-react';
 import { notificationService, NotificationResponse } from '@/services/notificationService';
 import { cn } from '@/lib/utils';
 import { useRouter } from '@/i18n/routing';
@@ -22,12 +22,13 @@ export default function NotificationBell() {
   useWebsocket('/user/queue/notifications', (newNotification: NotificationResponse) => {
     setNotifications(prev => [newNotification, ...prev]);
     setUnreadCount(prev => prev + 1);
-    
-    // Phát âm thanh báo hiệu hoặc hiển thị toast nhỏ
+
+    const isCourseStatus = newNotification.type === 'COURSE_STATUS';
+
     toast.info(newNotification.title, {
       description: newNotification.message,
       action: newNotification.referenceUrl ? {
-        label: 'Xem',
+        label: isCourseStatus ? 'Xem khóa học' : 'Xem',
         onClick: () => router.push(newNotification.referenceUrl!)
       } : undefined
     });
@@ -106,7 +107,7 @@ export default function NotificationBell() {
       case 'Q_AND_A': return <MessageSquare className="w-4 h-4 text-indigo-500" />;
       case 'SYSTEM': return <Settings className="w-4 h-4 text-amber-500" />;
       case 'COURSE_UPDATE': return <ExternalLink className="w-4 h-4 text-purple-500" />;
-      case 'COURSE_STATUS': return <Layout className="w-4 h-4 text-slate-500" />;
+      case 'COURSE_STATUS': return <BadgeCheck className="w-4 h-4 text-emerald-600" />;
       default: return <Bell className="w-4 h-4 text-slate-400" />;
     }
   };
@@ -150,7 +151,9 @@ export default function NotificationBell() {
               </div>
             ) : (
               <div className="divide-y divide-slate-50">
-                {notifications.map((n) => (
+                {notifications.map((n) => {
+                  const isCourseStatus = n.type === 'COURSE_STATUS';
+                  return (
                   <div
                     key={n.id}
                     onClick={() => handleNotificationClick(n)}
@@ -168,7 +171,10 @@ export default function NotificationBell() {
                       <p className={cn("text-sm leading-snug", !n.isRead ? "font-bold text-slate-900" : "text-slate-600")}>
                         {n.title}
                       </p>
-                      <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                      <p className={cn(
+                        "text-xs mt-1 line-clamp-2 leading-relaxed",
+                        isCourseStatus ? "text-emerald-700" : "text-slate-500"
+                      )}>
                         {n.message}
                       </p>
                       <div className="flex items-center gap-2 mt-2">
@@ -192,7 +198,7 @@ export default function NotificationBell() {
                       </button>
                     )}
                   </div>
-                ))}
+                )})}
               </div>
             )}
           </div>
