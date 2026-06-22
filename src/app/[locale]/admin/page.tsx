@@ -121,7 +121,7 @@ export default function AdminDashboardPage() {
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
                   <YAxis hide />
-                  <Tooltip cursor={{ fill: '#f8fafc' }} formatter={(value: number) => [`${value.toLocaleString()} VND`, 'Revenue']} />
+                  <Tooltip cursor={{ fill: '#f8fafc' }} formatter={(value) => [typeof value === 'number' ? `${value.toLocaleString()} VND` : '-', 'Revenue']} />
                   <Bar dataKey="revenue" fill="#ff944d" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -148,7 +148,7 @@ export default function AdminDashboardPage() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: number) => [value, 'Users']} />
+                  <Tooltip formatter={(value) => [typeof value === 'number' ? value.toLocaleString() : String(value), 'Users']} />
                 </PieChart>
               </ResponsiveContainer>
            </div>

@@ -177,7 +177,7 @@ export default function TutorDashboardCourses() {
                     <Button
                       variant="outline"
                       size="sm"
-                      disabled={pageMeta.first}
+                      disabled={pageMeta.first ?? false}
                       onClick={() => setCurrentPage(prev => prev - 1)}
                       className="h-10 px-4 font-bold rounded-lg border-slate-300"
                     >
@@ -185,7 +185,7 @@ export default function TutorDashboardCourses() {
                     </Button>
                     
                     <div className="flex items-center gap-1.5 px-4 font-bold text-sm">
-                      <span className="text-[#5624d0]">Page {pageMeta.number + 1}</span>
+                      <span className="text-[#5624d0]">Page {(pageMeta?.number ?? pageMeta?.pageNumber ?? 0) + 1}</span>
                       <span className="text-slate-400">of</span>
                       <span className="text-slate-700">{pageMeta.totalPages}</span>
                     </div>
@@ -193,7 +193,7 @@ export default function TutorDashboardCourses() {
                     <Button
                       variant="outline"
                       size="sm"
-                      disabled={pageMeta.last}
+                      disabled={pageMeta.last ?? false}
                       onClick={() => setCurrentPage(prev => prev + 1)}
                       className="h-10 px-4 font-bold rounded-lg border-slate-300"
                     >
