@@ -11,7 +11,8 @@ import {
   ShieldCheck,
   PlaySquare,
   ChevronDown,
-  Circle
+  Circle,
+  Activity
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
@@ -31,6 +32,14 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { 
+    title: "Analytics", 
+    icon: Activity,
+    subItems: [
+      { title: "Course Metrics", href: "/admin/course-metrics" },
+      { title: "Enrollments", href: "/admin/enrollments" },
+    ]
+  },
+  { 
     title: "Course", 
     icon: PlaySquare,
     subItems: [
@@ -40,6 +49,7 @@ const menuItems: MenuItem[] = [
   },
   { title: "User", href: "/admin/users", icon: Users },
   { title: "Tutor Verification", href: "/admin/tutor-verification", icon: CheckSquare },
+  { title: "Audit Logs", href: "/admin/audit-logs", icon: ShieldCheck },
 ];
 
 export default function AdminSidebar() {

@@ -1,16 +1,34 @@
 import React from "react";
-import { UserCircle, Settings, Shield, Bell } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { UserCircle, Settings, Shield, Bell, Receipt } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export function ProfileSidebar() {
+  const pathname = usePathname();
+  
   return (
     <div className="lg:col-span-3">
       <nav className="flex flex-col gap-2">
-        <a href="#profile" className="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg font-medium transition-colors">
+        <Link 
+          href="/profile" 
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
+            pathname === '/profile' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
           <UserCircle className="w-5 h-5" />
           Public Profile
-        </a>
+        </Link>
+        <Link 
+          href="/profile/purchase-history" 
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
+            pathname === '/profile/purchase-history' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <Receipt className="w-5 h-5" />
+          Purchase History
+        </Link>
         <a href="#account" className="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 rounded-lg font-medium transition-colors">
           <Settings className="w-5 h-5" />
           Account Settings

@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   BarChart, 
   Bar, 
@@ -11,47 +11,61 @@ import {
   ResponsiveContainer, 
   PieChart, 
   Pie, 
-  Cell,
-  Legend
+  Cell
 } from 'recharts';
 import { 
   TrendingUp, 
   Users, 
   BookOpen, 
   CreditCard,
-  CheckCircle2,
-  Clock,
-  DollarSign,
   Activity,
-  Calendar,
-  Layers,
-  UserCheck
+  Layers
 } from 'lucide-react';
-import Link from 'next/link';
-
-// Mock Data for Charts
-const revenueData = [
-  { month: '1/2026', value: 4200000 },
-  { month: '2/2026', value: 5000000 },
-];
-
-const courseBreakdownData = [
-  { name: 'Ongoing', value: 10, fill: '#ff944d' },
-  { name: 'Planned', value: 3, fill: '#c084fc' },
-  { name: 'Inactive', value: 2, fill: '#4ade80' },
-  { name: 'Combo', value: 5, fill: '#3b82f6' },
-  { name: 'Single', value: 10, fill: '#ef4444' },
-];
-
-const userBreakdownData = [
-  { name: 'Students', value: 65 },
-  { name: 'Teachers', value: 25 },
-  { name: 'Admins', value: 5 },
-];
+import adminService from '@/services/adminService';
+import { format } from 'date-fns';
 
 const COLORS = ['#ff944d', '#c084fc', '#4ade80'];
 
 export default function AdminDashboardPage() {
+  const [overview, setOverview] = useState<any>(null);
+  const [revenueData, setRevenueData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const [overviewRes, chartRes] = await Promise.all([
+          adminService.getAnalyticsOverview(),
+          adminService.getRevenueChart(30)
+        ]);
+        
+        setOverview(overviewRes);
+        
+        // Format chart data
+        if (chartRes && chartRes.length > 0) {
+          const formattedData = chartRes.map((item: any) => ({
+            date: format(new Date(item.date), 'dd/MM'),
+            revenue: item.revenue
+          }));
+          setRevenueData(formattedData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch analytics", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchAnalytics();
+  }, []);
+
+  if (loading) return <div className="p-10 flex justify-center"><Activity className="animate-spin text-orange-500 w-8 h-8" /></div>;
+
+  const userBreakdownData = [
+    { name: 'Students', value: overview?.totalStudents || 0 },
+    { name: 'Tutors', value: overview?.totalTutors || 0 }
+  ];
+
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
       {/* Header Section */}
@@ -65,65 +79,62 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
+      {/* Stats Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <SmallStatCard 
+          title="Total Revenue" 
+          value={`${overview?.totalRevenue?.toLocaleString() || 0} VND`} 
+          description="All time revenue"
+          icon={TrendingUp} 
+        />
+        <SmallStatCard 
+          title="Total Students" 
+          value={overview?.totalStudents || 0} 
+          description="Registered students"
+          icon={Users} 
+        />
+        <SmallStatCard 
+          title="Total Tutors" 
+          value={overview?.totalTutors || 0} 
+          description="Registered tutors"
+          icon={Users} 
+        />
+        <SmallStatCard 
+          title="Pending Courses" 
+          value={overview?.pendingCourses || 0} 
+          description="Awaiting approval"
+          icon={BookOpen} 
+        />
+      </div>
+
       {/* Main Charts Row */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Monthly Revenue Chart */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* Revenue Chart */}
         <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
            <div className="flex items-center gap-2 mb-6">
               <TrendingUp className="w-5 h-5 text-orange-500" />
-              <h3 className="font-bold text-slate-800">Monthly Revenue</h3>
+              <h3 className="font-bold text-slate-800">Revenue (Last 30 Days)</h3>
            </div>
-           <div className="mb-4">
-              <span className="text-sm font-bold text-slate-700 block uppercase tracking-widest leading-none mb-1">This Month</span>
-              <span className="text-3xl font-bold text-slate-900">5,000,000 VND</span>
-           </div>
-           <div className="h-[250px] w-full">
+           <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={revenueData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
+                  <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
                   <YAxis hide />
-                  <Tooltip cursor={{ fill: '#f8fafc' }} />
-                  <Bar dataKey="value" fill="#ff944d" radius={[6, 6, 0, 0]} barSize={50} />
+                  <Tooltip cursor={{ fill: '#f8fafc' }} formatter={(value: number) => [`${value.toLocaleString()} VND`, 'Revenue']} />
+                  <Bar dataKey="revenue" fill="#ff944d" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
            </div>
-           <p className="text-[10px] text-slate-400 font-bold mt-4 uppercase tracking-widest text-center">Revenue over time Monthly revenue trends</p>
-        </div>
-
-        {/* Course Breakdown Chart */}
-        <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
-           <div className="flex items-center gap-2 mb-1">
-              <Layers className="w-5 h-5 text-indigo-500" />
-              <h3 className="font-bold text-slate-800 text-lg">Course Breakdown</h3>
-           </div>
-           <span className="text-xs font-bold text-slate-600 mb-6 block">Course types distribution</span>
-           <div className="h-[250px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={courseBreakdownData}>
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8' }} />
-                  <YAxis hide />
-                  <Tooltip />
-                  <Bar dataKey="value" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-           </div>
-           <div className="flex items-center justify-center gap-4 mt-4">
-              <div className="flex items-center gap-1.5">
-                 <div className="w-3 h-3 rounded-full bg-orange-500" />
-                 <span className="text-[10px] font-bold text-slate-500">Courses</span>
-              </div>
-           </div>
-           <p className="text-[10px] text-center text-slate-400 font-bold mt-2 uppercase tracking-widest">Course Statistics ↗ Breakdown of course types</p>
         </div>
 
         {/* User Breakdown Chart */}
         <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
-           <div className="text-center mb-6">
-              <h3 className="font-bold text-slate-800 text-lg">User Breakdown</h3>
-              <span className="text-xs font-bold text-slate-600">User types distribution</span>
+           <div className="flex items-center gap-2 mb-6">
+              <Users className="w-5 h-5 text-indigo-500" />
+              <h3 className="font-bold text-slate-800">User Distribution</h3>
            </div>
-           <div className="h-[250px] w-full">
+           <div className="h-[250px] w-full mt-4">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -137,72 +148,19 @@ export default function AdminDashboardPage() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip formatter={(value: number) => [value, 'Users']} />
                 </PieChart>
               </ResponsiveContainer>
            </div>
-           <div className="flex flex-wrap justify-center gap-3 mt-4">
+           <div className="flex flex-wrap justify-center gap-4 mt-6">
               {userBreakdownData.map((entry, index) => (
                 <div key={entry.name} className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index] }} />
-                  <span className="text-[10px] font-bold text-slate-500">{entry.name}</span>
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index] }} />
+                  <span className="text-sm font-bold text-slate-600">{entry.name} ({entry.value})</span>
                 </div>
               ))}
            </div>
-           <p className="text-[10px] text-center text-slate-600 font-bold mt-4 uppercase tracking-widest">User Distribution ↗ Types of users on the platform</p>
         </div>
-      </div>
-
-      {/* Stats Cards Grid - 8 items */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <SmallStatCard 
-          title="Total Revenue" 
-          value="25,000,000 VND" 
-          description="Earn from courses & plans"
-          icon={TrendingUp} 
-        />
-        <SmallStatCard 
-          title="Total Users" 
-          value="250" 
-          description="registered users"
-          icon={Users} 
-        />
-        <SmallStatCard 
-          title="Revenue This Month" 
-          value="5,000,000 VND" 
-          description="Monthly Revenue"
-          icon={CreditCard} 
-        />
-        <SmallStatCard 
-          title="Total Courses" 
-          value="15" 
-          description="available courses"
-          icon={BookOpen} 
-        />
-        <SmallStatCard 
-          title="Total Orders" 
-          value="120" 
-          description="All time orders"
-          icon={Activity} 
-        />
-        <SmallStatCard 
-          title="Successful Orders" 
-          value="0" 
-          description="Completed orders"
-          icon={CheckCircle2} 
-        />
-        <SmallStatCard 
-          title="Pending Orders" 
-          value="0" 
-          description="Awaiting processing"
-          icon={Clock} 
-        />
-        <SmallStatCard 
-          title="Average Order Value" 
-          value="0 VND" 
-          description="Per order average"
-          icon={TrendingUp} 
-        />
       </div>
     </div>
   );

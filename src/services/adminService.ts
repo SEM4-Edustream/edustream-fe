@@ -52,9 +52,35 @@ const adminService = {
     const response = await axiosInstance.get<any, any>(`/api/admin/users`, {
       params: { role }
     });
-    // The axios interceptor returns the data part usually, 
-    // but we need to check if it's wrapped in result
     return response.result || response;
+  },
+
+  getAnalyticsOverview: async (): Promise<any> => {
+    return await axiosInstance.get<any, any>(`/api/admin/analytics/overview`);
+  },
+
+  getRevenueChart: async (days: number = 30): Promise<any[]> => {
+    return await axiosInstance.get<any, any[]>(`/api/admin/analytics/revenue-chart`, {
+      params: { days }
+    });
+  },
+
+  getAuditLogs: async (page: number = 0, size: number = 10): Promise<PageMeta<any>> => {
+    return await axiosInstance.get<any, PageMeta<any>>(`/api/admin/audit-logs`, {
+      params: { page, size }
+    });
+  },
+
+  getEnrollments: async (page: number = 0, size: number = 10): Promise<PageMeta<import('@/types/admin').AdminEnrollmentDetailResponse>> => {
+    return await axiosInstance.get<any, PageMeta<import('@/types/admin').AdminEnrollmentDetailResponse>>(`/api/admin/analytics/enrollments`, {
+      params: { page, size }
+    });
+  },
+
+  getCourseMetrics: async (page: number = 0, size: number = 10): Promise<PageMeta<import('@/types/admin').AdminCourseMetricResponse>> => {
+    return await axiosInstance.get<any, PageMeta<import('@/types/admin').AdminCourseMetricResponse>>(`/api/admin/analytics/course-metrics`, {
+      params: { page, size }
+    });
   }
 };
 
