@@ -53,11 +53,13 @@ export type CourseResponse = CourseSummary;
 export interface PageMeta<T> {
   totalElements: number;
   totalPages: number;
-  number: number;
-  size: number;
-  first: boolean;
-  last: boolean;
-  empty: boolean;
+  number?: number;
+  size?: number;
+  pageNumber?: number;
+  pageSize?: number;
+  first?: boolean;
+  last?: boolean;
+  empty?: boolean;
   content: T[];
 }
 
