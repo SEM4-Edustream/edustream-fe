@@ -55,8 +55,7 @@ function CoursePageContent() {
         
         setCourses(result.content);
         setTotalPages(result.totalPages);
-        setCurrentPage(result.number);
-      } catch (error) {
+        setCurrentPage(result.number ?? 0);      } catch (error) {
         console.error('Failed to fetch courses:', error);
       } finally {
         setIsLoading(false);
