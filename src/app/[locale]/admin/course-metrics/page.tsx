@@ -100,7 +100,7 @@ export default function CourseMetricsPage() {
         {pageMeta && pageMeta.totalPages > 1 && (
           <div className="px-6 py-4 border-t border-slate-200 flex items-center justify-between bg-slate-50">
             <span className="text-sm text-slate-500">
-              Page <span className="font-medium text-slate-900">{(pageMeta.pageNumber ?? pageMeta.number ?? 0) + 1}</span> of <span className="font-medium text-slate-900">{pageMeta.totalPages}</span>
+              Page <span className="font-medium text-slate-900">{(pageMeta?.pageNumber ?? pageMeta?.number ?? 0) + 1}</span> of <span className="font-medium text-slate-900">{pageMeta.totalPages}</span>
             </span>
             <div className="flex gap-2">
               <button
